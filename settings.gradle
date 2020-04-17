@@ -1,0 +1,2 @@
+rootProject.name='Splinter Sell'
+include ':app'
