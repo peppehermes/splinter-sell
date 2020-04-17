@@ -40,4 +40,9 @@
         android:name="it.polito.mad.splintersell.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+    <fragment
+        android:id="@+id/nav_item_details"
+        android:name="it.polito.mad.splintersell.ui.item_details.ItemDetailsFragment"
+        android:label="WLF"
+        tools:layout="@layout/fragment_item_details"/>
 </navigation>
