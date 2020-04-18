@@ -20,21 +20,4 @@ class ItemDetailsFragment: Fragment() {
         Log.e("PIPPO", "JERRY")
         return inflater.inflate(R.layout.fragment_item_details, container, false)
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val myDataset = arrayOf(
-            Detail("Title", "title"),
-            Detail("Description","description"),
-            Detail("Price","price"),
-            Detail("Category","category"),
-            Detail("Location","location"),
-            Detail("Expiration date","date")
-        )
-
-        Log.e("PIPPO", "PLUTO")
-        item_details_view.layoutManager = LinearLayoutManager(context)
-        item_details_view.adapter = ItemDetailsAdapter(myDataset)
-        Log.e("PIPPO", "PAPERINO")
-    }
 }
