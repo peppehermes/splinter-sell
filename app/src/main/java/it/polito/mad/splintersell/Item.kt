@@ -2,15 +2,18 @@ package it.polito.mad.splintersell
 
 import java.util.*
 
-data class Item(val title: String,
+data class Item(
+                val title: String,
                 val description: String,
-                val price: Float
+                val price: String,
+                val category: String
 ) {
-    constructor(photoUri: String,
+    constructor(id:Int,
+                photoUri: String,
                 title: String,
                 description: String,
-                price: Float,
+                price: String,
                 category: String,
                 location: String,
-                expire_date: Date) : this(title, description, price)
+                expire_date: String) : this(title, description, price,category)
 }

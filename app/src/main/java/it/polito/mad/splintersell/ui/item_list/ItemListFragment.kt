@@ -42,9 +42,9 @@ class ItemListFragment : Fragment() {
 
         // Take the data of the items
         val items = arrayOf(
-            Item("Title 1", "Description 1", 10F),
-            Item("Title 2", "Description 2", 20F),
-            Item("Title 3", "Description 3", 30F)
+            Item("Title 1", "Description 1", "10$","none"),
+            Item("Title 2", "Description 2", "10$","none"),
+            Item("Title 3", "Description 3", "10$","none")
         )
 
         item_list.layoutManager = LinearLayoutManager(context)

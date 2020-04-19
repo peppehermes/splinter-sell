@@ -19,8 +19,7 @@
     <fragment
         android:id="@+id/nav_item_details"
         android:name="it.polito.mad.splintersell.ui.item_details.ItemDetailsFragment"
-        android:label="@string/menu_item_details"
-        tools:layout="@layout/fragment_item_details" >
+        android:label="@string/menu_item_details">
         <action
             android:id="@+id/action_nav_item_details_to_nav_item_list"
             app:destination="@id/nav_item_list" />
