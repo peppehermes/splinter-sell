@@ -12,6 +12,7 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_item_details">Item details</string>
     <string name="menu_item_list">Items</string>
+    <string name="menu_show_profile">My Profile</string>
 
     <string name="home_second">Home Second</string>
     <string name="todo">TODO</string>
@@ -24,5 +25,16 @@
     <string name="expire_date">Expire date</string>
 
     <string name="edit">Edit</string>
+
+    //SHOW PROFILE
+    <string name="fname">Full Name</string>
+    <string name="nick">Nickname</string>
+    <string name="mail">email@address</string>
+    <string name="location_show_profile">Location</string>
+    <string name="profile_photo">profile_photo</string>
+    <string name="select_image">Select image</string>
+    <string name="open_camera">Open Camera</string>
+    <string name="save">Save</string>
+
 
 </resources>
