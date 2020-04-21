@@ -151,8 +151,4 @@ class ShowProfile : Fragment() {
         super.onSaveInstanceState(outState)
     }
 
-
-
-
-
 }

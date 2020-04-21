@@ -12,6 +12,7 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_item_details">Item details</string>
     <string name="menu_item_list">Items</string>
+    <string name="menu_edit_item">Edit Item</string>
     <string name="menu_show_profile">My Profile</string>
 
     <string name="home_second">Home Second</string>

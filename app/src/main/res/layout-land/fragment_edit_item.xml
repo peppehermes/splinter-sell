@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:id="@+id/edit_view"
+    android:fillViewport="true"
+    >
+
+    <RelativeLayout
+        android:id="@+id/edit_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <ImageView
+            android:id="@+id/detail_image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/detail_image"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_launcher_background" />
+
+
+        <ImageButton
+            android:id="@+id/select_photo"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignTop="@+id/detail_image"
+            android:layout_alignEnd="@+id/detail_image"
+            android:background="@drawable/round_corners"
+            android:padding="10dp"
+            android:src="@drawable/ic_photo_camera_white_24dp" />
+
+        <EditText
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/detail_image"
+            android:layout_marginTop="10dp"
+            android:padding="10dp"
+            android:hint="@string/title"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:inputType="textAutoCorrect|textAutoComplete"
+            />
+
+        <EditText
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:padding="10dp"
+            android:hint="@string/description"
+            android:textSize="24sp"
+            android:inputType="textAutoCorrect|textAutoComplete"
+            />
+
+        <EditText
+            android:id="@+id/price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@+id/description"
+            android:padding="10dp"
+            android:hint="@string/price"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:inputType="numberDecimal"
+            />
+
+        <EditText
+            android:id="@+id/category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/price"
+            android:padding="10dp"
+            android:hint="@string/category"
+            android:textSize="24sp"
+            android:inputType="textAutoCorrect|textAutoComplete"
+            />
+
+        <EditText
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/category"
+            android:layout_marginBottom="10dp"
+            android:padding="10dp"
+            android:hint="@string/location"
+            android:textSize="24sp"
+            android:inputType="textAutoCorrect|textAutoComplete|textPostalAddress"
+            />
+
+        <DatePicker
+            android:id="@+id/expire_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/location"
+            android:text="@string/expire_date"
+            android:textSize="24sp"
+            android:inputType="date"
+            />
+
+    </RelativeLayout>
+
+</ScrollView>
+
+

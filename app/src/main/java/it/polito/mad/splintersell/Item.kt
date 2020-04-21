@@ -8,12 +8,12 @@ data class Item(
                 val price: String,
                 val category: String
 ) {
-    constructor(id:Int,
+    constructor(
                 photoUri: String,
                 title: String,
                 description: String,
                 price: String,
                 category: String,
                 location: String,
-                expire_date: String) : this(title, description, price,category)
+                expire_date: String) :  this(title, description, price,category)
 }
