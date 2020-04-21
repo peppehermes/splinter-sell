@@ -7,9 +7,13 @@
 
     <fragment
         android:id="@+id/nav_show_profile"
-        android:name="it.polito.mad.splintersell.ShowProfile"
+        android:name="it.polito.mad.splintersell.ui.profile_show.ShowProfile"
         android:label="My Profile"
-        tools:layout="@layout/fragment_show_profile" />
+        tools:layout="@layout/fragment_show_profile" >
+        <action
+            android:id="@+id/action_nav_show_profile_to_nav_edit_profile"
+            app:destination="@id/nav_edit_profile" />
+    </fragment>
     <fragment
         android:id="@+id/nav_gallery"
         android:name="it.polito.mad.splintersell.ui.gallery.GalleryFragment"
@@ -46,5 +50,14 @@
         <action
             android:id="@+id/action_nav_edit_item_to_nav_item_list"
             app:destination="@id/nav_item_list" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_edit_profile"
+        android:name="it.polito.mad.splintersell.ui.profile_edit.EditProfile"
+        android:label="Edit Profile"
+        tools:layout="@layout/fragment_edit_profile">
+        <action
+            android:id="@+id/action_nav_edit_profile_to_nav_show_profile"
+            app:destination="@id/nav_show_profile" />
     </fragment>
 </navigation>

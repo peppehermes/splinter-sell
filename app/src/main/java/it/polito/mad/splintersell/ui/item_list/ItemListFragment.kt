@@ -63,7 +63,7 @@ class ItemListFragment : Fragment() {
             for (item in profile) {
                 if (item.key.toString() != "Profile") {
 
-                    val info: String? = item.value.toString()
+                    val info: String = item.value.toString()
                     val jasonObject = JSONObject(info);
 
                     title = if (jasonObject.has("Title"))

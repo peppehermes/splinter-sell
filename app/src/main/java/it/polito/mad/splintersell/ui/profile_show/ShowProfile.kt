@@ -1,4 +1,4 @@
-package it.polito.mad.splintersell
+package it.polito.mad.splintersell.ui.profile_show
 
 import android.app.Activity
 import android.content.Context
@@ -8,10 +8,10 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.navigation.Navigation
+import it.polito.mad.splintersell.R
 import kotlinx.android.synthetic.main.fragment_show_profile.*
 import org.json.JSONObject
 import java.io.File
@@ -32,15 +32,14 @@ class ShowProfile : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         return inflater.inflate(R.layout.fragment_show_profile, container, false)
     }
 
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        setHasOptionsMenu(true)
 
-    override fun onStart() {
-        super.onStart()
         //Retrieve all the information from the local file system
         val sharedPref: SharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         val profile: String? = sharedPref.getString("Profile", null)
@@ -50,6 +49,30 @@ class ShowProfile : Fragment() {
         this.retrieveImage()
 
     }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        return inflater.inflate(R.menu.menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.editProfile -> {
+                editProfile()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    // This have to be invoked when the pencil button is pressed
+    private fun editProfile() {
+
+        Navigation.findNavController(requireView()).navigate(R.id.action_nav_show_profile_to_nav_edit_profile)
+
+    }
+
+
 
 
     private fun retrieveImage() {
@@ -104,51 +127,5 @@ class ShowProfile : Fragment() {
         }
     }
 
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == EDIT_CODE && resultCode == Activity.RESULT_OK) {
-            // Get the Intent from the edit activity and extract the strings
-            val editName = data?.getStringExtra(EXTRA_NAME)
-            val editNickname = data?.getStringExtra(EXTRA_NICKNAME)
-            val editEmail = data?.getStringExtra(EXTRA_EMAIL)
-            val editLocation = data?.getStringExtra(EXTRA_LOCATION)
-
-            // Create JSON Object and fill it with data to store
-            val rootObject = JSONObject()
-            if (!editName.isNullOrEmpty()) {
-                rootObject.accumulate(EXTRA_NAME, editName)
-                name.text = editName
-            }
-            if (!editNickname.isNullOrEmpty()) {
-                rootObject.accumulate(EXTRA_NICKNAME, editNickname)
-                nickname.text = editNickname
-            }
-            if (!editEmail.isNullOrEmpty()) {
-                rootObject.accumulate(EXTRA_EMAIL, editEmail)
-                email.text = editEmail
-            }
-            if (!editLocation.isNullOrEmpty()) {
-                rootObject.accumulate(EXTRA_LOCATION, editLocation)
-                location.text = editLocation
-            }
-
-            //Persist all the information in the local file system
-            val sharedPref: SharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-            with(sharedPref.edit()) {
-                putString("Profile", rootObject.toString())
-                apply()
-            }
-        }
-    }
-
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(EXTRA_NAME, name.text.toString())
-        outState.putString(EXTRA_NICKNAME, nickname.text.toString())
-        outState.putString(EXTRA_EMAIL, email.text.toString())
-        outState.putString(EXTRA_LOCATION, location.text.toString())
-        super.onSaveInstanceState(outState)
-    }
 
 }

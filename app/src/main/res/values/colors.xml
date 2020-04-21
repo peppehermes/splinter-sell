@@ -7,6 +7,10 @@
     //SHOW PROFILE
     <color name="white">#FFFFFF</color>
     <color name="transparent_purple">#D22D2253</color>
-    <color name="third_grey_INACTIVE">#80FFFFFF</color>
     <color name="purple">#2D2253</color>
+    <color name="white_FOCUS">#FFFFFF</color>
+    <color name="second_grey_ACTIVE_UNFOCUS">#B3FFFFFF</color>
+    <color name="third_grey_INACTIVE">#80FFFFFF</color>
+
+
 </resources>

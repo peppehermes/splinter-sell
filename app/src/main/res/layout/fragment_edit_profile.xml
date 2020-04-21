@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.profile_show.ShowProfile"
+    tools:context=".ui.profile_edit.EditProfile"
     android:background="@drawable/background">
 
     <androidx.constraintlayout.widget.Guideline
@@ -17,29 +17,30 @@
         app:layout_constraintGuide_percent="0.33"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
+    <EditText
         android:id="@+id/name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/rounded_corner"
         android:drawableStart="@drawable/ic_person_white_36dp"
         android:drawablePadding="8dp"
+        android:background="@drawable/rounded_corner"
+        android:hint="@string/fname"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName"
         android:padding="10dp"
-        android:text="@string/fname"
-        android:textColor="@color/third_grey_INACTIVE"
+        android:textColor="@color/white_FOCUS"
+        android:textColorHint="@color/second_grey_ACTIVE_UNFOCUS"
         android:textSize="36sp"
-        app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/nickname"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline_top"
-        tools:text="Full Name" />
+        app:layout_constraintTop_toTopOf="@+id/guideline_top" />
 
-    <TextView
+    <EditText
         android:id="@+id/nickname"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -49,13 +50,15 @@
         android:background="@drawable/rounded_corner"
         android:drawableStart="@drawable/ic_account_circle_white_36dp"
         android:drawablePadding="12dp"
+        android:hint="@string/nick"
+        android:importantForAutofill="no"
+        android:inputType="textShortMessage|text"
         android:paddingStart="10dp"
         android:paddingTop="16dp"
         android:paddingEnd="10dp"
         android:paddingBottom="16dp"
-        android:text="@string/nick"
-        android:textAlignment="viewStart"
-        android:textColor="@color/third_grey_INACTIVE"
+        android:textColor="@color/white_FOCUS"
+        android:textColorHint="@color/second_grey_ACTIVE_UNFOCUS"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/email"
         app:layout_constraintEnd_toEndOf="parent"
@@ -63,7 +66,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name" />
 
-    <TextView
+    <EditText
         android:id="@+id/email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -73,15 +76,15 @@
         android:background="@drawable/rounded_corner"
         android:drawableStart="@drawable/ic_email_white_36dp"
         android:drawablePadding="12dp"
-        android:ellipsize="end"
+        android:hint="@string/mail"
+        android:importantForAutofill="no"
+        android:inputType="textEmailAddress"
         android:paddingStart="10dp"
         android:paddingTop="16dp"
         android:paddingEnd="10dp"
         android:paddingBottom="16dp"
-        android:singleLine="true"
-        android:text="@string/mail"
-        android:textAlignment="viewStart"
-        android:textColor="@color/third_grey_INACTIVE"
+        android:textColor="@color/white_FOCUS"
+        android:textColorHint="@color/second_grey_ACTIVE_UNFOCUS"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/location"
         app:layout_constraintEnd_toEndOf="parent"
@@ -89,7 +92,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nickname" />
 
-    <TextView
+    <EditText
         android:id="@+id/location"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -100,20 +103,21 @@
         android:background="@drawable/rounded_corner"
         android:drawableStart="@drawable/ic_location_on_white_36dp"
         android:drawablePadding="12dp"
+        android:hint="@string/location"
+        android:importantForAutofill="no"
+        android:inputType="textAutoCorrect|textAutoComplete|textPostalAddress"
         android:paddingStart="10dp"
         android:paddingTop="16dp"
         android:paddingEnd="10dp"
         android:paddingBottom="16dp"
-        android:text="@string/location_show_profile"
-        android:textAlignment="viewStart"
-        android:textColor="@color/third_grey_INACTIVE"
+        android:textColor="@color/white_FOCUS"
+        android:textColorHint="@color/second_grey_ACTIVE_UNFOCUS"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email" />
-
 
     <ImageView
         android:id="@+id/profile_photo"
@@ -128,5 +132,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/img_avatar" />
 
+    <ImageButton
+        android:id="@+id/select_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_corners"
+        android:contentDescription="@string/update_profile_photo"
+        android:padding="15dp"
+        android:src="@drawable/ic_edit_white_24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_photo"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toEndOf="@+id/profile_photo"
+        app:layout_constraintHorizontal_bias="0.943"
+        app:layout_constraintStart_toStartOf="@+id/profile_photo"
+        app:layout_constraintTop_toTopOf="@+id/profile_photo"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
