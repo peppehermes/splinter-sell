@@ -23,7 +23,7 @@
     <string name="price">Price</string>
     <string name="category">Category</string>
     <string name="location">Location</string>
-    <string name="expire_date">Expire date</string>
+    <string name="expire_date">Expire date (dd/mm/yyyy)</string>
 
     <string name="edit">Edit</string>
 

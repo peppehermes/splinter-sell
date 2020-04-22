@@ -1,32 +1,47 @@
 package it.polito.mad.splintersell.ui.item_list
-
-
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.ExifInterface
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.view.animation.Transformation
+import android.util.Log
 import android.view.*
 import android.widget.PopupMenu
+import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.RoundedBitmapDrawable
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import it.polito.mad.splintersell.R
 import kotlinx.android.synthetic.main.fragment_edit_item.*
 import org.json.JSONObject
+import java.io.*
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.roundToInt
 
-const val PERMISSION_CODE = 1001
-/*
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-*/
-/**
- * A simple [Fragment] subclass.
- * Use the [ItemEditFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
+const val REQUEST_TAKE_PHOTO = 2
+const val GALLERY_REQUEST_CODE = 3
+var rotatedBitmap: Bitmap? = null
+var photoFile: File? = null
+var photoURI: Uri? = null
+var filename = ""
+
 class ItemEditFragment : Fragment() {
 
     var index: Int?=0
+    lateinit var currentPhotoPath: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,15 +52,65 @@ class ItemEditFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
+
     return inflater.inflate(R.layout.fragment_edit_item, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        this.showdate()
         this.populateEditText()
+        this.restoreImage(savedInstanceState)
+        this.retrieveImage()
         this.imageButtonMenu()
+
     }
 
+    private fun restoreImage(savedInstanceState: Bundle?) {
+
+        photoURI = savedInstanceState?.getString("imgUri")?.let { Uri.parse(it) }
+        photoURI?.run {
+            manageBitmap()
+        }
+    }
+
+    private fun retrieveImage() {
+        val file = File(activity?.filesDir, filename)
+        val fileExists = file.exists()
+        if (fileExists) {
+            val fis: FileInputStream = requireActivity().openFileInput(filename)
+            val bitmap = BitmapFactory.decodeStream(fis)
+            val roundDrawable: RoundedBitmapDrawable =
+                RoundedBitmapDrawableFactory.create(resources, bitmap)
+            roundDrawable.isCircular = true
+            fis.close()
+            detail_image.setImageDrawable(roundDrawable)
+        }
+    }
+
+    private fun showdate() {
+
+        //expire_date.setText(SimpleDateFormat("dd.MM.yyyy").format(System.currentTimeMillis()))
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+
+
+        expire_date.setOnClickListener {
+            val dpd = DatePickerDialog(requireActivity().getWindow().getContext(), DatePickerDialog.OnDateSetListener { it, year,monthOfYear, dayOfMonth ->
+                // Display Selected date in TextView
+                var monthConverted = "" + (monthOfYear +1).toString()
+                var dayconverted="" +dayOfMonth.toString()
+                if(monthOfYear<10) monthConverted = "0"+ monthConverted
+                if(dayOfMonth<10) dayconverted = "0" +  dayconverted
+
+                expire_date.setText("" + dayconverted + "/" + monthConverted + "/" + year)
+            }, year, month, day)
+            dpd.show()
+
+        }
+    }
 
     private fun populateEditText() {
 
@@ -54,6 +119,7 @@ class ItemEditFragment : Fragment() {
         val editPrice:String ? =arguments?.getString("EDIT_PRICE")
 
         index=arguments?.getInt("EDIT_POSITION")
+        filename=index.toString()
 
         if (editTitle != resources.getString(R.string.title)&& editTitle !=null)
             title.setText(editTitle)
@@ -61,6 +127,38 @@ class ItemEditFragment : Fragment() {
             description.setText(editDescription)
         if (editPrice != resources.getString(R.string.price)&& editPrice !=null)
             price.setText(editPrice)
+
+
+        val sharedPref: SharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE) ?: return
+
+        if(sharedPref.contains(index.toString())) {
+
+            val info: String? = sharedPref.getString(index.toString(), null)
+
+            val jasonObject = JSONObject(info)
+            val editCategory: String
+            val editLocation: String
+            val editDate: String
+
+            editCategory = if (jasonObject.has("Category"))
+                jasonObject.getString("Category")
+            else
+                ""
+
+            editLocation = if (jasonObject.has("Location"))
+                jasonObject.getString("Location")
+            else
+                ""
+
+            editDate = if (jasonObject.has("Expire_Date"))
+                jasonObject.getString("Expire_Date")
+            else
+                ""
+
+            category.setText(editCategory)
+            location.setText(editLocation)
+            expire_date.setText(editDate)
+        }
 
     }
 
@@ -73,13 +171,220 @@ class ItemEditFragment : Fragment() {
             popupMenu.show()
             popupMenu.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
+                    R.id.open_camera -> this.dispatchTakePictureIntent()
 
-
-
-            }
+                    R.id.select_image -> this.pickPhotoFromGallery()
+                }
                 true
             }
             popupMenu.show()
+        }
+    }
+
+    // Method to pick photo from gallery
+    private fun pickPhotoFromGallery() {
+        // Create an intent with action ACTION_PICK
+        val imageIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "image/*"
+        }
+        if (imageIntent.resolveActivity(requireActivity().packageManager) != null)
+            startActivityForResult(imageIntent, GALLERY_REQUEST_CODE)
+    }
+
+    private fun dispatchTakePictureIntent() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            // Ensure that there's a camera activity to handle the intent
+            takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
+                // Create the File where the photo should go
+                photoFile = try {
+                    createImageFile()
+                } catch (ex: IOException) {
+                    // Error occurred while creating the File
+                    Log.e("photo_error", "ERROR IN CREATING UNIQUE NAME")
+                    null
+                }
+                // Continue only if the File was successfully created
+                photoFile?.also {
+                    photoURI = FileProvider.getUriForFile(
+                        requireContext(),
+                        "it.polito.mad.splintersell",
+                        it
+                    )
+                    //currentPhotoUri = photoURI
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO)
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+
+            REQUEST_TAKE_PHOTO -> {
+                Log.e("LOG", "$data")
+                Log.e("photo", "path: ${photoFile?.absolutePath}")
+
+                val bmOptions = BitmapFactory.Options()
+                BitmapFactory.decodeFile(
+                    photoFile?.absolutePath, bmOptions)?.run {
+                    photoURI?.run {
+                        Log.e("photo", "uri: $photoURI")
+                        manageBitmap()
+                    }
+                }
+            }
+
+            GALLERY_REQUEST_CODE -> {
+                Log.e("LOG", "$data")
+                //data.data return the content URI for the selected Image
+                photoURI = data?.data
+
+                photoURI?.run {
+                    Log.e("gallery", "$photoURI")
+                    manageBitmap()
+                }
+            }
+        }
+    }
+
+    private fun manageBitmap() {
+        var bitmap = handleSamplingAndRotationBitmap(requireContext(), photoURI)
+        bitmap = CropSquareTransformation().transform(bitmap!!)
+        val roundDrawable: RoundedBitmapDrawable =
+            RoundedBitmapDrawableFactory.create(resources, bitmap)
+        roundDrawable.isCircular = true
+        detail_image.setImageDrawable(roundDrawable)
+        rotatedBitmap = bitmap
+    }
+
+    @Throws(IOException::class)
+    fun handleSamplingAndRotationBitmap(
+        context: Context,
+        selectedImage: Uri?
+    ): Bitmap? {
+        val MAX_HEIGHT = 1024
+        val MAX_WIDTH = 1024
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        var imageStream = context.contentResolver.openInputStream(selectedImage!!)
+        BitmapFactory.decodeStream(imageStream, null, options)
+        imageStream!!.close()
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, MAX_WIDTH, MAX_HEIGHT)
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false
+        imageStream = context.contentResolver.openInputStream(selectedImage)
+        var img = BitmapFactory.decodeStream(imageStream, null, options)
+        img = rotateImageIfRequired(context, img!!, selectedImage)
+        return img
+    }
+
+
+    private fun calculateInSampleSize(
+        options: BitmapFactory.Options,
+        reqWidth: Int, reqHeight: Int
+    ): Int {
+        // Raw height and width of image
+        val height = options.outHeight
+        val width = options.outWidth
+        var inSampleSize = 1
+        if (height > reqHeight || width > reqWidth) {
+
+            // Calculate ratios of height and width to requested height and width
+            val heightRatio =
+                (height.toFloat() / reqHeight.toFloat()).roundToInt()
+            val widthRatio =
+                (width.toFloat() / reqWidth.toFloat()).roundToInt()
+
+            // Choose the smallest ratio as inSampleSize value, this will guarantee a final image
+            // with both dimensions larger than or equal to the requested height and width.
+            inSampleSize = if (heightRatio < widthRatio) heightRatio else widthRatio
+
+            // This offers some additional logic in case the image has a strange
+            // aspect ratio. For example, a panorama may have a much larger
+            // width than height. In these cases the total pixels might still
+            // end up being too large to fit comfortably in memory, so we should
+            // be more aggressive with sample down the image (=larger inSampleSize).
+            val totalPixels = width * height.toFloat()
+
+            // Anything more than 2x the requested pixels we'll sample down further
+            val totalReqPixelsCap = reqWidth * reqHeight * 2.toFloat()
+            while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
+                inSampleSize++
+            }
+        }
+        return inSampleSize
+    }
+
+
+    @Throws(IOException::class)
+    private fun rotateImageIfRequired(
+        context: Context,
+        img: Bitmap,
+        selectedImage: Uri
+    ): Bitmap? {
+        val input: InputStream = context.contentResolver.openInputStream(selectedImage)!!
+        val ei: ExifInterface
+        ei =
+            if (Build.VERSION.SDK_INT > 23) ExifInterface(input) else ExifInterface(selectedImage.path!!)
+        Log.e("photo_orientation", ei.getAttribute(ExifInterface.TAG_ORIENTATION).toString())
+        val orientation =
+            ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+        Log.e("photo_orientation", "$orientation")
+        return when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(img, 90)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(img, 180)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(img, 270)
+            else -> img
+        }
+    }
+
+
+    private fun rotateImage(img: Bitmap, degree: Int): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(degree.toFloat())
+        val rotatedImg =
+            Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
+        img.recycle()
+        return rotatedImg
+    }
+
+
+    class CropSquareTransformation : Transformation() {
+        fun transform(source: Bitmap): Bitmap {
+            val size = source.width.coerceAtMost(source.height)
+            val x = (source.width - size) / 2
+            val y = (source.height - size) / 2
+            val result = Bitmap.createBitmap(source, x, y, size, size)
+            if (result != source) {
+                source.recycle()
+            }
+            return result
+        }
+    }
+
+    //Method that returns a unique file name for a new photo using a date-time stamp
+    @SuppressLint("SimpleDateFormat")
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = absolutePath
+            Log.d("MY_TEST", currentPhotoPath)
         }
     }
 
@@ -92,7 +397,12 @@ class ItemEditFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.saveProfile -> {
-
+                //Save bitmap
+                if (rotatedBitmap != null) {
+                    val fos: FileOutputStream = requireActivity().openFileOutput(filename, Context.MODE_PRIVATE)
+                    rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 75, fos)
+                    fos.close()
+                }
                 // Create JSON Object and fill it with data to store
                 val rootObject = JSONObject()
                 if (!title.text.isNullOrEmpty())
@@ -110,6 +420,9 @@ class ItemEditFragment : Fragment() {
                 if (!location.text.isNullOrEmpty())
                     rootObject.accumulate("Location",location.text)
 
+                if (!expire_date.text.isNullOrEmpty())
+                    rootObject.accumulate("Expire_Date",expire_date.text.toString())
+
 
                 val sharedPref: SharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
                 with(sharedPref.edit()) {
@@ -122,6 +435,13 @@ class ItemEditFragment : Fragment() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        photoURI?.run {
+            outState.putString("imgUri", this.toString())
         }
     }
 
