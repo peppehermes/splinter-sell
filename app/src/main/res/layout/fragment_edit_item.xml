@@ -16,11 +16,12 @@
 
         <ImageView
             android:id="@+id/detail_image"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
             android:layout_marginTop="10dp"
+            android:paddingBottom="10dp"
             android:contentDescription="@string/detail_image"
             android:src="@drawable/ic_launcher_background" />
 
@@ -33,6 +34,15 @@
             android:background="@drawable/round_corners"
             android:padding="10dp"
             android:src="@drawable/ic_photo_camera_white_24dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@drawable/round_corners"
+            android:layout_marginEnd="10dp"
+            android:layout_below="@+id/detail_image"
+            android:layout_marginStart="10dp">
+        </View>
 
         <EditText
             android:id="@+id/title"
@@ -94,15 +104,16 @@
             android:inputType="textAutoCorrect|textAutoComplete|textPostalAddress"
             />
 
-        <DatePicker
+        <EditText
             android:id="@+id/expire_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/location"
-            android:text="@string/expire_date"
-            android:textSize="24sp"
+            android:padding="10dp"
             android:inputType="date"
-         />
+            android:hint="@string/expire_date"
+            android:focusable="false"
+            android:textSize="24sp" />
 
     </RelativeLayout>
 

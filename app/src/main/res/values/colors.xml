@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorPrimaryDark">#2F009A</color>
+    <color name="colorPrimaryDarker">#340073</color>
+    <color name="colorAccent">#591FBF</color>
+    <color name="colorDatePicker">#4209A6</color>
+
 
     //SHOW PROFILE
     <color name="white">#FFFFFF</color>
-    <color name="transparent_purple">#D22D2253</color>
+    <color name="transparent_purple">#E62D2253</color>
     <color name="purple">#2D2253</color>
     <color name="white_FOCUS">#FFFFFF</color>
     <color name="second_grey_ACTIVE_UNFOCUS">#B3FFFFFF</color>

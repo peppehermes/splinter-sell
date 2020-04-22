@@ -48,6 +48,7 @@ class ShowProfile : Fragment() {
 
         this.retrieveImage()
 
+
     }
 
 

@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.profile_edit.EditProfile"
-    android:background="@drawable/background">
+    tools:context=".ui.profile_edit.EditProfile">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
@@ -136,7 +135,7 @@
         android:id="@+id/select_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/round_corners"
+        android:background="@drawable/rounded_corner"
         android:contentDescription="@string/update_profile_photo"
         android:padding="15dp"
         android:src="@drawable/ic_edit_white_24dp"
