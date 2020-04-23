@@ -149,22 +149,22 @@ class EditProfile : Fragment() {
             savedName = if (jasonObject.has(it.polito.mad.splintersell.ui.profile_show.EXTRA_NAME))
                 jasonObject.getString(it.polito.mad.splintersell.ui.profile_show.EXTRA_NAME)
             else
-                resources.getString(R.string.fname)
+                ""
 
             savedNickname = if (jasonObject.has(it.polito.mad.splintersell.ui.profile_show.EXTRA_NICKNAME))
                 jasonObject.getString(it.polito.mad.splintersell.ui.profile_show.EXTRA_NICKNAME)
             else
-                resources.getString(R.string.nick)
+                ""
 
             savedEmail = if (jasonObject.has(it.polito.mad.splintersell.ui.profile_show.EXTRA_EMAIL))
                 jasonObject.getString(it.polito.mad.splintersell.ui.profile_show.EXTRA_EMAIL)
             else
-                resources.getString(R.string.mail)
+                ""
 
             savedLocation = if (jasonObject.has(it.polito.mad.splintersell.ui.profile_show.EXTRA_LOCATION))
                 jasonObject.getString(it.polito.mad.splintersell.ui.profile_show.EXTRA_LOCATION)
             else
-                resources.getString(R.string.location)
+                ""
 
             name.setText(savedName)
             nickname.setText(savedNickname)

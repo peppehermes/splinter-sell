@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-            val filename = "img"
+            val filename = "proPic"
             val file = File(this.filesDir, filename)
             val fileExists = file.exists()
             if (fileExists) {
