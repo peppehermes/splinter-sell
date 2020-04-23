@@ -11,53 +11,66 @@
         android:label="My Profile"
         tools:layout="@layout/fragment_show_profile" >
         <action
-            android:id="@+id/action_nav_show_profile_to_nav_edit_profile"
+            android:id="@+id/editProfile"
             app:destination="@id/nav_edit_profile" />
     </fragment>
-    <fragment
-        android:id="@+id/nav_gallery"
-        android:name="it.polito.mad.splintersell.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
 
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="it.polito.mad.splintersell.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
     <fragment
         android:id="@+id/nav_item_details"
         android:name="it.polito.mad.splintersell.ui.item_details.ItemDetailsFragment"
         android:label="@string/menu_item_details">
         <action
-            android:id="@+id/action_nav_item_details_to_nav_item_list"
+            android:id="@+id/returnHome"
             app:destination="@id/nav_item_list" />
+        <argument
+            android:name="item_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
+
     <fragment
         android:id="@+id/nav_item_list"
         android:name="it.polito.mad.splintersell.ui.item_list.ItemListFragment"
         android:label="@string/menu_item_list"
         tools:layout="@layout/fragment_item_list" >
         <action
-            android:id="@+id/action_nav_item_list_to_nav_edit_item"
-            app:destination="@id/nav_edit_item" />
+            android:id="@+id/editItem"
+            app:destination="@id/nav_edit_item" >
+            <argument
+                android:name="item_id"
+                android:defaultValue="-1" />
+        </action>
+        <action
+            android:id="@+id/showItemDetail"
+            app:destination="@id/nav_item_details" >
+            <argument
+                android:name="item_id"
+                android:defaultValue="-1" />
+        </action>
     </fragment>
+
     <fragment
         android:id="@+id/nav_edit_item"
-        android:name="it.polito.mad.splintersell.ui.item_list.ItemEditFragment"
+        android:name="it.polito.mad.splintersell.ui.item_details.ItemEditFragment"
         android:label="@string/menu_edit_item"
         tools:layout="@layout/fragment_edit_item" >
         <action
-            android:id="@+id/action_nav_edit_item_to_nav_item_list"
+            android:id="@+id/returnHome"
             app:destination="@id/nav_item_list" />
+        <argument
+            android:name="item_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
+
     <fragment
         android:id="@+id/nav_edit_profile"
         android:name="it.polito.mad.splintersell.ui.profile_edit.EditProfile"
         android:label="Edit Profile"
         tools:layout="@layout/fragment_edit_profile">
         <action
-            android:id="@+id/action_nav_edit_profile_to_nav_show_profile"
+            android:id="@+id/returnProfile"
             app:destination="@id/nav_show_profile" />
     </fragment>
+
 </navigation>

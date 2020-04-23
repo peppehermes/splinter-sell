@@ -1,8 +1,6 @@
 package it.polito.mad.splintersell.ui.profile_show
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -21,12 +19,9 @@ const val EXTRA_NAME = "it.polito.mad.splintersell.NAME"
 const val EXTRA_NICKNAME = "it.polito.mad.splintersell.NICKNAME"
 const val EXTRA_EMAIL = "it.polito.mad.splintersell.EMAIL"
 const val EXTRA_LOCATION = "it.polito.mad.splintersell.LOCATION"
-const val EDIT_CODE = 1
-const val COLOR = "white"
-
+const val filename = "proPic"
 
 class ShowProfile : Fragment() {
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,7 +32,6 @@ class ShowProfile : Fragment() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         setHasOptionsMenu(true)
 
         //Retrieve all the information from the local file system
@@ -47,8 +41,6 @@ class ShowProfile : Fragment() {
         this.retrievePreferences(profile)
 
         this.retrieveImage()
-
-
     }
 
 
@@ -68,16 +60,10 @@ class ShowProfile : Fragment() {
 
     // This have to be invoked when the pencil button is pressed
     private fun editProfile() {
-
-        Navigation.findNavController(requireView()).navigate(R.id.action_nav_show_profile_to_nav_edit_profile)
-
+        Navigation.findNavController(requireView()).navigate(R.id.editProfile)
     }
 
-
-
-
     private fun retrieveImage() {
-        val filename = "img"
         val file = File(activity?.filesDir, filename)
         val fileExists = file.exists()
         if (fileExists) {
@@ -127,6 +113,4 @@ class ShowProfile : Fragment() {
             location.text = savedLocation
         }
     }
-
-
 }

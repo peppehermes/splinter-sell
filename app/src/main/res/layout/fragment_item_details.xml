@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:id="@+id/detail_view"
@@ -9,24 +11,26 @@
         android:id="@+id/detail_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="8dp">
 
 
         <ImageView
             android:id="@+id/detail_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:contentDescription="@string/detail_image"
             android:layout_marginBottom="10dp"
-            android:src="@drawable/ic_launcher_background" />
+            android:contentDescription="@string/detail_image"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/image_vectorized_lower"
+            tools:srcCompat="@drawable/image_vectorized_lower" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="3dp"
-            android:background="@drawable/round_corners"
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp">
-        </View>
+            android:background="@drawable/round_corners" />
 
         <TextView
             android:id="@+id/title"
@@ -35,24 +39,24 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
             android:padding="10dp"
-            android:textAllCaps="true"
-            android:textStyle="bold"
             android:text="@string/title"
             android:textAlignment="center"
-            android:textSize="24sp" />
-
-
+            android:textAllCaps="true"
+            android:textAppearance="?attr/textAppearanceHeadline5"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:padding="10dp"
             android:text="@string/description"
-            android:textSize="24sp"
-            android:layout_marginBottom="10dp"
-            />
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/price"
@@ -61,6 +65,8 @@
             android:layout_marginBottom="10dp"
             android:padding="10dp"
             android:text="@string/price"
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:textColor="?android:attr/textColorSecondary"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -68,21 +74,23 @@
             android:id="@+id/category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:padding="10dp"
             android:text="@string/category"
-            android:textSize="24sp"
-            android:layout_marginBottom="10dp"
-            />
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:padding="10dp"
             android:text="@string/location"
-            android:textSize="24sp"
-            android:layout_marginBottom="10dp"
-            />
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/expire_date"
@@ -90,8 +98,9 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:text="@string/expire_date"
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:textColor="?android:attr/textColorSecondary"
             android:textSize="24sp" />
-
 
 
     </LinearLayout>

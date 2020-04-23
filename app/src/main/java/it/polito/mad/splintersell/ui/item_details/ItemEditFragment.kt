@@ -1,4 +1,5 @@
-package it.polito.mad.splintersell.ui.item_list
+package it.polito.mad.splintersell.ui.item_details
+
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
@@ -9,7 +10,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.media.ExifInterface
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -18,10 +18,9 @@ import android.util.Log
 import android.view.*
 import android.widget.PopupMenu
 import androidx.core.content.FileProvider
-import androidx.core.graphics.drawable.RoundedBitmapDrawable
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.navArgs
 import it.polito.mad.splintersell.R
 import kotlinx.android.synthetic.main.fragment_edit_item.*
 import org.json.JSONObject
@@ -30,40 +29,42 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
-
 const val REQUEST_TAKE_PHOTO = 2
 const val GALLERY_REQUEST_CODE = 3
 var rotatedBitmap: Bitmap? = null
 var photoFile: File? = null
 var photoURI: Uri? = null
-var filename = ""
+var filename: String? = null
 
 class ItemEditFragment : Fragment() {
-
-    var index: Int?=0
-    lateinit var currentPhotoPath: String
+    private val args: ItemEditFragmentArgs by navArgs()
+    private lateinit var currentPhotoPath: String
+    private var index: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true);
-        }
+        setHasOptionsMenu(true)
+    }
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-
-    return inflater.inflate(R.layout.fragment_edit_item, container, false)
+        return inflater.inflate(R.layout.fragment_edit_item, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        this.showdate()
-        this.populateEditText()
-        this.restoreImage(savedInstanceState)
-        this.retrieveImage()
-        this.imageButtonMenu()
 
+        index = args.itemId
+        this.showdate()
+        this.restoreImage(savedInstanceState)
+        this.imageButtonMenu()
+        if (index != -1) {
+            this.populateEditText()
+            this.retrieveImage()
+        }
     }
 
     private fun restoreImage(savedInstanceState: Bundle?) {
@@ -77,19 +78,16 @@ class ItemEditFragment : Fragment() {
     private fun retrieveImage() {
         val file = File(activity?.filesDir, filename)
         val fileExists = file.exists()
+
         if (fileExists) {
             val fis: FileInputStream = requireActivity().openFileInput(filename)
             val bitmap = BitmapFactory.decodeStream(fis)
-            val roundDrawable: RoundedBitmapDrawable =
-                RoundedBitmapDrawableFactory.create(resources, bitmap)
-            roundDrawable.isCircular = true
             fis.close()
-            detail_image.setImageDrawable(roundDrawable)
+            detail_image.setImageBitmap(bitmap)
         }
     }
 
     private fun showdate() {
-
         //expire_date.setText(SimpleDateFormat("dd.MM.yyyy").format(System.currentTimeMillis()))
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
@@ -98,47 +96,58 @@ class ItemEditFragment : Fragment() {
 
 
         expire_date.setOnClickListener {
-            val dpd = DatePickerDialog(requireActivity().getWindow().getContext(), DatePickerDialog.OnDateSetListener { it, year,monthOfYear, dayOfMonth ->
-                // Display Selected date in TextView
-                var monthConverted = "" + (monthOfYear +1).toString()
-                var dayconverted="" +dayOfMonth.toString()
-                if(monthOfYear<10) monthConverted = "0"+ monthConverted
-                if(dayOfMonth<10) dayconverted = "0" +  dayconverted
+            val dpd = DatePickerDialog(
+                requireActivity().window.context,
+                DatePickerDialog.OnDateSetListener { it, year, monthOfYear, dayOfMonth ->
+                    // Display Selected date in TextView
+                    var monthConverted = "" + (monthOfYear + 1).toString()
+                    var dayconverted = "" + dayOfMonth.toString()
+                    if (monthOfYear < 10) monthConverted = "0" + monthConverted
+                    if (dayOfMonth < 10) dayconverted = "0" + dayconverted
 
-                expire_date.setText("" + dayconverted + "/" + monthConverted + "/" + year)
-            }, year, month, day)
+                    val date = "$dayconverted/$monthConverted/$year"
+                    expire_date.setText(date)
+                },
+                year,
+                month,
+                day
+            )
             dpd.show()
 
         }
     }
 
     private fun populateEditText() {
+        filename = index.toString()
 
-        val editTitle:String ? =arguments?.getString("EDIT_TITLE")
-        val editDescription:String ? =arguments?.getString("EDIT_DESCRIPTION")
-        val editPrice:String ? =arguments?.getString("EDIT_PRICE")
+        val sharedPref: SharedPreferences =
+            requireActivity().getPreferences(Context.MODE_PRIVATE) ?: return
 
-        index=arguments?.getInt("EDIT_POSITION")
-        filename=index.toString()
-
-        if (editTitle != resources.getString(R.string.title)&& editTitle !=null)
-            title.setText(editTitle)
-        if (editDescription != resources.getString(R.string.description)&& editDescription !=null)
-            description.setText(editDescription)
-        if (editPrice != resources.getString(R.string.price)&& editPrice !=null)
-            price.setText(editPrice)
-
-
-        val sharedPref: SharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE) ?: return
-
-        if(sharedPref.contains(index.toString())) {
+        if (sharedPref.contains(index.toString())) {
 
             val info: String? = sharedPref.getString(index.toString(), null)
 
-            val jasonObject = JSONObject(info)
+            val jasonObject = JSONObject(info!!)
+            val editTitle: String
+            val editDescription: String
+            val editPrice: String
             val editCategory: String
             val editLocation: String
             val editDate: String
+
+            editTitle = if (jasonObject.has("Title"))
+                jasonObject.getString("Title")
+            else
+                ""
+
+            editDescription = if (jasonObject.has("Description"))
+                jasonObject.getString("Description")
+            else
+                ""
+            editPrice = if (jasonObject.has("Price"))
+                jasonObject.getString("Price")
+            else
+                ""
 
             editCategory = if (jasonObject.has("Category"))
                 jasonObject.getString("Category")
@@ -155,11 +164,13 @@ class ItemEditFragment : Fragment() {
             else
                 ""
 
+            title.setText(editTitle)
+            description.setText(editDescription)
+            price.setText(editPrice)
             category.setText(editCategory)
             location.setText(editLocation)
             expire_date.setText(editDate)
         }
-
     }
 
     private fun imageButtonMenu() {
@@ -188,7 +199,10 @@ class ItemEditFragment : Fragment() {
             type = "image/*"
         }
         if (imageIntent.resolveActivity(requireActivity().packageManager) != null)
-            startActivityForResult(imageIntent, GALLERY_REQUEST_CODE)
+            startActivityForResult(
+                imageIntent,
+                GALLERY_REQUEST_CODE
+            )
     }
 
     private fun dispatchTakePictureIntent() {
@@ -211,8 +225,14 @@ class ItemEditFragment : Fragment() {
                         it
                     )
                     //currentPhotoUri = photoURI
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO)
+                    takePictureIntent.putExtra(
+                        MediaStore.EXTRA_OUTPUT,
+                        photoURI
+                    )
+                    startActivityForResult(
+                        takePictureIntent,
+                        REQUEST_TAKE_PHOTO
+                    )
                 }
             }
         }
@@ -229,7 +249,8 @@ class ItemEditFragment : Fragment() {
 
                 val bmOptions = BitmapFactory.Options()
                 BitmapFactory.decodeFile(
-                    photoFile?.absolutePath, bmOptions)?.run {
+                    photoFile?.absolutePath, bmOptions
+                )?.run {
                     photoURI?.run {
                         Log.e("photo", "uri: $photoURI")
                         manageBitmap()
@@ -251,12 +272,13 @@ class ItemEditFragment : Fragment() {
     }
 
     private fun manageBitmap() {
-        var bitmap = handleSamplingAndRotationBitmap(requireContext(), photoURI)
-        bitmap = CropSquareTransformation().transform(bitmap!!)
-        val roundDrawable: RoundedBitmapDrawable =
-            RoundedBitmapDrawableFactory.create(resources, bitmap)
-        roundDrawable.isCircular = true
-        detail_image.setImageDrawable(roundDrawable)
+        var bitmap = handleSamplingAndRotationBitmap(
+            requireContext(),
+            photoURI
+        )
+        bitmap = CropSquareTransformation()
+            .transform(bitmap!!)
+        detail_image.setImageBitmap(bitmap)
         rotatedBitmap = bitmap
     }
 
@@ -285,7 +307,6 @@ class ItemEditFragment : Fragment() {
         img = rotateImageIfRequired(context, img!!, selectedImage)
         return img
     }
-
 
     private fun calculateInSampleSize(
         options: BitmapFactory.Options,
@@ -323,7 +344,6 @@ class ItemEditFragment : Fragment() {
         return inSampleSize
     }
 
-
     @Throws(IOException::class)
     private fun rotateImageIfRequired(
         context: Context,
@@ -333,7 +353,7 @@ class ItemEditFragment : Fragment() {
         val input: InputStream = context.contentResolver.openInputStream(selectedImage)!!
         val ei: ExifInterface
         ei =
-            if (Build.VERSION.SDK_INT > 23) ExifInterface(input) else ExifInterface(selectedImage.path!!)
+            ExifInterface(input)
         Log.e("photo_orientation", ei.getAttribute(ExifInterface.TAG_ORIENTATION).toString())
         val orientation =
             ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
@@ -346,7 +366,6 @@ class ItemEditFragment : Fragment() {
         }
     }
 
-
     private fun rotateImage(img: Bitmap, degree: Int): Bitmap? {
         val matrix = Matrix()
         matrix.postRotate(degree.toFloat())
@@ -355,7 +374,6 @@ class ItemEditFragment : Fragment() {
         img.recycle()
         return rotatedImg
     }
-
 
     class CropSquareTransformation : Transformation() {
         fun transform(source: Bitmap): Bitmap {
@@ -376,7 +394,8 @@ class ItemEditFragment : Fragment() {
     private fun createImageFile(): File {
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val storageDir: File? =
+            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(
             "JPEG_${timeStamp}_", /* prefix */
             ".jpg", /* suffix */
@@ -394,19 +413,23 @@ class ItemEditFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    @SuppressLint("WrongThread")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.saveProfile -> {
                 //Save bitmap
                 if (rotatedBitmap != null) {
-                    val fos: FileOutputStream = requireActivity().openFileOutput(filename, Context.MODE_PRIVATE)
+                    val fos: FileOutputStream =
+                        requireActivity().openFileOutput(filename, Context.MODE_PRIVATE)
                     rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 75, fos)
                     fos.close()
                 }
+
                 // Create JSON Object and fill it with data to store
                 val rootObject = JSONObject()
+
                 if (!title.text.isNullOrEmpty())
-                    rootObject.accumulate("Title",title.text)
+                    rootObject.accumulate("Title", title.text)
 
                 if (!description.text.isNullOrEmpty())
                     rootObject.accumulate("Description", description.text)
@@ -418,20 +441,21 @@ class ItemEditFragment : Fragment() {
                     rootObject.accumulate("Category", category.text)
 
                 if (!location.text.isNullOrEmpty())
-                    rootObject.accumulate("Location",location.text)
+                    rootObject.accumulate("Location", location.text)
 
                 if (!expire_date.text.isNullOrEmpty())
-                    rootObject.accumulate("Expire_Date",expire_date.text.toString())
+                    rootObject.accumulate("Expire_Date", expire_date.text.toString())
 
+                val sharedPref: SharedPreferences =
+                    requireActivity().getPreferences(Context.MODE_PRIVATE)
 
-                val sharedPref: SharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
                 with(sharedPref.edit()) {
-                    putString(index.toString(),  rootObject.toString())
+                    putString(index.toString(), rootObject.toString())
                     apply()
-                    Navigation.findNavController(requireView()).navigate(R.id.action_nav_edit_item_to_nav_item_list)
-
+                    Navigation.findNavController(requireView()).navigate(
+                        ItemDetailsFragmentDirections.returnHome()
+                    )
                 }
-
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -444,7 +468,6 @@ class ItemEditFragment : Fragment() {
             outState.putString("imgUri", this.toString())
         }
     }
-
 }
 
 

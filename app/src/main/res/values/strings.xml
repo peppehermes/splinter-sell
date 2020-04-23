@@ -26,6 +26,7 @@
     <string name="expire_date">Expire date (dd/mm/yyyy)</string>
 
     <string name="edit">Edit</string>
+    <string name="empty_list">No items here</string>
 
     //SHOW PROFILE
     <string name="fname">Full Name</string>
@@ -37,9 +38,6 @@
     <string name="open_camera">Open Camera</string>
     <string name="save">Save</string>
     <string name="update_profile_photo">update_profile_photo</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <string name="add_photo">add_photo</string>
 
 </resources>

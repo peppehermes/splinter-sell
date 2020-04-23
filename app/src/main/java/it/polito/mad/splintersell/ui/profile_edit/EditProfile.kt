@@ -1,12 +1,9 @@
 package it.polito.mad.splintersell.ui.profile_edit
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -26,27 +23,22 @@ import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import it.polito.mad.splintersell.R
-import kotlinx.android.synthetic.main.fragment_edit_profile.*
 import kotlin.math.roundToInt
 import androidx.exifinterface.media.ExifInterface
 import androidx.navigation.Navigation
-import kotlinx.android.synthetic.main.fragment_edit_item.*
 import kotlinx.android.synthetic.main.fragment_edit_profile.email
 import kotlinx.android.synthetic.main.fragment_edit_profile.location
 import kotlinx.android.synthetic.main.fragment_edit_profile.name
 import kotlinx.android.synthetic.main.fragment_edit_profile.nickname
 import kotlinx.android.synthetic.main.fragment_edit_profile.profile_photo
-import kotlinx.android.synthetic.main.fragment_show_profile.*
 import org.json.JSONObject
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.text.category
 
 const val REQUEST_TAKE_PHOTO = 2
 const val GALLERY_REQUEST_CODE = 3
-const val PERMISSION_CODE = 1001
-const val filename = "img"
+const val filename = "proPic"
 var rotatedBitmap: Bitmap? = null
 var photoFile: File? = null
 var photoURI: Uri? = null
@@ -58,9 +50,7 @@ const val EXTRA_LOCATION = "it.polito.mad.splintersell.LOCATION"
 
 class EditProfile : Fragment() {
 
-
     lateinit var currentPhotoPath: String
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -88,15 +78,13 @@ class EditProfile : Fragment() {
         photoURI?.run {
             manageBitmap()
         }
-
-
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         return inflater.inflate(R.menu.save_menu, menu)
     }
 
+    @SuppressLint("WrongThread")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.saveProfile -> {
@@ -127,18 +115,13 @@ class EditProfile : Fragment() {
                 with(sharedPref.edit()) {
                     putString("Profile",  rootObject.toString())
                     apply()
-                    Navigation.findNavController(requireView()).navigate(R.id.action_nav_edit_profile_to_nav_show_profile)
-
+                    Navigation.findNavController(requireView()).navigate(R.id.returnProfile)
                 }
-
-
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-
 
     private fun retrieveImage() {
         val file = File(activity?.filesDir, filename)
@@ -153,7 +136,6 @@ class EditProfile : Fragment() {
             profile_photo.setImageDrawable(roundDrawable)
         }
     }
-
 
     private fun retrievePreferences(profile: String?) {
         if (profile != null) {
@@ -191,7 +173,6 @@ class EditProfile : Fragment() {
         }
     }
 
-
     @RequiresApi(Build.VERSION_CODES.M)
     private fun imageButtonMenu() {
         // Show menu when tapping on imagebutton
@@ -221,10 +202,6 @@ class EditProfile : Fragment() {
         if (imageIntent.resolveActivity(requireActivity().packageManager) != null)
             startActivityForResult(imageIntent, GALLERY_REQUEST_CODE)
     }
-
-
-
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -258,8 +235,6 @@ class EditProfile : Fragment() {
         }
     }
 
-
-
     private fun dispatchTakePictureIntent() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             // Ensure that there's a camera activity to handle the intent
@@ -287,7 +262,6 @@ class EditProfile : Fragment() {
         }
     }
 
-
     //Method that returns a unique file name for a new photo using a date-time stamp
     @SuppressLint("SimpleDateFormat")
     @Throws(IOException::class)
@@ -306,9 +280,6 @@ class EditProfile : Fragment() {
         }
     }
 
-
-
-
     private fun manageBitmap() {
         var bitmap = handleSamplingAndRotationBitmap(requireContext(), photoURI)
         bitmap = CropSquareTransformation().transform(bitmap!!)
@@ -318,7 +289,6 @@ class EditProfile : Fragment() {
         profile_photo.setImageDrawable(roundDrawable)
         rotatedBitmap = bitmap
     }
-
 
     @Throws(IOException::class)
     fun handleSamplingAndRotationBitmap(
@@ -345,7 +315,6 @@ class EditProfile : Fragment() {
         img = rotateImageIfRequired(context, img!!, selectedImage)
         return img
     }
-
 
     private fun calculateInSampleSize(
         options: BitmapFactory.Options,
@@ -383,7 +352,6 @@ class EditProfile : Fragment() {
         return inSampleSize
     }
 
-
     @Throws(IOException::class)
     private fun rotateImageIfRequired(
         context: Context,
@@ -393,7 +361,7 @@ class EditProfile : Fragment() {
         val input: InputStream = context.contentResolver.openInputStream(selectedImage)!!
         val ei: ExifInterface
         ei =
-            if (Build.VERSION.SDK_INT > 23) ExifInterface(input) else ExifInterface(selectedImage.path!!)
+            ExifInterface(input)
         Log.e("photo_orientation", ei.getAttribute(ExifInterface.TAG_ORIENTATION).toString())
         val orientation =
             ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
@@ -405,7 +373,6 @@ class EditProfile : Fragment() {
             else -> img
         }
     }
-
 
     private fun rotateImage(img: Bitmap, degree: Int): Bitmap? {
         val matrix = Matrix()
@@ -429,15 +396,10 @@ class EditProfile : Fragment() {
         }
     }
 
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         photoURI?.run {
             outState.putString("imgUri", this.toString())
         }
     }
-
-
-
-
 }
