@@ -4,11 +4,17 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.view.*
-import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import kotlinx.android.synthetic.main.fragment_show_profile.*
 import org.json.JSONObject
@@ -41,6 +47,8 @@ class ShowProfile : Fragment() {
         this.retrievePreferences(profile)
 
         this.retrieveImage()
+
+        (activity as MainActivity?)?.refreshDataForDrawer()
     }
 
 
@@ -112,5 +120,6 @@ class ShowProfile : Fragment() {
             email.text = savedEmail
             location.text = savedLocation
         }
+
     }
 }

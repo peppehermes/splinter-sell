@@ -95,4 +95,10 @@ class MainActivity : AppCompatActivity() {
             imgView.setImageDrawable(roundDrawable)
         }
     }
+
+    fun refreshDataForDrawer(){
+        val navView: NavigationView = findViewById(R.id.nav_view)
+        val headerView = navView.getHeaderView(0)
+        retrievePreferencesMain(headerView)
+    }
 }
