@@ -24,6 +24,8 @@ import org.json.JSONObject
 import java.io.File
 import java.io.FileInputStream
 
+const val filename = "proPic"
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -46,17 +48,14 @@ class MainActivity : AppCompatActivity() {
         val headerView = navView.getHeaderView(0)
 
         retrievePreferencesMain(headerView)
-
-        }
+    }
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-
     private fun retrievePreferencesMain(headerView: View) {
-
         val textViewNick = headerView.findViewById(R.id.nav_profile_name) as TextView
         val textViewMail = headerView.findViewById(R.id.nav_profile_mail) as TextView
         val imgView = headerView.findViewById(R.id.imageView) as ImageView
@@ -70,7 +69,6 @@ class MainActivity : AppCompatActivity() {
             val savedNickname: String
             val savedEmail: String
 
-
             savedNickname = if (jasonObject.has(EXTRA_NICKNAME))
                 jasonObject.getString(EXTRA_NICKNAME)
             else
@@ -81,30 +79,20 @@ class MainActivity : AppCompatActivity() {
             else
                 resources.getString(R.string.mail)
 
-
             textViewMail.text = savedEmail
             textViewNick.text = savedNickname
-
         }
 
-
-            val filename = "proPic"
-            val file = File(this.filesDir, filename)
-            val fileExists = file.exists()
-            if (fileExists) {
-                val fis: FileInputStream = openFileInput(filename)
-                val bitmap = BitmapFactory.decodeStream(fis)
-                val roundDrawable: RoundedBitmapDrawable =
-                    RoundedBitmapDrawableFactory.create(resources, bitmap)
-                roundDrawable.isCircular = true
-                fis.close()
-                imgView.setImageDrawable(roundDrawable)
-
-            }
-
-
-
-
+        val file = File(this.filesDir, filename)
+        val fileExists = file.exists()
+        if (fileExists) {
+            val fis: FileInputStream = openFileInput(filename)
+            val bitmap = BitmapFactory.decodeStream(fis)
+            val roundDrawable: RoundedBitmapDrawable =
+                RoundedBitmapDrawableFactory.create(resources, bitmap)
+            roundDrawable.isCircular = true
+            fis.close()
+            imgView.setImageDrawable(roundDrawable)
+        }
     }
-
 }

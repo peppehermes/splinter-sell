@@ -17,6 +17,8 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-
+    <style name="Widget.MyApp.MyFloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="tint">?attr/colorOnPrimary</item>
+    </style>
 
 </resources>
