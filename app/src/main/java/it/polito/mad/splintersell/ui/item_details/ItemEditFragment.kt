@@ -58,7 +58,7 @@ class ItemEditFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         index = args.itemId
-        this.showdate()
+        this.showDate()
         this.restoreImage(savedInstanceState)
         this.imageButtonMenu()
         if (index != -1) {
@@ -76,7 +76,7 @@ class ItemEditFragment : Fragment() {
     }
 
     private fun retrieveImage() {
-        val file = File(activity?.filesDir, filename)
+        val file = File(activity?.filesDir, filename!!)
         val fileExists = file.exists()
 
         if (fileExists) {
@@ -87,7 +87,7 @@ class ItemEditFragment : Fragment() {
         }
     }
 
-    private fun showdate() {
+    private fun showDate() {
         //expire_date.setText(SimpleDateFormat("dd.MM.yyyy").format(System.currentTimeMillis()))
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
@@ -96,24 +96,22 @@ class ItemEditFragment : Fragment() {
 
 
         expire_date.setOnClickListener {
-            val dpd = DatePickerDialog(
+            DatePickerDialog(
                 requireActivity().window.context,
                 DatePickerDialog.OnDateSetListener { it, year, monthOfYear, dayOfMonth ->
                     // Display Selected date in TextView
                     var monthConverted = "" + (monthOfYear + 1).toString()
-                    var dayconverted = "" + dayOfMonth.toString()
-                    if (monthOfYear < 10) monthConverted = "0" + monthConverted
-                    if (dayOfMonth < 10) dayconverted = "0" + dayconverted
+                    var dayConverted = "" + dayOfMonth.toString()
+                    if (monthOfYear < 10) monthConverted = "0$monthConverted"
+                    if (dayOfMonth < 10) dayConverted = "0$dayConverted"
 
-                    val date = "$dayconverted/$monthConverted/$year"
+                    val date = "$dayConverted/$monthConverted/$year"
                     expire_date.setText(date)
                 },
                 year,
                 month,
                 day
-            )
-            dpd.show()
-
+            ).show()
         }
     }
 
@@ -452,9 +450,9 @@ class ItemEditFragment : Fragment() {
                 with(sharedPref.edit()) {
                     putString(index.toString(), rootObject.toString())
                     apply()
-                    Navigation.findNavController(requireView()).navigate(
-                        ItemDetailsFragmentDirections.returnHome()
-                    )
+
+                    val action = ItemEditFragmentDirections.goToDetails(args.itemId)
+                    Navigation.findNavController(requireView()).navigate(action)
                 }
                 true
             }

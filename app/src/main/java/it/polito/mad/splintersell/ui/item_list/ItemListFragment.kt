@@ -1,5 +1,6 @@
 package it.polito.mad.splintersell.ui.item_list
 
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
@@ -8,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,6 +34,9 @@ class ItemListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Close the soft Keyboard, if open
+        hideKeyboardFrom(requireContext(), view)
+
         // Load the item list (database?) from the shared preferences
         items = loadSharedPreferences()
 
@@ -40,13 +45,19 @@ class ItemListFragment : Fragment() {
             empty_list.visibility = View.GONE
 
         fab.setOnClickListener {
-            val action = ItemListFragmentDirections.editItem(items.size)
+            val action = ItemListFragmentDirections.newItem(items.size)
             it.findNavController().navigate(action)
         }
 
         // Pass the layout manager and the item list to the adapter
         item_list.layoutManager = LinearLayoutManager(context)
         item_list.adapter = ItemCardAdapter(items)
+    }
+
+    private fun hideKeyboardFrom(context: Context, view: View) {
+        val imm: InputMethodManager =
+            context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun loadSharedPreferences(): ArrayList<Item> {

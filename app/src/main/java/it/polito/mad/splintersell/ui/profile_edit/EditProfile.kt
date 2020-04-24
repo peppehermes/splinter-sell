@@ -115,7 +115,7 @@ class EditProfile : Fragment() {
                 with(sharedPref.edit()) {
                     putString("Profile",  rootObject.toString())
                     apply()
-                    Navigation.findNavController(requireView()).navigate(R.id.returnProfile)
+                    Navigation.findNavController(requireView()).navigate(R.id.nav_show_profile)
                 }
                 true
             }

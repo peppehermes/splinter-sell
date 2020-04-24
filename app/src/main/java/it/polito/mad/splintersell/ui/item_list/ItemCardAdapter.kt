@@ -31,7 +31,7 @@ class ItemCardAdapter(val items: ArrayList<Item>): RecyclerView.Adapter<ItemCard
         }
 
         holder.button.setOnClickListener {
-            val action = ItemListFragmentDirections.editItem(position)
+            val action = ItemListFragmentDirections.editListItem(position)
             it.findNavController().navigate(action)
         }
     }

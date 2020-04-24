@@ -1,12 +1,18 @@
 package it.polito.mad.splintersell.ui.item_details
 
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
+import android.view.inputmethod.InputMethodManager
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import it.polito.mad.splintersell.R
 import kotlinx.android.synthetic.main.fragment_item_details.*
@@ -21,6 +27,20 @@ class ItemDetailsFragment: Fragment() {
 
     private val args: ItemDetailsFragmentArgs by navArgs()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+
+
+    }
+
+    // Inflate the edit menu
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        // Do something that differs the Activity's menu here
+        inflater.inflate(R.menu.menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,6 +53,9 @@ class ItemDetailsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var index: Int?
+
+        // Close the soft Keyboard, if open
+        hideKeyboardFrom(requireContext(), view)
 
         args.apply {
             index = this.itemId
@@ -109,6 +132,23 @@ class ItemDetailsFragment: Fragment() {
             bitmap
         } else
             null
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.edit -> {
+                val action = ItemDetailsFragmentDirections.editItem(args.itemId)
+                Navigation.findNavController(requireView()).navigate(action)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun hideKeyboardFrom(context: Context, view: View) {
+        val imm: InputMethodManager =
+            context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
 

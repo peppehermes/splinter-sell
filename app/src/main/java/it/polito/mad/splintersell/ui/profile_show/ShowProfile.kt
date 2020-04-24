@@ -1,5 +1,6 @@
 package it.polito.mad.splintersell.ui.profile_show
 
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.BitmapFactory
@@ -10,10 +11,13 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.activity.OnBackPressedCallback
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import kotlinx.android.synthetic.main.fragment_show_profile.*
@@ -29,6 +33,18 @@ const val filename = "proPic"
 
 class ShowProfile : Fragment() {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Handle the back button event
+                findNavController().navigate(R.id.nav_item_list)
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,9 +52,11 @@ class ShowProfile : Fragment() {
         return inflater.inflate(R.layout.fragment_show_profile, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
+
+        // Close the soft Keyboard, if open
+        hideKeyboardFrom(requireContext(), view)
 
         //Retrieve all the information from the local file system
         val sharedPref: SharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
@@ -51,6 +69,11 @@ class ShowProfile : Fragment() {
         (activity as MainActivity?)?.refreshDataForDrawer()
     }
 
+    private fun hideKeyboardFrom(context: Context, view: View) {
+        val imm: InputMethodManager =
+            context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         return inflater.inflate(R.menu.menu, menu)
@@ -58,17 +81,12 @@ class ShowProfile : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.editProfile -> {
-                editProfile()
+            R.id.edit -> {
+                Navigation.findNavController(requireView()).navigate(R.id.edit)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    // This have to be invoked when the pencil button is pressed
-    private fun editProfile() {
-        Navigation.findNavController(requireView()).navigate(R.id.editProfile)
     }
 
     private fun retrieveImage() {
