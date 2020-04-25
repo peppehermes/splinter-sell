@@ -8,11 +8,8 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import it.polito.mad.splintersell.R
 import kotlinx.android.synthetic.main.fragment_item_details.*
@@ -30,13 +27,10 @@ class ItemDetailsFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
-
     }
 
     // Inflate the edit menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        // Do something that differs the Activity's menu here
         inflater.inflate(R.menu.menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -48,7 +42,6 @@ class ItemDetailsFragment: Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_item_details, container, false)
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,39 +60,33 @@ class ItemDetailsFragment: Fragment() {
                 val info: String? = sharedPref.getString(index.toString(), null)
 
                 val jasonObject = JSONObject(info!!)
-                val showTitle: String
-                val showDescription: String
-                val showPrice: String
-                val showCategory: String
-                val showLocation: String
-                val showDate: String
 
-                showTitle = if (jasonObject.has("Title"))
+                val showTitle = if (jasonObject.has("Title"))
                     jasonObject.getString("Title")
                 else
                     getString(R.string.title)
 
-                showDescription = if (jasonObject.has("Description"))
+                val showDescription = if (jasonObject.has("Description"))
                     jasonObject.getString("Description")
                 else
                     getString(R.string.description)
 
-                showPrice = if (jasonObject.has("Price"))
+                val showPrice = if (jasonObject.has("Price"))
                     jasonObject.getString("Price")
                 else
                     getString(R.string.price)
 
-                showCategory = if (jasonObject.has("Category"))
+                val showCategory = if (jasonObject.has("Category"))
                     jasonObject.getString("Category")
                 else
                     getString(R.string.category)
 
-                showLocation = if (jasonObject.has("Location"))
+                val showLocation = if (jasonObject.has("Location"))
                     jasonObject.getString("Location")
                 else
                     getString(R.string.location)
 
-                showDate = if (jasonObject.has("Expire_Date"))
+                val showDate = if (jasonObject.has("Expire_Date"))
                     jasonObject.getString("Expire_Date")
                 else
                     getString(R.string.expire_date)

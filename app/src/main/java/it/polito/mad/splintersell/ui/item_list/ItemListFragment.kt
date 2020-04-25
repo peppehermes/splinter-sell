@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.LinearLayoutManager
 import it.polito.mad.splintersell.Item
 import it.polito.mad.splintersell.R
@@ -22,6 +23,13 @@ import java.io.FileInputStream
 
 class ItemListFragment : Fragment() {
     private lateinit var items: ArrayList<Item>
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        // Load the item list (database?) from the shared preferences
+        items = loadSharedPreferences()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,21 +45,25 @@ class ItemListFragment : Fragment() {
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)
 
-        // Load the item list (database?) from the shared preferences
-        items = loadSharedPreferences()
+        // Fetch the database
+        val newItems = loadSharedPreferences()
 
         // If the list is empty, show a message
-        if (!items.isNullOrEmpty())
+        if (!newItems.isNullOrEmpty())
             empty_list.visibility = View.GONE
+
+        // Pass the layout manager and the item list to the adapter
+        item_list.layoutManager = LinearLayoutManager(context)
+        val adapter = ItemCardAdapter(items)
+        item_list.adapter = adapter
+
+        // See if there have been differences in the database
+        adapter.updateItems(newItems)
 
         fab.setOnClickListener {
             val action = ItemListFragmentDirections.newItem(items.size)
             it.findNavController().navigate(action)
         }
-
-        // Pass the layout manager and the item list to the adapter
-        item_list.layoutManager = LinearLayoutManager(context)
-        item_list.adapter = ItemCardAdapter(items)
     }
 
     private fun hideKeyboardFrom(context: Context, view: View) {
@@ -91,7 +103,7 @@ class ItemListFragment : Fragment() {
                     else
                         resources.getString(R.string.price)
 
-                    items.add(item.key.toInt(), Item(bitmap, title, description, price, " "))
+                    items.add(item.key.toInt(), Item(item.key.toInt(), bitmap, title, description, price, " "))
                 }
             }
         }
