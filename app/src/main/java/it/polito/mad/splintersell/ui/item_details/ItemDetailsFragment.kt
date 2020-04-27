@@ -12,10 +12,15 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import it.polito.mad.splintersell.R
+import kotlinx.android.synthetic.main.fragment_edit_item.*
 import kotlinx.android.synthetic.main.fragment_item_details.*
 import kotlinx.android.synthetic.main.fragment_item_details.category
+import kotlinx.android.synthetic.main.fragment_item_details.description
+import kotlinx.android.synthetic.main.fragment_item_details.detail_image
 import kotlinx.android.synthetic.main.fragment_item_details.expire_date
 import kotlinx.android.synthetic.main.fragment_item_details.location
+import kotlinx.android.synthetic.main.fragment_item_details.price
+import kotlinx.android.synthetic.main.fragment_item_details.title
 import org.json.JSONObject
 import java.io.File
 import java.io.FileInputStream

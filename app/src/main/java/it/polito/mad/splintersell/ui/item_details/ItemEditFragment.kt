@@ -9,6 +9,7 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.ExifInterface
+import android.widget.Spinner
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -16,7 +17,10 @@ import android.provider.MediaStore
 import android.view.animation.Transformation
 import android.util.Log
 import android.view.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.PopupMenu
+import android.widget.SpinnerAdapter
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
@@ -54,6 +58,7 @@ class ItemEditFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_edit_item, container, false)
     }
 
+    @SuppressLint("ResourceType")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -64,6 +69,63 @@ class ItemEditFragment : Fragment() {
         if (index != -1) {
             this.populateEditText()
             this.retrieveImage()
+        }
+        val adapter = ArrayAdapter(
+            activity?.applicationContext!!,R.layout.spinner_text,
+            resources.getStringArray(R.array.macroCategories))
+
+        macrocategoryEdit!!.adapter = adapter
+
+        macrocategoryEdit.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                when(position) {
+
+                    0 -> categoryEdit!!.adapter = ArrayAdapter(
+                        activity?.applicationContext!!, R.layout.spinner_text,
+                        resources.getStringArray(R.array.arts)
+                    )
+                    1 -> categoryEdit!!.adapter = ArrayAdapter(
+                        activity?.applicationContext!!, R.layout.spinner_text,
+                        resources.getStringArray(R.array.sports)
+                    )
+                    2 -> categoryEdit!!.adapter = ArrayAdapter(
+                        activity?.applicationContext!!, R.layout.spinner_text,
+                        resources.getStringArray(R.array.baby)
+                    )
+                    3 -> categoryEdit!!.adapter = ArrayAdapter(
+                        activity?.applicationContext!!, R.layout.spinner_text,
+                        resources.getStringArray(R.array.women)
+                    )
+                    4 -> categoryEdit!!.adapter = ArrayAdapter(
+                        activity?.applicationContext!!, R.layout.spinner_text,
+                        resources.getStringArray(R.array.men)
+                    )
+                    5 -> categoryEdit!!.adapter = ArrayAdapter(
+                        activity?.applicationContext!!, R.layout.spinner_text,
+                        resources.getStringArray(R.array.electronics)
+                    )
+                    6 -> categoryEdit!!.adapter = ArrayAdapter(
+                        activity?.applicationContext!!, R.layout.spinner_text,
+                        resources.getStringArray(R.array.games)
+                    )
+                    7 -> categoryEdit!!.adapter = ArrayAdapter(
+                        activity?.applicationContext!!, R.layout.spinner_text,
+                        resources.getStringArray(R.array.automotive)
+                    )
+
+                }
+            }
+
+
         }
     }
 
@@ -129,7 +191,8 @@ class ItemEditFragment : Fragment() {
             val editTitle: String
             val editDescription: String
             val editPrice: String
-            val editCategory: String
+            val editCategoryPos: String
+            val editMacroCategoryPos: String
             val editLocation: String
             val editDate: String
 
@@ -147,8 +210,13 @@ class ItemEditFragment : Fragment() {
             else
                 ""
 
-            editCategory = if (jasonObject.has("Category"))
-                jasonObject.getString("Category")
+            editMacroCategoryPos = if (jasonObject.has("MacroCategoryPos"))
+                jasonObject.getString("MacroCategoryPos")
+            else
+                ""
+
+            editCategoryPos = if (jasonObject.has("CategoryPos"))
+                jasonObject.getString("CategoryPos")
             else
                 ""
 
@@ -165,7 +233,8 @@ class ItemEditFragment : Fragment() {
             title.setText(editTitle)
             description.setText(editDescription)
             price.setText(editPrice)
-            category.setText(editCategory)
+            macrocategoryEdit.setSelection(editMacroCategoryPos.toInt())
+            categoryEdit.setSelection(editCategoryPos.toInt())
             location.setText(editLocation)
             expire_date.setText(editDate)
         }
@@ -422,7 +491,6 @@ class ItemEditFragment : Fragment() {
                     rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 75, fos)
                     fos.close()
                 }
-
                 // Create JSON Object and fill it with data to store
                 val rootObject = JSONObject()
 
@@ -435,8 +503,14 @@ class ItemEditFragment : Fragment() {
                 if (!price.text.isNullOrEmpty())
                     rootObject.accumulate("Price", price.text)
 
-                if (!category.text.isNullOrEmpty())
-                    rootObject.accumulate("Category", category.text)
+                if (!macrocategoryEdit.selectedItemPosition.toString().isEmpty())
+                    rootObject.accumulate("MacroCategoryPos", macrocategoryEdit.selectedItemPosition.toString())
+
+                if (!categoryEdit.selectedItemPosition.toString().isEmpty())
+                    rootObject.accumulate("CategoryPos", categoryEdit.selectedItemPosition.toString())
+
+                if (!categoryEdit.selectedItem.toString().isEmpty())
+                    rootObject.accumulate("Category", macrocategoryEdit.selectedItem.toString() +": " + categoryEdit.selectedItem.toString())
 
                 if (!location.text.isNullOrEmpty())
                     rootObject.accumulate("Location", location.text)

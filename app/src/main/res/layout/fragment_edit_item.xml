@@ -78,7 +78,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/description"
-            android:layout_marginBottom="10dp"
             android:autofillHints=""
             android:hint="@string/price"
             android:inputType="numberDecimal"
@@ -87,24 +86,31 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/category"
+
+        <Spinner
+            android:id="@+id/macrocategoryEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/price"
-            android:autofillHints=""
-            android:hint="@string/category"
-            android:inputType="textAutoCorrect|textAutoComplete"
-            android:padding="10dp"
-            android:textAppearance="?attr/textAppearanceBody1"
-            android:textSize="24sp" />
+            android:paddingBottom="10dp"
+            />
+
+        <Spinner
+            android:id="@+id/categoryEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/macrocategoryEdit"
+            android:paddingBottom="10dp"
+            />
+
+
+
 
         <EditText
             android:id="@+id/location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/category"
-            android:layout_marginBottom="10dp"
+            android:layout_below="@+id/categoryEdit"
             android:autofillHints=""
             android:hint="@string/location"
             android:inputType="textAutoCorrect|textAutoComplete|textPostalAddress"
