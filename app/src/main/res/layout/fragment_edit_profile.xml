@@ -16,107 +16,129 @@
         app:layout_constraintGuide_percent="0.33"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/name"
-        android:layout_width="0dp"
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_name"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:drawableStart="@drawable/ic_person_white_36dp"
-        android:drawablePadding="8dp"
-        android:background="@drawable/rounded_corner"
-        android:hint="@string/fname"
-        android:importantForAutofill="no"
-        android:inputType="textPersonName"
-        android:padding="10dp"
-        android:textColor="@color/white_FOCUS"
-        android:textColorHint="@color/second_grey_ACTIVE_UNFOCUS"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toTopOf="@+id/nickname"
+        app:layout_constraintBottom_toTopOf="@+id/til_nickname"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline_top" />
+        app:layout_constraintTop_toTopOf="@+id/guideline_top">
 
-    <EditText
-        android:id="@+id/nickname"
-        android:layout_width="0dp"
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_person_white_36dp"
+            android:drawablePadding="8dp"
+            android:hint="@string/fname"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            android:textColor="@color/white_FOCUS"
+            android:textColorHint="@color/second_grey_ACTIVE_UNFOCUS"
+            android:textSize="24sp"/>
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_nickname"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/rounded_corner"
-        android:drawableStart="@drawable/ic_account_circle_white_36dp"
-        android:drawablePadding="12dp"
-        android:hint="@string/nick"
-        android:importantForAutofill="no"
-        android:inputType="textShortMessage|text"
-        android:paddingStart="10dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="16dp"
-        android:textColor="@color/white_FOCUS"
-        android:textColorHint="@color/second_grey_ACTIVE_UNFOCUS"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/email"
+        app:layout_constraintBottom_toTopOf="@+id/til_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
+        app:layout_constraintTop_toBottomOf="@+id/til_name" >
 
-    <EditText
-        android:id="@+id/email"
-        android:layout_width="0dp"
+
+        <EditText
+            android:id="@+id/nickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_account_circle_white_36dp"
+            android:drawablePadding="8dp"
+            android:hint="@string/nick"
+            android:importantForAutofill="no"
+            android:inputType="textShortMessage|text"
+            android:textColor="@color/white_FOCUS"
+            android:textColorHint="@color/second_grey_ACTIVE_UNFOCUS"
+            android:textSize="24sp"
+            />
+
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_email"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/rounded_corner"
-        android:drawableStart="@drawable/ic_email_white_36dp"
-        android:drawablePadding="12dp"
-        android:hint="@string/mail"
-        android:importantForAutofill="no"
-        android:inputType="textEmailAddress"
-        android:paddingStart="10dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="16dp"
-        android:textColor="@color/white_FOCUS"
-        android:textColorHint="@color/second_grey_ACTIVE_UNFOCUS"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/location"
+        app:layout_constraintBottom_toTopOf="@+id/til_location"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nickname" />
+        app:layout_constraintTop_toBottomOf="@+id/til_nickname">
 
-    <EditText
-        android:id="@+id/location"
-        android:layout_width="0dp"
+
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_email_white_36dp"
+            android:drawablePadding="8dp"
+            android:hint="@string/mail"
+            android:importantForAutofill="no"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/white_FOCUS"
+            android:textColorHint="@color/second_grey_ACTIVE_UNFOCUS"
+            android:textSize="24sp"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_location"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_corner"
-        android:drawableStart="@drawable/ic_location_on_white_36dp"
-        android:drawablePadding="12dp"
-        android:hint="@string/location"
-        android:importantForAutofill="no"
-        android:inputType="textAutoCorrect|textAutoComplete|textPostalAddress"
-        android:paddingStart="10dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="16dp"
-        android:textColor="@color/white_FOCUS"
-        android:textColorHint="@color/second_grey_ACTIVE_UNFOCUS"
-        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email" />
+        app:layout_constraintTop_toBottomOf="@+id/til_email">
+
+        <EditText
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_location_on_white_36dp"
+            android:drawablePadding="8dp"
+            android:hint="@string/location"
+            android:importantForAutofill="no"
+            android:inputType="textAutoCorrect|textAutoComplete|textPostalAddress"
+            android:textColor="@color/white_FOCUS"
+            android:textColorHint="@color/second_grey_ACTIVE_UNFOCUS"
+            android:textSize="24sp" />
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
 
     <ImageView
         android:id="@+id/profile_photo"

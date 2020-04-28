@@ -47,92 +47,152 @@
             android:layout_margin="10dp"
             android:background="@drawable/round_corners" />
 
-        <EditText
-            android:id="@+id/title"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/detail_image"
-            android:layout_marginTop="10dp"
-            android:autofillHints=""
-            android:hint="@string/title"
-            android:inputType="textAutoCorrect|textAutoComplete"
-            android:padding="10dp"
-            android:textAlignment="center"
-            android:textAppearance="?attr/textAppearanceHeadline5"
-            android:textSize="24sp" />
+            android:layout_marginTop="20dp">
 
-        <EditText
-            android:id="@+id/description"
+            <EditText
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/detail_image"
+                android:autofillHints=""
+                android:hint="@string/title"
+                android:inputType="textAutoCorrect|textAutoComplete"
+                android:textAppearance="?attr/textAppearanceHeadline5"
+                android:textSize="24sp" />
+
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/title"
-            android:autofillHints=""
-            android:hint="@string/description"
-            android:inputType="textAutoCorrect|textAutoComplete"
-            android:padding="10dp"
-            android:textAppearance="?attr/textAppearanceBody1"
-            android:textSize="24sp" />
+            android:layout_below="@+id/til_title"
+            android:layout_marginTop="10dp">
 
-        <EditText
-            android:id="@+id/price"
+
+            <EditText
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:hint="@string/description"
+                android:inputType="textAutoCorrect|textAutoComplete"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:textSize="24sp" />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/description"
-            android:autofillHints=""
-            android:hint="@string/price"
-            android:inputType="numberDecimal"
-            android:padding="10dp"
-            android:textAppearance="?attr/textAppearanceBody1"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:layout_below="@+id/til_description"
+            android:layout_marginTop="10dp">
 
+            <EditText
+                android:id="@+id/price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:hint="@string/price"
+                android:inputType="numberDecimal"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/main_cat_label"
+            style="@style/InputLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/til_price"
+            android:text="Main Category"
+            android:layout_marginTop="10dp"/>
 
         <Spinner
             android:id="@+id/macrocategoryEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/price"
+            android:layout_below="@+id/main_cat_label"
             android:paddingBottom="10dp"
             />
+
+        <TextView
+            android:id="@+id/sec_cat_label"
+            style="@style/InputLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/macrocategoryEdit"
+            android:text="Secondary Category"
+            android:layout_marginTop="10dp"/>
 
         <Spinner
             android:id="@+id/categoryEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/macrocategoryEdit"
+            android:layout_below="@+id/sec_cat_label"
             android:paddingBottom="10dp"
             />
 
 
-
-
-        <EditText
-            android:id="@+id/location"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/categoryEdit"
-            android:autofillHints=""
-            android:hint="@string/location"
-            android:inputType="textAutoCorrect|textAutoComplete|textPostalAddress"
-            android:padding="10dp"
-            android:textAppearance="?attr/textAppearanceBody1"
-            android:textSize="24sp" />
+            android:layout_marginTop="10dp">
 
-        <EditText
-            android:id="@+id/expire_date"
+            <EditText
+                android:id="@+id/location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:hint="@string/location"
+                android:inputType="textAutoCorrect|textAutoComplete|textPostalAddress"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:textSize="24sp" />
+
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_expire_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/location"
-            android:autofillHints=""
-            android:focusable="false"
-            android:hint="@string/expire_date"
-            android:inputType="date"
-            android:padding="10dp"
-            android:textAppearance="?attr/textAppearanceBody1"
-            android:textSize="24sp" />
+            android:layout_below="@+id/til_location"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:id="@+id/expire_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:focusable="false"
+                android:hint="@string/expire_date"
+                android:inputType="date"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:textSize="24sp" />
+
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
 
     </RelativeLayout>
 
 </ScrollView>
-
-

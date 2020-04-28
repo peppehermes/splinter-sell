@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.InputFilter
 import android.view.animation.Transformation
 import android.util.Log
 import android.view.*
@@ -61,6 +62,8 @@ class ItemEditFragment : Fragment() {
     @SuppressLint("ResourceType")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        this.setInputLimits()
 
         index = args.itemId
         this.showDate()
@@ -127,6 +130,16 @@ class ItemEditFragment : Fragment() {
 
 
         }
+    }
+
+
+    //Limits the lenght of the input of the EditText fields
+    private fun setInputLimits(){
+
+        title.filters = arrayOf(InputFilter.LengthFilter(30))
+        description.filters = arrayOf(InputFilter.LengthFilter(50))
+        location.filters = arrayOf(InputFilter.LengthFilter(30))
+
     }
 
     private fun restoreImage(savedInstanceState: Bundle?) {

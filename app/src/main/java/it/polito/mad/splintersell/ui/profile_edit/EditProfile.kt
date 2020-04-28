@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.InputFilter
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -62,6 +63,8 @@ class EditProfile : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         setHasOptionsMenu(true)
+
+        this.setInputLimits()
 
         this.imageButtonMenu()
 
@@ -121,6 +124,16 @@ class EditProfile : Fragment() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    //Limits the lenght of the input of the EditText fields
+    private fun setInputLimits(){
+
+        name.filters = arrayOf(InputFilter.LengthFilter(20))
+        nickname.filters = arrayOf(InputFilter.LengthFilter(20))
+        email.filters = arrayOf(InputFilter.LengthFilter(30))
+        location.filters = arrayOf(InputFilter.LengthFilter(30))
+
     }
 
     private fun retrieveImage() {
@@ -402,4 +415,9 @@ class EditProfile : Fragment() {
             outState.putString("imgUri", this.toString())
         }
     }
+
+
+
+
+
 }
