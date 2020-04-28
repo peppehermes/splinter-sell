@@ -114,27 +114,12 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Spinner
-            android:id="@+id/macrocategoryEdit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/til_price"
-            android:padding="10dp"
-            />
-
-        <Spinner
-            android:id="@+id/categoryEdit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/macrocategoryEdit"
-            android:padding="10dp"
-            />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/categoryEdit"
+            android:layout_below="@+id/spinner_2"
             android:padding="10dp">
 
             <EditText
@@ -171,6 +156,47 @@
 
 
         </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/spinner_1"
+            android:layout_below="@id/til_price"
+            android:layout_width="match_parent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+            <!-- Google themselves instruct us to use the deprecated editable attribute -->
+            <AutoCompleteTextView
+                android:id="@+id/dropdow_main_category"
+                android:textSize="24sp"
+                android:hint="@string/category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:editable="false"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/spinner_2"
+            android:layout_below="@id/spinner_1"
+            android:layout_width="match_parent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+            <!-- Google themselves instruct us to use the deprecated editable attribute -->
+            <AutoCompleteTextView
+                android:id="@+id/dropdow_sub_category"
+                android:textSize="24sp"
+                android:hint="@string/subcategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:editable="false"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
     </RelativeLayout>
 

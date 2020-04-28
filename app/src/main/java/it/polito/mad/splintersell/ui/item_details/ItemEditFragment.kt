@@ -20,8 +20,10 @@ import android.util.Log
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.PopupMenu
 import android.widget.SpinnerAdapter
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
@@ -77,58 +79,44 @@ class ItemEditFragment : Fragment() {
             activity?.applicationContext!!,R.layout.spinner_text,
             resources.getStringArray(R.array.macroCategories))
 
-        macrocategoryEdit!!.adapter = adapter
+        dropdow_main_category!!.setAdapter(adapter)
+        dropdow_main_category.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            when(position) {
 
-        macrocategoryEdit.onItemSelectedListener = object :
-            AdapterView.OnItemSelectedListener{
-            override fun onNothingSelected(parent: AdapterView<*>?) {
+                0 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
+                    activity?.applicationContext!!, R.layout.spinner_text,
+                    resources.getStringArray(R.array.arts))
+                )
+                1 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
+                    activity?.applicationContext!!, R.layout.spinner_text,
+                    resources.getStringArray(R.array.sports))
+                )
+                2 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
+                    activity?.applicationContext!!, R.layout.spinner_text,
+                    resources.getStringArray(R.array.baby))
+                )
+                3 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
+                    activity?.applicationContext!!, R.layout.spinner_text,
+                    resources.getStringArray(R.array.women))
+                )
+                4 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
+                    activity?.applicationContext!!, R.layout.spinner_text,
+                    resources.getStringArray(R.array.men))
+                )
+                5 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
+                    activity?.applicationContext!!, R.layout.spinner_text,
+                    resources.getStringArray(R.array.electronics))
+                )
+                6 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
+                    activity?.applicationContext!!, R.layout.spinner_text,
+                    resources.getStringArray(R.array.games))
+                )
+                7 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
+                    activity?.applicationContext!!, R.layout.spinner_text,
+                    resources.getStringArray(R.array.automotive))
+                )
+
             }
-
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                when(position) {
-
-                    0 -> categoryEdit!!.adapter = ArrayAdapter(
-                        activity?.applicationContext!!, R.layout.spinner_text,
-                        resources.getStringArray(R.array.arts)
-                    )
-                    1 -> categoryEdit!!.adapter = ArrayAdapter(
-                        activity?.applicationContext!!, R.layout.spinner_text,
-                        resources.getStringArray(R.array.sports)
-                    )
-                    2 -> categoryEdit!!.adapter = ArrayAdapter(
-                        activity?.applicationContext!!, R.layout.spinner_text,
-                        resources.getStringArray(R.array.baby)
-                    )
-                    3 -> categoryEdit!!.adapter = ArrayAdapter(
-                        activity?.applicationContext!!, R.layout.spinner_text,
-                        resources.getStringArray(R.array.women)
-                    )
-                    4 -> categoryEdit!!.adapter = ArrayAdapter(
-                        activity?.applicationContext!!, R.layout.spinner_text,
-                        resources.getStringArray(R.array.men)
-                    )
-                    5 -> categoryEdit!!.adapter = ArrayAdapter(
-                        activity?.applicationContext!!, R.layout.spinner_text,
-                        resources.getStringArray(R.array.electronics)
-                    )
-                    6 -> categoryEdit!!.adapter = ArrayAdapter(
-                        activity?.applicationContext!!, R.layout.spinner_text,
-                        resources.getStringArray(R.array.games)
-                    )
-                    7 -> categoryEdit!!.adapter = ArrayAdapter(
-                        activity?.applicationContext!!, R.layout.spinner_text,
-                        resources.getStringArray(R.array.automotive)
-                    )
-
-                }
-            }
-
-
         }
     }
 
@@ -204,8 +192,6 @@ class ItemEditFragment : Fragment() {
             val editTitle: String
             val editDescription: String
             val editPrice: String
-            val editCategoryPos: String
-            val editMacroCategoryPos: String
             val editLocation: String
             val editDate: String
 
@@ -223,16 +209,6 @@ class ItemEditFragment : Fragment() {
             else
                 ""
 
-            editMacroCategoryPos = if (jasonObject.has("MacroCategoryPos"))
-                jasonObject.getString("MacroCategoryPos")
-            else
-                ""
-
-            editCategoryPos = if (jasonObject.has("CategoryPos"))
-                jasonObject.getString("CategoryPos")
-            else
-                ""
-
             editLocation = if (jasonObject.has("Location"))
                 jasonObject.getString("Location")
             else
@@ -246,8 +222,6 @@ class ItemEditFragment : Fragment() {
             title.setText(editTitle)
             description.setText(editDescription)
             price.setText(editPrice)
-            macrocategoryEdit.setSelection(editMacroCategoryPos.toInt())
-            categoryEdit.setSelection(editCategoryPos.toInt())
             location.setText(editLocation)
             expire_date.setText(editDate)
         }
@@ -516,14 +490,8 @@ class ItemEditFragment : Fragment() {
                 if (!price.text.isNullOrEmpty())
                     rootObject.accumulate("Price", price.text)
 
-                if (!macrocategoryEdit.selectedItemPosition.toString().isEmpty())
-                    rootObject.accumulate("MacroCategoryPos", macrocategoryEdit.selectedItemPosition.toString())
-
-                if (!categoryEdit.selectedItemPosition.toString().isEmpty())
-                    rootObject.accumulate("CategoryPos", categoryEdit.selectedItemPosition.toString())
-
-                if (!categoryEdit.selectedItem.toString().isEmpty())
-                    rootObject.accumulate("Category", macrocategoryEdit.selectedItem.toString() +": " + categoryEdit.selectedItem.toString())
+                if (!dropdow_sub_category.toString().isEmpty())
+                    rootObject.accumulate("Category", dropdow_main_category.text.toString() + ": " + dropdow_sub_category.text.toString())
 
                 if (!location.text.isNullOrEmpty())
                     rootObject.accumulate("Location", location.text)
