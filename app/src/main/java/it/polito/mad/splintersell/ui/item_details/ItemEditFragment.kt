@@ -68,6 +68,7 @@ class ItemEditFragment : Fragment() {
         this.setInputLimits()
 
         index = args.itemId
+        //Log.e("ID", index.toString())
         this.showDate()
         this.restoreImage(savedInstanceState)
         this.imageButtonMenu()
@@ -478,6 +479,8 @@ class ItemEditFragment : Fragment() {
                     rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 75, fos)
                     fos.close()
                 }
+
+                rotatedBitmap = null
                 // Create JSON Object and fill it with data to store
                 val rootObject = JSONObject()
 
@@ -488,7 +491,7 @@ class ItemEditFragment : Fragment() {
                     rootObject.accumulate("Description", description.text)
 
                 if (!price.text.isNullOrEmpty())
-                    rootObject.accumulate("Price", price.text.toString()+" $")
+                    rootObject.accumulate("Price", price.text)
 
                 if (!dropdow_sub_category.text.isNullOrEmpty())
                     rootObject.accumulate("Category", dropdow_main_category.text.toString() + ": " + dropdow_sub_category.text.toString())

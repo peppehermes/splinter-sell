@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,10 +59,11 @@ class ItemListFragment : Fragment() {
         item_list.adapter = adapter
 
         // See if there have been differences in the database
-        adapter.updateItems(newItems)
+        items = adapter.updateItems(newItems)
 
         fab.setOnClickListener {
             val action = ItemListFragmentDirections.newItem(items.size)
+            //Log.e("ID", items.size.toString())
             it.findNavController().navigate(action)
         }
     }

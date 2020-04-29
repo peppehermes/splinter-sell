@@ -51,11 +51,12 @@ class ItemCardAdapter(private var items: ArrayList<Item>): RecyclerView.Adapter<
         Navigation.findNavController(view).navigate(action)
     }
 
-    fun updateItems(newItems: ArrayList<Item>) {
+    fun updateItems(newItems: ArrayList<Item>) : ArrayList<Item> {
         val diffs = DiffUtil.calculateDiff(
             ItemDiffCallback(items, newItems))
         items = newItems // update data
         diffs.dispatchUpdatesTo(this) // animate UI
+        return items
     }
 
     class ItemDiffCallback(private val items: ArrayList<Item>,
@@ -95,7 +96,11 @@ class ItemCardAdapter(private var items: ArrayList<Item>): RecyclerView.Adapter<
                 image.setImageBitmap(i.image)
             title.text =  i.title
             description.text = i.description
-            price.text = i.price
+            if (i.price != "Price") {
+                val tmp = "${i.price} $"
+                price.text = tmp
+            }
+            else price.text = i.price
 
             // Set the onClick listener
             card.setOnClickListener { showDetails(adapterPosition) }

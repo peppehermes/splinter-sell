@@ -38,7 +38,7 @@
             android:background="@drawable/round_corners"
             android:contentDescription="@string/add_photo"
             android:padding="10dp"
-            android:src="@drawable/ic_photo_camera_white_24dp" />
+            android:src="@drawable/ic_edit_white_24dp" />
 
         <View
             android:layout_width="match_parent"
@@ -108,7 +108,8 @@
                 android:inputType="numberDecimal"
                 android:textAppearance="?attr/textAppearanceBody1"
                 android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:drawableEnd="@drawable/ic_attach_money_black_24dp"/>
 
 
         </com.google.android.material.textfield.TextInputLayout>

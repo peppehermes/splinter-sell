@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
@@ -57,6 +58,7 @@ class ItemDetailsFragment: Fragment() {
 
         args.apply {
             index = this.itemId
+            //Log.e("ID", index.toString())
 
             val sharedPref: SharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE) ?: return
 
@@ -77,7 +79,7 @@ class ItemDetailsFragment: Fragment() {
                     getString(R.string.description)
 
                 val showPrice = if (jasonObject.has("Price"))
-                    jasonObject.getString("Price")
+                    jasonObject.getString("Price") + " $"
                 else
                     getString(R.string.price)
 
@@ -105,7 +107,8 @@ class ItemDetailsFragment: Fragment() {
 
                 title.text = showTitle
                 description.text = showDescription
-                price.text = showPrice
+                val tmp = showPrice
+                price.text = tmp
                 category.text = showCategory
                 location.text = showLocation
                 expire_date.text = showDate

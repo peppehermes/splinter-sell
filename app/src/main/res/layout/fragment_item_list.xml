@@ -18,7 +18,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         style="@style/Widget.MyApp.MyFloatingActionButton"
-        app:backgroundTint="@color/colorAccent"
+        app:backgroundTint="@color/colorSecondary"
         app:srcCompat="@drawable/ic_add" />
 
     <LinearLayout
