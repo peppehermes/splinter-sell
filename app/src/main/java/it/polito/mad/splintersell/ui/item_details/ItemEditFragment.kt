@@ -490,7 +490,7 @@ class ItemEditFragment : Fragment() {
                 if (!price.text.isNullOrEmpty())
                     rootObject.accumulate("Price", price.text)
 
-                if (!dropdow_sub_category.toString().isEmpty())
+                if (!dropdow_sub_category.text.isNullOrEmpty())
                     rootObject.accumulate("Category", dropdow_main_category.text.toString() + ": " + dropdow_sub_category.text.toString())
 
                 if (!location.text.isNullOrEmpty())

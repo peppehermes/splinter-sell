@@ -22,6 +22,7 @@
     <string name="detail_image">detail_image</string>
     <string name="price">Price</string>
     <string name="category">Main Category</string>
+    <string name="showcategory">Category</string>
     <string name="subcategory">Sub Category</string>
     <string name="location">Location</string>
     <string name="expire_date">Expire date (dd/mm/yyyy)</string>

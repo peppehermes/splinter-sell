@@ -27,12 +27,7 @@
             tools:srcCompat="@drawable/image_vectorized_lower"
             android:focusable="true"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/round_corners" />
+
 
         <TextView
             android:id="@+id/title"
@@ -48,61 +43,121 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/round_corners" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/description"
+            style="@style/InputLabel" />
+
         <TextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:padding="10dp"
             android:text="@string/description"
             android:textAppearance="?attr/textAppearanceBody1"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="24sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/round_corners" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/price"
+            style="@style/InputLabel" />
 
         <TextView
             android:id="@+id/price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:padding="10dp"
             android:text="@string/price"
             android:textAppearance="?attr/textAppearanceBody1"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="24sp"
             android:textStyle="bold" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/round_corners" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/showcategory"
+            style="@style/InputLabel" />
+
         <TextView
             android:id="@+id/category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:padding="10dp"
-            android:text="@string/category"
+            android:text="@string/showcategory"
             android:textAppearance="?attr/textAppearanceBody1"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="24sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/round_corners" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/location"
+            style="@style/InputLabel" />
 
         <TextView
             android:id="@+id/location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:padding="10dp"
             android:text="@string/location"
             android:textAppearance="?attr/textAppearanceBody1"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="24sp" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/round_corners" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/expire_date"
+            style="@style/InputLabel" />
+
         <TextView
             android:id="@+id/expire_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:text="@string/expire_date"
             android:textAppearance="?attr/textAppearanceBody1"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="24sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/round_corners" />
 
 
     </LinearLayout>
