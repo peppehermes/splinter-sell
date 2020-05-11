@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/nav_item_list"
+    app:startDestination="@id/nav_signIn"
     tools:ignore="UnusedNavigation">
 
     <fragment
@@ -105,5 +105,17 @@
         android:name="it.polito.mad.splintersell.ui.profile_edit.EditProfile"
         android:label="Edit Profile"
         tools:layout="@layout/fragment_edit_profile"/>
+    <fragment
+        android:id="@+id/nav_signIn"
+        android:name="it.polito.mad.splintersell.ui.SignIn"
+        android:label="sign_in_fragment"
+        tools:layout="@layout/sign_in_fragment" />
+
+    <fragment
+        android:id="@+id/nav_signOut"
+        android:name="it.polito.mad.splintersell.ui.SignOut"
+        android:label="fragment_sign_out"
+        />
+
 
 </navigation>

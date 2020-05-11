@@ -12,6 +12,11 @@
             android:id="@+id/nav_item_list"
             android:icon="@drawable/ic_attach_money_black_24dp"
             android:title="@string/menu_item_list" />
+        <item
+            android:id="@+id/nav_signOut"
+            android:icon="@drawable/ic_attach_money_black_24dp"
+            android:title="@string/SignOut" />
+
     </group>
 
 </menu>
