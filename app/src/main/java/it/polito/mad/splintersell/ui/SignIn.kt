@@ -30,8 +30,11 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.FirebaseFirestore
+import it.polito.mad.splintersell.User
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_sign_in.*
+import kotlinx.android.synthetic.main.sign_in_fragment.*
 
 const val RC_SIGN_IN = 2013
 
@@ -73,8 +76,6 @@ class SignIn : Fragment() {
         sign_in_button.setOnClickListener {
             val signInIntent: Intent = mGoogleSignInClient.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
-
-
         }
 
         auth = Firebase.auth
@@ -130,7 +131,9 @@ class SignIn : Fragment() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("SignInTAG", "signInWithCredential:success")
+
                     val user = auth.currentUser
+                    checkDBCredentials()
                     checkUser(user)
                 } else {
                     // If sign in fails, display a message to the user.
@@ -141,6 +144,57 @@ class SignIn : Fragment() {
 
             }
     }
+
+
+    private fun checkDBCredentials(){
+
+        val db = FirebaseFirestore.getInstance()
+        val user = Firebase.auth.currentUser
+        val docRef = db.collection("users")
+            .document(user!!.uid)
+
+        Log.d("SignInTAG", user.toString())
+        Log.d("SignInTAG", user!!.uid)
+
+
+            docRef.get()
+            .addOnSuccessListener {
+
+                res ->
+                if(!res.exists()){
+
+                        val newUser = User(user.displayName!!, "", user.email!!, "")
+
+                        db.collection("users")
+                            .document(user.uid.toString())
+                            .set(newUser)
+                            .addOnSuccessListener {
+                                Log.d("SignInTAG", "Instance succesfully created!")
+                            }
+                            .addOnFailureListener{
+                                Log.d("SignInTAG", "Error in creating new instance")
+                            }
+
+                }
+                else
+                    Log.d("SignInTAG", res.toString())
+                    Log.d("SignInTAG", "Instance already created!")
+
+            }
+            .addOnFailureListener{
+                Log.d("SignInTAG", "Error in reading the DB")
+            }
+
+
+
+
+
+
+
+
+    }
+
+
 
 }
 
