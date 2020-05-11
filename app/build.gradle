@@ -5,6 +5,14 @@ apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'com.google.gms.google-services'
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('mykey.jks')
+            storePassword 'android'
+            keyAlias = 'mykey'
+            keyPassword 'android'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
