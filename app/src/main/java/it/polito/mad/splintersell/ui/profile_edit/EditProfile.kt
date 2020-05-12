@@ -3,7 +3,6 @@ package it.polito.mad.splintersell.ui.profile_edit
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -30,13 +29,13 @@ import androidx.navigation.Navigation
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import it.polito.mad.splintersell.User
 import kotlinx.android.synthetic.main.fragment_edit_profile.email
 import kotlinx.android.synthetic.main.fragment_edit_profile.location
 import kotlinx.android.synthetic.main.fragment_edit_profile.name
 import kotlinx.android.synthetic.main.fragment_edit_profile.nickname
 import kotlinx.android.synthetic.main.fragment_edit_profile.profile_photo
-import org.json.JSONObject
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -44,21 +43,20 @@ import java.util.*
 const val REQUEST_TAKE_PHOTO = 2
 const val GALLERY_REQUEST_CODE = 3
 const val filename = "proPic"
+const val localfile_name = "imageProfile"
 var rotatedBitmap: Bitmap? = null
 var photoFile: File? = null
 var photoURI: Uri? = null
 
 val db = FirebaseFirestore.getInstance()
+val storage = FirebaseStorage.getInstance().reference
 val user = Firebase.auth.currentUser
 
-const val EXTRA_NAME = "it.polito.mad.splintersell.NAME"
-const val EXTRA_NICKNAME = "it.polito.mad.splintersell.NICKNAME"
-const val EXTRA_EMAIL = "it.polito.mad.splintersell.EMAIL"
-const val EXTRA_LOCATION = "it.polito.mad.splintersell.LOCATION"
 
 class EditProfile : Fragment() {
 
     lateinit var currentPhotoPath: String
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,12 +74,6 @@ class EditProfile : Fragment() {
         this.imageButtonMenu()
 
         this.retrieveImage()
-
-        //Retrieve all the information from the local file system
-        val sharedPref: SharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-        val profile: String? = sharedPref.getString("Profile", null)
-
-        //this.retrievePreferences(profile)
 
         this.retrieveData()
 
@@ -105,6 +97,27 @@ class EditProfile : Fragment() {
                     val fos: FileOutputStream = requireActivity().openFileOutput(filename, Context.MODE_PRIVATE)
                     rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 75, fos)
                     fos.close()
+                }
+
+                //Save image on Cloud Storage
+
+                var profileRefs = storage.child("profileImages")
+                val profileImageName = storage.child(user!!.uid+".jpg")
+                val profileImageRefs= storage.child("profileImages/"+user.uid+".jpg")
+                Log.d("EditProfileTAG", "Name of the file to be stored: $profileImageRefs")
+
+                if(rotatedBitmap!=null){
+                    val baos = ByteArrayOutputStream()
+                    rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 75, baos)
+                    val rotBytes = baos.toByteArray()
+
+                    val uploadTask = profileImageRefs.putBytes(rotBytes)
+                    uploadTask.addOnFailureListener {
+                        Log.d("EditProfileTAG", "Error in saving image to the Cloud Storage")
+                    }.addOnSuccessListener {
+                        Log.d("EditProfileTAG", "Success in saving image to the Cloud Storage")
+                    }
+
                 }
 
                 val newUser = User(name.text.toString(), nickname.text.toString(),
@@ -139,6 +152,8 @@ class EditProfile : Fragment() {
     }
 
     private fun retrieveImage() {
+
+
         val file = File(activity?.filesDir, filename)
         val fileExists = file.exists()
         if (fileExists) {
@@ -150,6 +165,37 @@ class EditProfile : Fragment() {
             fis.close()
             profile_photo.setImageDrawable(roundDrawable)
         }
+
+
+/*
+        val profileImageRefs= storage.child("profileImages/"+user!!.uid+".jpg")
+
+        val localFile = File(activity?.filesDir, localfile_name)
+
+
+        Log.d("EditProfileTAG", "Path of the image:"+localFile.absolutePath)
+        Log.d("EditProfileTAG", "Name of the image:"+localFile.name)
+        profileImageRefs.getFile(localFile)
+            .addOnSuccessListener {
+                Log.d("EditProfileTAG", "File created")
+            }
+            .addOnFailureListener{
+                Log.d("EditProfileTAG", "Error in file creation")
+            }
+
+
+        val fileExists = localFile.exists()
+        if (fileExists) {
+            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+            val roundDrawable: RoundedBitmapDrawable =
+                RoundedBitmapDrawableFactory.create(resources, bitmap)
+            roundDrawable.isCircular = true
+            profile_photo.setImageDrawable(roundDrawable)
+        }
+
+
+ */
+
     }
 
 
@@ -185,44 +231,6 @@ class EditProfile : Fragment() {
                 Log.d("ShowProfileTAG", "Error in retrieving data")
             }
 
-    }
-
-
-
-    private fun retrievePreferences(profile: String?) {
-        if (profile != null) {
-
-            val jasonObject = JSONObject(profile)
-            val savedName: String
-            val savedNickname: String
-            val savedEmail: String
-            val savedLocation: String
-
-            savedName = if (jasonObject.has(it.polito.mad.splintersell.ui.profile_show.EXTRA_NAME))
-                jasonObject.getString(it.polito.mad.splintersell.ui.profile_show.EXTRA_NAME)
-            else
-                ""
-
-            savedNickname = if (jasonObject.has(it.polito.mad.splintersell.ui.profile_show.EXTRA_NICKNAME))
-                jasonObject.getString(it.polito.mad.splintersell.ui.profile_show.EXTRA_NICKNAME)
-            else
-                ""
-
-            savedEmail = if (jasonObject.has(it.polito.mad.splintersell.ui.profile_show.EXTRA_EMAIL))
-                jasonObject.getString(it.polito.mad.splintersell.ui.profile_show.EXTRA_EMAIL)
-            else
-                ""
-
-            savedLocation = if (jasonObject.has(it.polito.mad.splintersell.ui.profile_show.EXTRA_LOCATION))
-                jasonObject.getString(it.polito.mad.splintersell.ui.profile_show.EXTRA_LOCATION)
-            else
-                ""
-
-            name.setText(savedName)
-            nickname.setText(savedNickname)
-            email.setText(savedEmail)
-            location.setText(savedLocation)
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
