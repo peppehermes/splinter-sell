@@ -27,6 +27,10 @@ import it.polito.mad.splintersell.R
 import kotlin.math.roundToInt
 import androidx.exifinterface.media.ExifInterface
 import androidx.navigation.Navigation
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import it.polito.mad.splintersell.User
 import kotlinx.android.synthetic.main.fragment_edit_profile.email
 import kotlinx.android.synthetic.main.fragment_edit_profile.location
 import kotlinx.android.synthetic.main.fragment_edit_profile.name
@@ -43,6 +47,9 @@ const val filename = "proPic"
 var rotatedBitmap: Bitmap? = null
 var photoFile: File? = null
 var photoURI: Uri? = null
+
+val db = FirebaseFirestore.getInstance()
+val user = Firebase.auth.currentUser
 
 const val EXTRA_NAME = "it.polito.mad.splintersell.NAME"
 const val EXTRA_NICKNAME = "it.polito.mad.splintersell.NICKNAME"
@@ -74,7 +81,9 @@ class EditProfile : Fragment() {
         val sharedPref: SharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         val profile: String? = sharedPref.getString("Profile", null)
 
-        this.retrievePreferences(profile)
+        //this.retrievePreferences(profile)
+
+        this.retrieveData()
 
         photoURI = savedInstanceState?.getString("imgUri")?.let { Uri.parse(it) }
 
@@ -98,28 +107,21 @@ class EditProfile : Fragment() {
                     fos.close()
                 }
 
-                // Create JSON Object and fill it with data to store
-                val rootObject = JSONObject()
-                if (!name.text.isNullOrEmpty()) {
-                    rootObject.accumulate(EXTRA_NAME, name.text)
-                }
-                if (!nickname.text.isNullOrEmpty()) {
-                    rootObject.accumulate(EXTRA_NICKNAME, nickname.text)
-                }
-                if (!email.text.isNullOrEmpty()) {
-                    rootObject.accumulate(EXTRA_EMAIL, email.text)
-                }
-                if (!location.text.isNullOrEmpty()) {
-                    rootObject.accumulate(EXTRA_LOCATION, location.text)
-                }
+                val newUser = User(name.text.toString(), nickname.text.toString(),
+                                    email.text.toString(), location.text.toString())
 
-                //Persist all the information in the local file system
-                val sharedPref: SharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
-                with(sharedPref.edit()) {
-                    putString("Profile",  rootObject.toString())
-                    apply()
-                    Navigation.findNavController(requireView()).navigate(R.id.nav_show_profile)
-                }
+                // Update document on the DB
+                db.collection("users")
+                    .document(user!!.uid)
+                    .set(newUser)
+                    .addOnSuccessListener {
+                        Log.d("EditProfileTAG", "Instance succesfully updated!")
+                    }
+                    .addOnFailureListener{
+                        Log.d("EditProfileTAG", "Error in updating instance")
+                    }
+
+                Navigation.findNavController(requireView()).navigate(R.id.nav_show_profile)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -149,6 +151,43 @@ class EditProfile : Fragment() {
             profile_photo.setImageDrawable(roundDrawable)
         }
     }
+
+
+    private fun retrieveData(){
+
+        db.collection("users")
+            .document(user!!.uid)
+            .get()
+            .addOnSuccessListener {
+
+                    res ->
+                if(res.exists()){
+                    val userData: User? = res.toObject(User::class.java)
+                    Log.d("ShowProfileTAG", "Success in retrieving data: "+ res.toString())
+
+                    Log.d("ShowProfileTAG", userData.toString())
+
+                    if(userData?.fullname != "")
+                        name.setText(userData!!.fullname)
+                    if(userData.nickname != "")
+                        nickname.setText(userData.nickname)
+                    if(userData.email != "")
+                        email.setText(userData.email)
+                    if(userData.location != "")
+                        location.setText(userData.location)
+                }
+                else
+                    Log.d("ShowProfileTAG", "No document retrieved")
+
+
+            }
+            .addOnFailureListener{
+                Log.d("ShowProfileTAG", "Error in retrieving data")
+            }
+
+    }
+
+
 
     private fun retrievePreferences(profile: String?) {
         if (profile != null) {

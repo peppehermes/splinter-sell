@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -18,8 +19,13 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
+import it.polito.mad.splintersell.User
+import kotlinx.android.synthetic.main.fragment_edit_item.view.*
 import kotlinx.android.synthetic.main.fragment_show_profile.*
 import org.json.JSONObject
 import java.io.File
@@ -30,6 +36,9 @@ const val EXTRA_NICKNAME = "it.polito.mad.splintersell.NICKNAME"
 const val EXTRA_EMAIL = "it.polito.mad.splintersell.EMAIL"
 const val EXTRA_LOCATION = "it.polito.mad.splintersell.LOCATION"
 const val filename = "proPic"
+
+val db = FirebaseFirestore.getInstance()
+val user = Firebase.auth.currentUser
 
 class ShowProfile : Fragment() {
 
@@ -62,7 +71,9 @@ class ShowProfile : Fragment() {
         val sharedPref: SharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         val profile: String? = sharedPref.getString("Profile", null)
 
-        this.retrievePreferences(profile)
+        //this.retrievePreferences(profile)
+
+        this.retrieveData()
 
         this.retrieveImage()
 
@@ -103,6 +114,42 @@ class ShowProfile : Fragment() {
 
         }
     }
+
+
+    private fun retrieveData(){
+
+        db.collection("users")
+            .document(user!!.uid)
+            .get()
+            .addOnSuccessListener {
+
+                res ->
+                if(res.exists()){
+                    val userData:User? = res.toObject(User::class.java)
+                    Log.d("ShowProfileTAG", "Success in retrieving data: "+ res.toString())
+
+                    Log.d("ShowProfileTAG", userData.toString())
+
+                    if(userData?.fullname != "")
+                        name.text = userData!!.fullname
+                    if(userData.nickname != "")
+                        nickname.text = userData.nickname
+                    if(userData.email != "")
+                        email.text = userData.email
+                    if(userData.location != "")
+                        location.text = userData.location
+                }
+                else
+                    Log.d("ShowProfileTAG", "No document retrieved")
+
+
+            }
+            .addOnFailureListener{
+                Log.d("ShowProfileTAG", "Error in retrieving data")
+            }
+
+    }
+
 
     private fun retrievePreferences(profile: String?) {
         if (profile != null) {

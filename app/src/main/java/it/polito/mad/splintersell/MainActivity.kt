@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -19,6 +20,9 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.navigateUp
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.ui.profile_show.EXTRA_EMAIL
 import it.polito.mad.splintersell.ui.profile_show.EXTRA_NICKNAME
 import org.json.JSONObject
@@ -26,6 +30,9 @@ import java.io.File
 import java.io.FileInputStream
 
 const val filename = "proPic"
+
+val db = FirebaseFirestore.getInstance()
+val user = Firebase.auth.currentUser
 
 class MainActivity : AppCompatActivity() {
 
@@ -60,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         val textViewNick = headerView.findViewById(R.id.nav_profile_name) as TextView
         val textViewMail = headerView.findViewById(R.id.nav_profile_mail) as TextView
         val imgView = headerView.findViewById(R.id.imageView) as ImageView
+
 
         val sharedPref: SharedPreferences = getPreferences(Context.MODE_PRIVATE) ?: return
         val profile: String? = sharedPref.getString("Profile", null)
