@@ -188,14 +188,16 @@ class ItemEditFragment : Fragment() {
         }
     }
 
+    //TODO: fix retrieving data of the Item from DB (ItemEdit)
     private fun populateEditText() {
         filename = index.toString()
 
         val itemName: String = user!!.uid+"_"+index.toString()
 
-        val docRef = db.collection("items")
+        val docRef = db.collection("users")
+            .document(user.uid)
+            .collection("items")
             .document(itemName)
-
 
         docRef.get()
             .addOnSuccessListener {
@@ -533,8 +535,28 @@ class ItemEditFragment : Fragment() {
                     fos.close()
                 }
 
-                rotatedBitmap = null
+                //Save image on Cloud Storage
 
+                var profileRefs = storage.child("itemImages")
+                val profileImageName = storage.child(user!!.uid+"_"+index+".jpg")
+                val profileImageRefs= storage.child("itemImages/"+user!!.uid+"_"+index+".jpg")
+                Log.d("ItemEditTAG", "Name of the file to be stored: $profileImageRefs")
+
+                if(rotatedBitmap!=null){
+                    val baos = ByteArrayOutputStream()
+                    rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 75, baos)
+                    val rotBytes = baos.toByteArray()
+
+                    val uploadTask = profileImageRefs.putBytes(rotBytes)
+                    uploadTask.addOnFailureListener {
+                        Log.d("ItemEditTAG", "Error in saving image to the Cloud Storage")
+                    }.addOnSuccessListener {
+                        Log.d("ItemEditTAG", "Success in saving image to the Cloud Storage")
+                    }
+
+                }
+
+                rotatedBitmap = null
 
                 insertIntoDB()
 
@@ -578,16 +600,20 @@ class ItemEditFragment : Fragment() {
     }
 
 
-    private fun insertIntoDB(){
+    private fun insertIntoDB() {
 
-        val itemName: String = user!!.uid.toString()+"_"+index.toString()
+        val itemName: String = user!!.uid.toString() + "_" + index.toString()
 
-        val newItem = ItemDB(index!!, title.text.toString(),
+        val newItem = ItemDB(
+            index!!, title.text.toString(),
             description.text.toString(), price.text.toString(),
             dropdow_main_category.text.toString(), dropdow_sub_category.text.toString(),
-            location.text.toString(), expire_date.text.toString())
+            location.text.toString(), expire_date.text.toString()
+        )
 
-        val docRef = db.collection("items")
+        val docRef = db.collection("users")
+            .document(user.uid)
+            .collection("items")
             .document(itemName)
 
         Log.d("SignInTAG", docRef.toString())
@@ -596,29 +622,32 @@ class ItemEditFragment : Fragment() {
             .addOnSuccessListener {
 
                     res ->
-                if(!res.exists()){  //new item created
+                if (!res.exists()) {  //new item created
 
-                    db.collection("items")
+                    db.collection("users")
+                        .document(user.uid)
+                        .collection("items")
                         .document(itemName)
                         .set(newItem)
                         .addOnSuccessListener {
                             Log.d("ItemEditTAG", "Instance succesfully created!")
                         }
-                        .addOnFailureListener{
+                        .addOnFailureListener {
                             Log.d("ItemEditTAG", "Error in creating new instance")
                         }
 
-                }
-                else {  //update item
+                } else {  //update item
 
 
-                    db.collection("items")
+                    db.collection("users")
+                        .document(user.uid)
+                        .collection("items")
                         .document(itemName)
                         .set(newItem)
                         .addOnSuccessListener {
                             Log.d("ItemEditTAG", "Instance succesfully updated!")
                         }
-                        .addOnFailureListener{
+                        .addOnFailureListener {
                             Log.d("ItemEditTAG", "Error in updating instance")
                         }
 
@@ -626,12 +655,9 @@ class ItemEditFragment : Fragment() {
                 }
 
             }
-            .addOnFailureListener{
+            .addOnFailureListener {
                 Log.d("ItemEditTAG", "Error in reading the DB")
             }
-
-
-
 
     }
 

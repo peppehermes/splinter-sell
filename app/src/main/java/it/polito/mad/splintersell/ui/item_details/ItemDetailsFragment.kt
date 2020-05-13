@@ -62,6 +62,7 @@ class ItemDetailsFragment: Fragment() {
             index = this.itemId
             //Log.e("ID", index.toString())
 
+            /*
             retrieveData(itemId)
 
             val filename = index.toString()
@@ -71,7 +72,9 @@ class ItemDetailsFragment: Fragment() {
             if (bitmap != null)
                 detail_image.setImageBitmap(bitmap)
 
-            /*
+             */
+
+
 
             val sharedPref: SharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE) ?: return
 
@@ -127,19 +130,20 @@ class ItemDetailsFragment: Fragment() {
                 expire_date.text = showDate
             }
 
-             */
+
         }
     }
 
 
+    //TODO: fix retrieving data of the Item from DB (ItemDetails)
     private fun retrieveData(index: Int){
 
         val itemName: String = user!!.uid+"_"+index.toString()
 
-        val docRef = db.collection("items")
+        val docRef = db.collection("users")
+            .document(user.uid)
+            .collection("items")
             .document(itemName)
-
-        var itemData: ItemDB?
 
 
         docRef.get()
@@ -147,7 +151,7 @@ class ItemDetailsFragment: Fragment() {
 
                     res ->
                 if(res.exists()){
-                    itemData = res.toObject(ItemDB::class.java)
+                    val itemData: ItemDB? = res.toObject(ItemDB::class.java)
                     Log.d("ItemDetailTAG", "Success in retrieving data: "+ res.toString())
 
                     Log.d("ItemDetailTAG", itemData.toString())
@@ -182,21 +186,6 @@ class ItemDetailsFragment: Fragment() {
             }
             .addOnFailureListener{
                 Log.d("ItemDetailTAG", "Error in retrieving data")
-            }
-
-            docRef.addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Log.w("ItemDetailTAG", "Listen failed.", e)
-                    return@addSnapshotListener
-                }
-
-                if (snapshot != null && snapshot.exists()) {
-                    Log.d("ItemDetailTAG", "Current data: ${snapshot.data}")
-
-                    itemData = snapshot.toObject(ItemDB::class.java)
-                    Log.d("ItemDetailTAG", "NEW ITEM DATA: "+itemData!!.toString())
-
-                }
             }
 
 

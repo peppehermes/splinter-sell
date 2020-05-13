@@ -100,6 +100,8 @@ class ShowProfile : Fragment() {
         }
     }
 
+
+    //TODO Fix retrieving image of User from Storage (ShowProfile)
     private fun retrieveImage() {
         val file = File(activity?.filesDir, filename)
         val fileExists = file.exists()

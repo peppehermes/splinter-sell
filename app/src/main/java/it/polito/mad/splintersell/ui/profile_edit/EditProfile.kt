@@ -167,6 +167,7 @@ class EditProfile : Fragment() {
         }
 
 
+        //TODO Fix retrieving image of User from Storage (EditProfile)
 /*
         val profileImageRefs= storage.child("profileImages/"+user!!.uid+".jpg")
 
