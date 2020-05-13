@@ -176,9 +176,10 @@ class SignIn : Fragment() {
                             }
 
                 }
-                else
+                else {
                     Log.d("SignInTAG", res.toString())
                     Log.d("SignInTAG", "Instance already created!")
+                }
 
             }
             .addOnFailureListener{

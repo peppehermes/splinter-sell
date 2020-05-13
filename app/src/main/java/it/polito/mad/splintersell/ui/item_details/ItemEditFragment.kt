@@ -28,6 +28,11 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import it.polito.mad.splintersell.ItemDB
 import it.polito.mad.splintersell.R
 import kotlinx.android.synthetic.main.fragment_edit_item.*
 import org.json.JSONObject
@@ -42,6 +47,10 @@ var rotatedBitmap: Bitmap? = null
 var photoFile: File? = null
 var photoURI: Uri? = null
 var filename: String? = null
+
+val db = FirebaseFirestore.getInstance()
+val storage = FirebaseStorage.getInstance().reference
+val user = Firebase.auth.currentUser
 
 class ItemEditFragment : Fragment() {
     private val args: ItemEditFragmentArgs by navArgs()
@@ -182,6 +191,48 @@ class ItemEditFragment : Fragment() {
     private fun populateEditText() {
         filename = index.toString()
 
+        val itemName: String = user!!.uid+"_"+index.toString()
+
+        val docRef = db.collection("items")
+            .document(itemName)
+
+
+        docRef.get()
+            .addOnSuccessListener {
+
+                    res ->
+                if(res.exists()){
+                    val itemData: ItemDB? = res.toObject(ItemDB::class.java)
+                    Log.d("ItemEditTAG", "Success in retrieving data: "+ res.toString())
+
+                    Log.d("ItemEditTAG", itemData.toString())
+
+                    if(itemData!!.title != "")
+                        title.setText(itemData!!.title)
+                    if(itemData.description != "")
+                        description.setText(itemData.description)
+                    if(itemData!!.price != "")
+                        price.setText(itemData!!.price)
+                    if(itemData!!.location != "")
+                        location.setText(itemData!!.location)
+                    if(itemData!!.expire_date != "")
+                        expire_date.setText(itemData!!.expire_date)
+
+                }
+                else
+                    Log.d("ItemEditTAG", "No document retrieved")
+
+
+            }
+            .addOnFailureListener{
+                Log.d("ItemEditTAG", "Error in retrieving data")
+            }
+
+
+
+
+        /*
+
         val sharedPref: SharedPreferences =
             requireActivity().getPreferences(Context.MODE_PRIVATE) ?: return
 
@@ -226,6 +277,8 @@ class ItemEditFragment : Fragment() {
             location.setText(editLocation)
             expire_date.setText(editDate)
         }
+
+         */
     }
 
     private fun imageButtonMenu() {
@@ -481,6 +534,12 @@ class ItemEditFragment : Fragment() {
                 }
 
                 rotatedBitmap = null
+
+
+                insertIntoDB()
+
+
+
                 // Create JSON Object and fill it with data to store
                 val rootObject = JSONObject()
 
@@ -517,6 +576,67 @@ class ItemEditFragment : Fragment() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
+    private fun insertIntoDB(){
+
+        val itemName: String = user!!.uid.toString()+"_"+index.toString()
+
+        val newItem = ItemDB(index!!, title.text.toString(),
+            description.text.toString(), price.text.toString(),
+            dropdow_main_category.text.toString(), dropdow_sub_category.text.toString(),
+            location.text.toString(), expire_date.text.toString())
+
+        val docRef = db.collection("items")
+            .document(itemName)
+
+        Log.d("SignInTAG", docRef.toString())
+
+        docRef.get()
+            .addOnSuccessListener {
+
+                    res ->
+                if(!res.exists()){  //new item created
+
+                    db.collection("items")
+                        .document(itemName)
+                        .set(newItem)
+                        .addOnSuccessListener {
+                            Log.d("ItemEditTAG", "Instance succesfully created!")
+                        }
+                        .addOnFailureListener{
+                            Log.d("ItemEditTAG", "Error in creating new instance")
+                        }
+
+                }
+                else {  //update item
+
+
+                    db.collection("items")
+                        .document(itemName)
+                        .set(newItem)
+                        .addOnSuccessListener {
+                            Log.d("ItemEditTAG", "Instance succesfully updated!")
+                        }
+                        .addOnFailureListener{
+                            Log.d("ItemEditTAG", "Error in updating instance")
+                        }
+
+
+                }
+
+            }
+            .addOnFailureListener{
+                Log.d("ItemEditTAG", "Error in reading the DB")
+            }
+
+
+
+
+    }
+
+
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)

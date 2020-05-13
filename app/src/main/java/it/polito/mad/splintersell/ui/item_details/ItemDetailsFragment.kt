@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
+import it.polito.mad.splintersell.ItemDB
 import it.polito.mad.splintersell.R
 import kotlinx.android.synthetic.main.fragment_edit_item.*
 import kotlinx.android.synthetic.main.fragment_item_details.*
@@ -22,6 +23,7 @@ import kotlinx.android.synthetic.main.fragment_item_details.expire_date
 import kotlinx.android.synthetic.main.fragment_item_details.location
 import kotlinx.android.synthetic.main.fragment_item_details.price
 import kotlinx.android.synthetic.main.fragment_item_details.title
+import kotlinx.android.synthetic.main.fragment_item_details.view.*
 import org.json.JSONObject
 import java.io.File
 import java.io.FileInputStream
@@ -59,6 +61,17 @@ class ItemDetailsFragment: Fragment() {
         args.apply {
             index = this.itemId
             //Log.e("ID", index.toString())
+
+            retrieveData(itemId)
+
+            val filename = index.toString()
+
+            val bitmap = retrieveImage(filename)
+
+            if (bitmap != null)
+                detail_image.setImageBitmap(bitmap)
+
+            /*
 
             val sharedPref: SharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE) ?: return
 
@@ -113,7 +126,82 @@ class ItemDetailsFragment: Fragment() {
                 location.text = showLocation
                 expire_date.text = showDate
             }
+
+             */
         }
+    }
+
+
+    private fun retrieveData(index: Int){
+
+        val itemName: String = user!!.uid+"_"+index.toString()
+
+        val docRef = db.collection("items")
+            .document(itemName)
+
+        var itemData: ItemDB?
+
+
+        docRef.get()
+            .addOnSuccessListener {
+
+                    res ->
+                if(res.exists()){
+                    itemData = res.toObject(ItemDB::class.java)
+                    Log.d("ItemDetailTAG", "Success in retrieving data: "+ res.toString())
+
+                    Log.d("ItemDetailTAG", itemData.toString())
+
+                    if(itemData!!.title != "")
+                        title.text = itemData!!.title
+                    if(itemData!!.description != "")
+                        description.text = itemData!!.description
+                    if(itemData!!.price != "")
+                        price.text = itemData!!.price
+
+                    if(itemData!!.mainCategory != "") {
+                        if(itemData!!.secondCategory != "") {
+                            val mycat: String = itemData!!.mainCategory + " : " + itemData!!.secondCategory
+                            category.text = mycat
+                        }
+                        else
+                            category.text = itemData!!.mainCategory
+                    }
+
+
+                    if(itemData!!.location != "")
+                        location.setText(itemData!!.location)
+                    if(itemData!!.expire_date != "")
+                        expire_date.setText(itemData!!.expire_date)
+
+                }
+                else
+                    Log.d("ItemDetailTAG", "No document retrieved")
+
+
+            }
+            .addOnFailureListener{
+                Log.d("ItemDetailTAG", "Error in retrieving data")
+            }
+
+            docRef.addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w("ItemDetailTAG", "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d("ItemDetailTAG", "Current data: ${snapshot.data}")
+
+                    itemData = snapshot.toObject(ItemDB::class.java)
+                    Log.d("ItemDetailTAG", "NEW ITEM DATA: "+itemData!!.toString())
+
+                }
+            }
+
+
+
+
     }
 
     private fun retrieveImage(filename: String) : Bitmap? {
