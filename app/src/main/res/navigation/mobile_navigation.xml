@@ -10,17 +10,16 @@
         android:id="@+id/nav_item_details"
         android:name="it.polito.mad.splintersell.ui.item_details.ItemDetailsFragment"
         android:label="@string/menu_item_details">
-        <argument
-            android:name="item_id"
-            app:argType="integer"
-            android:defaultValue="-1" />
         <action
             android:id="@+id/editItem"
             app:destination="@id/nav_edit_item"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"/>
+            app:popUpTo="@id/nav_item_details" />
+        <argument
+            android:name="documentName"
+            app:argType="string" />
+        <argument
+            android:name="onSale"
+            app:argType="boolean" />
     </fragment>
 
     <fragment
@@ -29,38 +28,15 @@
         android:label="@string/menu_item_list"
         tools:layout="@layout/fragment_item_list" >
         <action
-            android:id="@+id/editListItem"
-            app:destination="@id/nav_edit_item"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out">
-            <argument
-                android:name="item_id"
-                android:defaultValue="-1" />
-        </action>
+            android:id="@+id/newItem"
+            app:destination="@id/nav_edit_item" />
         <action
             android:id="@+id/showItemDetail"
             app:destination="@id/nav_item_details"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out">
-            <argument
-                android:name="item_id"
-                android:defaultValue="-1" />
-        </action>
+            app:popUpTo="@id/nav_item_list" />
         <action
-            android:id="@+id/newItem"
-            app:destination="@id/nav_edit_item"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out">
-            <argument
-                android:name="item_id"
-                android:defaultValue="-1" />
-        </action>
+            android:id="@+id/editListItem"
+            app:destination="@id/nav_edit_item" />
     </fragment>
 
     <fragment
@@ -69,21 +45,12 @@
         android:label="@string/menu_edit_item"
         tools:layout="@layout/fragment_edit_item" >
         <argument
-            android:name="item_id"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            android:name="documentName"
+            app:argType="string" />
         <action
             android:id="@+id/goToDetails"
             app:destination="@id/nav_item_details"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"
-            app:popUpTo="@id/nav_item_list">
-            <argument
-                android:name="item_id"
-                android:defaultValue="-1" />
-        </action>
+            app:popUpTo="@id/nav_item_list" />
     </fragment>
 
     <fragment
@@ -108,14 +75,26 @@
     <fragment
         android:id="@+id/nav_signIn"
         android:name="it.polito.mad.splintersell.ui.SignIn"
-        android:label="sign_in_fragment"
-        tools:layout="@layout/sign_in_fragment" />
+        android:label="Sign In"
+        tools:layout="@layout/sign_in_fragment" >
+        <action
+            android:id="@+id/action_nav_signIn_to_onSaleListFragment"
+            app:destination="@id/onSaleListFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_signOut"
         android:name="it.polito.mad.splintersell.ui.SignOut"
-        android:label="fragment_sign_out"
-        />
+        android:label="Sign out" />
+    <fragment
+        android:id="@+id/onSaleListFragment"
+        android:name="it.polito.mad.splintersell.ui.on_sale_list.OnSaleListFragment"
+        android:label="On sale"
+        tools:layout="@layout/fragment_on_sale_list">
+        <action
+            android:id="@+id/showOnSaleItem"
+            app:destination="@id/nav_item_details" />
+    </fragment>
 
 
 </navigation>

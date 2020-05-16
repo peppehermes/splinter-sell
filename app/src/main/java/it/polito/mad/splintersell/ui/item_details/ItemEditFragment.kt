@@ -7,9 +7,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.app.DatePickerDialog
 import android.content.Context
-import android.content.SharedPreferences
 import android.media.ExifInterface
-import android.widget.Spinner
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -20,22 +18,19 @@ import android.util.Log
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.PopupMenu
-import android.widget.SpinnerAdapter
-import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import it.polito.mad.splintersell.ItemDB
+import it.polito.mad.splintersell.data.FirestoreViewModel
+import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.R
 import kotlinx.android.synthetic.main.fragment_edit_item.*
-import org.json.JSONObject
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -48,14 +43,14 @@ var photoFile: File? = null
 var photoURI: Uri? = null
 var filename: String? = null
 
-val db = FirebaseFirestore.getInstance()
-val storage = FirebaseStorage.getInstance().reference
-val user = Firebase.auth.currentUser
 
 class ItemEditFragment : Fragment() {
+    private val firestoreViewModel: FirestoreViewModel by viewModels()
+
     private val args: ItemEditFragmentArgs by navArgs()
     private lateinit var currentPhotoPath: String
-    private var index: Int? = null
+    val user = Firebase.auth.currentUser
+    lateinit var liveData: LiveData<ItemModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +61,7 @@ class ItemEditFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        liveData = firestoreViewModel.getItemFromFirestore(args.documentName)
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_item, container, false)
     }
@@ -76,15 +72,23 @@ class ItemEditFragment : Fragment() {
 
         this.setInputLimits()
 
-        index = args.itemId
+        //documentName = args.documentName
         //Log.e("ID", index.toString())
         this.showDate()
         this.restoreImage(savedInstanceState)
         this.imageButtonMenu()
-        if (index != -1) {
-            this.populateEditText()
-            this.retrieveImage()
-        }
+
+        liveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            title.setText(it.title)
+            description.setText(it.description)
+            price.setText(it.price)
+            location.setText(it.location)
+            expire_date.setText(it.expireDate)
+        })
+
+        //this.populateEditText()
+        //this.retrieveImage()
+
         val adapter = ArrayAdapter(
             activity?.applicationContext!!,R.layout.spinner_text,
             resources.getStringArray(R.array.macroCategories))
@@ -186,101 +190,6 @@ class ItemEditFragment : Fragment() {
                 day
             ).show()
         }
-    }
-
-    //TODO: fix retrieving data of the Item from DB (ItemEdit)
-    private fun populateEditText() {
-        filename = index.toString()
-
-        val itemName: String = user!!.uid+"_"+index.toString()
-
-        val docRef = db.collection("users")
-            .document(user.uid)
-            .collection("items")
-            .document(itemName)
-
-        docRef.get()
-            .addOnSuccessListener {
-
-                    res ->
-                if(res.exists()){
-                    val itemData: ItemDB? = res.toObject(ItemDB::class.java)
-                    Log.d("ItemEditTAG", "Success in retrieving data: "+ res.toString())
-
-                    Log.d("ItemEditTAG", itemData.toString())
-
-                    if(itemData!!.title != "")
-                        title.setText(itemData!!.title)
-                    if(itemData.description != "")
-                        description.setText(itemData.description)
-                    if(itemData!!.price != "")
-                        price.setText(itemData!!.price)
-                    if(itemData!!.location != "")
-                        location.setText(itemData!!.location)
-                    if(itemData!!.expire_date != "")
-                        expire_date.setText(itemData!!.expire_date)
-
-                }
-                else
-                    Log.d("ItemEditTAG", "No document retrieved")
-
-
-            }
-            .addOnFailureListener{
-                Log.d("ItemEditTAG", "Error in retrieving data")
-            }
-
-
-
-
-        /*
-
-        val sharedPref: SharedPreferences =
-            requireActivity().getPreferences(Context.MODE_PRIVATE) ?: return
-
-        if (sharedPref.contains(index.toString())) {
-
-            val info: String? = sharedPref.getString(index.toString(), null)
-
-            val jasonObject = JSONObject(info!!)
-            val editTitle: String
-            val editDescription: String
-            val editPrice: String
-            val editLocation: String
-            val editDate: String
-
-            editTitle = if (jasonObject.has("Title"))
-                jasonObject.getString("Title")
-            else
-                ""
-
-            editDescription = if (jasonObject.has("Description"))
-                jasonObject.getString("Description")
-            else
-                ""
-            editPrice = if (jasonObject.has("Price"))
-                jasonObject.getString("Price")
-            else
-                ""
-
-            editLocation = if (jasonObject.has("Location"))
-                jasonObject.getString("Location")
-            else
-                ""
-
-            editDate = if (jasonObject.has("Expire_Date"))
-                jasonObject.getString("Expire_Date")
-            else
-                ""
-
-            title.setText(editTitle)
-            description.setText(editDescription)
-            price.setText(editPrice)
-            location.setText(editLocation)
-            expire_date.setText(editDate)
-        }
-
-         */
     }
 
     private fun imageButtonMenu() {
@@ -536,7 +445,7 @@ class ItemEditFragment : Fragment() {
                 }
 
                 //Save image on Cloud Storage
-
+                /*
                 var profileRefs = storage.child("itemImages")
                 val profileImageName = storage.child(user!!.uid+"_"+index+".jpg")
                 val profileImageRefs= storage.child("itemImages/"+user!!.uid+"_"+index+".jpg")
@@ -558,111 +467,32 @@ class ItemEditFragment : Fragment() {
 
                 rotatedBitmap = null
 
-                insertIntoDB()
+                //insertIntoDB()
 
+                 */
 
+                val newItem = ItemModel(
+                    title.text.toString(),
+                    description.text.toString(),
+                    price.text.toString(),
+                    dropdow_main_category.text.toString(),
+                    dropdow_sub_category.text.toString(),
+                    location.text.toString(),
+                    expire_date.text.toString(),
+                    args.documentName,
+                    user!!.uid
+                )
 
-                // Create JSON Object and fill it with data to store
-                val rootObject = JSONObject()
+                firestoreViewModel.saveItemToFirestore(newItem)
 
-                if (!title.text.isNullOrEmpty())
-                    rootObject.accumulate("Title", title.text)
+                val action = ItemEditFragmentDirections.goToDetails(args.documentName, false)
+                Navigation.findNavController(requireView()).navigate(action)
 
-                if (!description.text.isNullOrEmpty())
-                    rootObject.accumulate("Description", description.text)
-
-                if (!price.text.isNullOrEmpty())
-                    rootObject.accumulate("Price", price.text)
-
-                if (!dropdow_sub_category.text.isNullOrEmpty())
-                    rootObject.accumulate("Category", dropdow_main_category.text.toString() + ": " + dropdow_sub_category.text.toString())
-
-                if (!location.text.isNullOrEmpty())
-                    rootObject.accumulate("Location", location.text)
-
-                if (!expire_date.text.isNullOrEmpty())
-                    rootObject.accumulate("Expire_Date", expire_date.text.toString())
-
-                val sharedPref: SharedPreferences =
-                    requireActivity().getPreferences(Context.MODE_PRIVATE)
-
-                with(sharedPref.edit()) {
-                    putString(index.toString(), rootObject.toString())
-                    apply()
-
-                    val action = ItemEditFragmentDirections.goToDetails(args.itemId)
-                    Navigation.findNavController(requireView()).navigate(action)
-                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-
-    private fun insertIntoDB() {
-
-        val itemName: String = user!!.uid.toString() + "_" + index.toString()
-
-        val newItem = ItemDB(
-            index!!, title.text.toString(),
-            description.text.toString(), price.text.toString(),
-            dropdow_main_category.text.toString(), dropdow_sub_category.text.toString(),
-            location.text.toString(), expire_date.text.toString()
-        )
-
-        val docRef = db.collection("users")
-            .document(user.uid)
-            .collection("items")
-            .document(itemName)
-
-        Log.d("SignInTAG", docRef.toString())
-
-        docRef.get()
-            .addOnSuccessListener {
-
-                    res ->
-                if (!res.exists()) {  //new item created
-
-                    db.collection("users")
-                        .document(user.uid)
-                        .collection("items")
-                        .document(itemName)
-                        .set(newItem)
-                        .addOnSuccessListener {
-                            Log.d("ItemEditTAG", "Instance succesfully created!")
-                        }
-                        .addOnFailureListener {
-                            Log.d("ItemEditTAG", "Error in creating new instance")
-                        }
-
-                } else {  //update item
-
-
-                    db.collection("users")
-                        .document(user.uid)
-                        .collection("items")
-                        .document(itemName)
-                        .set(newItem)
-                        .addOnSuccessListener {
-                            Log.d("ItemEditTAG", "Instance succesfully updated!")
-                        }
-                        .addOnFailureListener {
-                            Log.d("ItemEditTAG", "Error in updating instance")
-                        }
-
-
-                }
-
-            }
-            .addOnFailureListener {
-                Log.d("ItemEditTAG", "Error in reading the DB")
-            }
-
-    }
-
-
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)

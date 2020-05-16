@@ -24,8 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
-import it.polito.mad.splintersell.User
-import kotlinx.android.synthetic.main.fragment_edit_item.view.*
+import it.polito.mad.splintersell.data.User
 import kotlinx.android.synthetic.main.fragment_show_profile.*
 import org.json.JSONObject
 import java.io.File
@@ -69,7 +68,6 @@ class ShowProfile : Fragment() {
 
         //Retrieve all the information from the local file system
         val sharedPref: SharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-        val profile: String? = sharedPref.getString("Profile", null)
 
         //this.retrievePreferences(profile)
 
@@ -127,7 +125,8 @@ class ShowProfile : Fragment() {
 
                 res ->
                 if(res.exists()){
-                    val userData:User? = res.toObject(User::class.java)
+                    val userData: User? = res.toObject(
+                        User::class.java)
                     Log.d("ShowProfileTAG", "Success in retrieving data: "+ res.toString())
 
                     Log.d("ShowProfileTAG", userData.toString())

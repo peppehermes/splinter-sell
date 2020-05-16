@@ -1,4 +1,4 @@
-package it.polito.mad.splintersell
+package it.polito.mad.splintersell.data
 
 data class User(
 
@@ -7,4 +7,4 @@ data class User(
     var email: String = "",
     var location: String = ""
 
-) {}
+)

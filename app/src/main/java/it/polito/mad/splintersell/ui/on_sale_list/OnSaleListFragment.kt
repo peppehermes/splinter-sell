@@ -1,9 +1,7 @@
-package it.polito.mad.splintersell.ui.item_list
+package it.polito.mad.splintersell.ui.on_sale_list
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +10,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -21,18 +18,18 @@ import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
-import it.polito.mad.splintersell.*
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.data.ItemModelHolder
-import kotlinx.android.synthetic.main.fragment_item_list.*
-import java.io.File
-import java.io.FileInputStream
+import it.polito.mad.splintersell.R
+import it.polito.mad.splintersell.user
+import kotlinx.android.synthetic.main.fragment_on_sale_list.*
 
-class ItemListFragment : Fragment() {
+
+class OnSaleListFragment : Fragment() {
     private var adapter: FirestoreRecyclerAdapter<ItemModel, ItemModelHolder>? = null
 
+    private var onSaleItemList = mutableListOf<ItemModel>()
     private var firestoreListener: ListenerRegistration? = null
-    private var myItemList = mutableListOf<ItemModel>()
     private var firestoreDB: FirebaseFirestore? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,10 +37,11 @@ class ItemListFragment : Fragment() {
 
         firestoreDB = FirebaseFirestore.getInstance()
 
-        // Take the query from Cloud Firestore
+        // Get items on sale
         val query: Query = firestoreDB!!
             .collection("items")
-            .whereEqualTo("ownerId", user!!.uid)
+            .whereGreaterThan("ownerId", user!!.uid)
+            .whereLessThan("ownerId", user.uid)
 
         // Configure recycler adapter options:
         //  * query is the Query object defined above.
@@ -69,12 +67,11 @@ class ItemListFragment : Fragment() {
                 holder.documentName = model.documentName
                 holder.ownerId = model.ownerId
 
+                holder.button.visibility = View.GONE
+
                 // Set the onClick listener
                 holder.card.setOnClickListener {
                     navigateToItemDetails(holder.itemView, model.documentName!!)
-                }
-                holder.button.setOnClickListener {
-                    navigateToItemEdit(holder.itemView, model.documentName!!)
                 }
             }
 
@@ -93,37 +90,38 @@ class ItemListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val itemList = inflater.inflate(R.layout.fragment_item_list, container, false)
+        val itemList = inflater.inflate(R.layout.fragment_on_sale_list, container, false)
 
-        val itemRecyclerView = itemList.findViewById<View>(R.id.item_list) as RecyclerView
+        val itemRecyclerView = itemList.findViewById<View>(R.id.on_sale_list) as RecyclerView
 
         adapter!!.notifyDataSetChanged()
-        itemRecyclerView.layoutManager = LinearLayoutManager(this.context)
+        itemRecyclerView.layoutManager = LinearLayoutManager(context)
         itemRecyclerView.setHasFixedSize(true)
         itemRecyclerView.adapter = adapter
 
         firestoreListener = firestoreDB!!.collection("items")
-            .whereEqualTo("ownerId", user!!.uid)
+            .whereGreaterThan("ownerId", user!!.uid)
+            .whereLessThan("ownerId", user.uid)
             .addSnapshotListener(EventListener { documentSnapshots, e ->
                 if (e != null) {
-                    Log.e("MYITEMS", "Listen failed!", e)
+                    Log.e("OnSale", "Listen failed!", e)
                     return@EventListener
                 }
-                myItemList = mutableListOf()
+
+                onSaleItemList = mutableListOf()
 
                 if (documentSnapshots != null) {
                     for (doc in documentSnapshots) {
                         val item = doc.toObject(ItemModel::class.java)
                         item.documentName = doc.id
                         Log.e("IDTAG", "${item.documentName}")
-                        myItemList.add(item)
+                        onSaleItemList.add(item)
                     }
                 }
 
                 adapter!!.notifyDataSetChanged()
                 itemRecyclerView.adapter = adapter
             })
-
         return itemList
     }
 
@@ -133,12 +131,6 @@ class ItemListFragment : Fragment() {
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)
 
-        fab.setOnClickListener {
-            val documentName = "${user!!.uid}_${myItemList.size}"
-            val action = ItemListFragmentDirections.newItem(documentName)
-            Log.e("DOC", documentName)
-            it.findNavController().navigate(action)
-        }
     }
 
     private fun hideKeyboardFrom(context: Context, view: View) {
@@ -147,28 +139,10 @@ class ItemListFragment : Fragment() {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private fun navigateToItemDetails(view: View, id: String) {
-        val action = ItemListFragmentDirections.showItemDetail(id, false)
-        Log.e("POS", id)
+    private fun navigateToItemDetails(view: View, documentName: String) {
+        val action = OnSaleListFragmentDirections.showOnSaleItem(documentName, true)
+        Log.e("DOC", documentName)
         Navigation.findNavController(view).navigate(action)
-    }
-
-    private fun navigateToItemEdit(view: View, id: String) {
-        val action = ItemListFragmentDirections.editListItem(id)
-        Navigation.findNavController(view).navigate(action)
-    }
-
-    private fun retrieveImage(filename: String) : Bitmap? {
-        val file = File(activity?.filesDir, filename)
-        val fileExists = file.exists()
-
-        return if (fileExists) {
-            val fis: FileInputStream = requireActivity().openFileInput(filename)
-            val bitmap = BitmapFactory.decodeStream(fis)
-            fis.close()
-            bitmap
-        } else
-            null
     }
 
     override fun onDestroy() {

@@ -30,7 +30,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import it.polito.mad.splintersell.User
+import it.polito.mad.splintersell.data.User
 import kotlinx.android.synthetic.main.fragment_edit_profile.email
 import kotlinx.android.synthetic.main.fragment_edit_profile.location
 import kotlinx.android.synthetic.main.fragment_edit_profile.name
@@ -101,9 +101,7 @@ class EditProfile : Fragment() {
 
                 //Save image on Cloud Storage
 
-                var profileRefs = storage.child("profileImages")
-                val profileImageName = storage.child(user!!.uid+".jpg")
-                val profileImageRefs= storage.child("profileImages/"+user.uid+".jpg")
+                val profileImageRefs= storage.child("profileImages/"+user!!.uid+".jpg")
                 Log.d("EditProfileTAG", "Name of the file to be stored: $profileImageRefs")
 
                 if(rotatedBitmap!=null){
@@ -120,12 +118,14 @@ class EditProfile : Fragment() {
 
                 }
 
-                val newUser = User(name.text.toString(), nickname.text.toString(),
-                                    email.text.toString(), location.text.toString())
+                val newUser = User(
+                    name.text.toString(), nickname.text.toString(),
+                    email.text.toString(), location.text.toString()
+                )
 
                 // Update document on the DB
                 db.collection("users")
-                    .document(user!!.uid)
+                    .document(user.uid)
                     .set(newUser)
                     .addOnSuccessListener {
                         Log.d("EditProfileTAG", "Instance succesfully updated!")
@@ -209,7 +209,8 @@ class EditProfile : Fragment() {
 
                     res ->
                 if(res.exists()){
-                    val userData: User? = res.toObject(User::class.java)
+                    val userData: User? = res.toObject(
+                        User::class.java)
                     Log.d("ShowProfileTAG", "Success in retrieving data: "+ res.toString())
 
                     Log.d("ShowProfileTAG", userData.toString())

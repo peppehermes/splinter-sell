@@ -1,7 +1,5 @@
 package it.polito.mad.splintersell.ui
 
-import android.content.Context
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,28 +10,18 @@ import it.polito.mad.splintersell.R
 
 import android.content.Intent
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.Navigation
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.FirebaseUser
-import com.google.android.gms.tasks.Task
-import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FirebaseFirestore
-import it.polito.mad.splintersell.User
-import kotlinx.android.synthetic.main.activity_main.*
+import it.polito.mad.splintersell.data.User
 import kotlinx.android.synthetic.main.sign_in_fragment.*
 
 const val RC_SIGN_IN = 2013
@@ -70,7 +58,7 @@ class SignIn : Fragment() {
                 .build()
 
         // Build a GoogleSignInClient with the options specified by gso.
-        val mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
+        val mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
 
 
         sign_in_button.setOnClickListener {
@@ -94,7 +82,7 @@ class SignIn : Fragment() {
 
             val navigationView:DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
             navigationView.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-            Navigation.findNavController(requireView()).navigate(R.id.nav_item_list)
+            Navigation.findNavController(requireView()).navigate(R.id.onSaleListFragment)
 
         }
         else Log.d("SignInTAG", "User not logged in")
@@ -154,7 +142,7 @@ class SignIn : Fragment() {
             .document(user!!.uid)
 
         Log.d("SignInTAG", user.toString())
-        Log.d("SignInTAG", user!!.uid)
+        Log.d("SignInTAG", user.uid)
 
 
             docRef.get()
@@ -163,10 +151,15 @@ class SignIn : Fragment() {
                 res ->
                 if(!res.exists()){
 
-                        val newUser = User(user.displayName!!, "", user.email!!, "")
+                        val newUser = User(
+                            user.displayName!!,
+                            "",
+                            user.email!!,
+                            ""
+                        )
 
                         db.collection("users")
-                            .document(user.uid.toString())
+                            .document(user.uid)
                             .set(newUser)
                             .addOnSuccessListener {
                                 Log.d("SignInTAG", "Instance succesfully created!")
