@@ -6,9 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.firebase.ui.storage.images.FirebaseImageLoader
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.data.ItemModelHolder
+import it.polito.mad.splintersell.data.storage
 
 class OnSaleListAdapter: RecyclerView.Adapter<ItemModelHolder>() {
     private var onSaleItemList = listOf<ItemModel>()
@@ -33,6 +36,14 @@ class OnSaleListAdapter: RecyclerView.Adapter<ItemModelHolder>() {
         // Bind the ItemModel object to the ItemModelHolder
         val item = onSaleItemList[position]
         holder.bind(item)
+
+        //set image into the card
+        val sref = storage.child("itemImages/${item.imgPath}")
+
+        Glide.with(holder.image.context)
+            .using(FirebaseImageLoader())
+            .load(sref)
+            .into(holder.image)
 
         // Hide EDIT button
         holder.button.visibility = View.GONE

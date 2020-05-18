@@ -20,11 +20,18 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.navigateUp
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import it.polito.mad.splintersell.data.User
+import it.polito.mad.splintersell.data.storage
 import it.polito.mad.splintersell.ui.profile_show.EXTRA_EMAIL
 import it.polito.mad.splintersell.ui.profile_show.EXTRA_NICKNAME
+import it.polito.mad.splintersell.ui.profile_show.db
+import it.polito.mad.splintersell.ui.profile_show.user
 import org.json.JSONObject
 import java.io.File
 import java.io.FileInputStream
@@ -51,8 +58,6 @@ class MainActivity : AppCompatActivity() {
             R.id.onSaleListFragment, R.id.nav_item_list, R.id.nav_show_profile, R.id.nav_signOut), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-        val headerView = navView.getHeaderView(0)
-        retrievePreferencesMain(headerView)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -60,46 +65,37 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    private fun retrievePreferencesMain(headerView: View) {
+     private fun retrievePreferencesMain(headerView: View) {
         val textViewNick = headerView.findViewById(R.id.nav_profile_name) as TextView
         val textViewMail = headerView.findViewById(R.id.nav_profile_mail) as TextView
         val imgView = headerView.findViewById(R.id.imageView) as ImageView
 
 
-        val sharedPref: SharedPreferences = getPreferences(Context.MODE_PRIVATE) ?: return
-        val profile: String? = sharedPref.getString("Profile", null)
+        textViewMail.text = user!!.email
+        textViewNick.text = user!!.displayName
 
-        if (profile != null) {
+        //TODO: aggiustare il retrieve dell'immagine dopo aver costruito il viewmodel dello user
 
-            val jasonObject = JSONObject(profile)
-            val savedNickname: String
-            val savedEmail: String
+        db.collection("users")
+            .document(user!!.uid)
+            .get()
+            .addOnSuccessListener {
 
-            savedNickname = if (jasonObject.has(EXTRA_NICKNAME))
-                jasonObject.getString(EXTRA_NICKNAME)
-            else
-                resources.getString(R.string.nick)
+                    res ->
+                if (res.exists()) {
+                    val userData: User? = res.toObject(
+                        User::class.java
+                    )
 
-            savedEmail = if (jasonObject.has(EXTRA_EMAIL))
-                jasonObject.getString(EXTRA_EMAIL)
-            else
-                resources.getString(R.string.mail)
+                    Glide.with(applicationContext)
+                        .using(FirebaseImageLoader())
+                        .load(storage.child("/profileImages/${userData!!.photoName}"))
+                        .into(imgView)
 
-            textViewMail.text = savedEmail
-            textViewNick.text = savedNickname
-        }
+                }
 
-        val file = File(this.filesDir, filename)
-        val fileExists = file.exists()
-        if (fileExists) {
-            val fis: FileInputStream = openFileInput(filename)
-            val bitmap = BitmapFactory.decodeStream(fis)
-            val roundDrawable: RoundedBitmapDrawable =
-                RoundedBitmapDrawableFactory.create(resources, bitmap)
-            roundDrawable.isCircular = true
-            fis.close()
-            imgView.setImageDrawable(roundDrawable)
-        }
+
+            }
     }
 
     fun refreshDataForDrawer(){
@@ -108,7 +104,5 @@ class MainActivity : AppCompatActivity() {
         retrievePreferencesMain(headerView)
     }
 
-    interface DrawerLocker{
-        fun setDrawerLocked(shouldLock:Boolean)
-    }
+
 }

@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -19,18 +20,22 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.android.gms.tasks.Tasks
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.ktx.Firebase
+import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
-import it.polito.mad.splintersell.data.FirestoreViewModel
-import it.polito.mad.splintersell.data.ItemModel
-import it.polito.mad.splintersell.data.ItemModelHolder
+import it.polito.mad.splintersell.data.*
+import it.polito.mad.splintersell.ui.profile_show.db
+import it.polito.mad.splintersell.ui.profile_show.user
 import kotlinx.android.synthetic.main.fragment_item_list.*
 
 
@@ -53,6 +58,9 @@ class OnSaleListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        (activity as MainActivity?)?.refreshDataForDrawer()
+
         listView = view.findViewById(R.id.on_sale_list)
         adapter = OnSaleListAdapter()
 
@@ -74,7 +82,7 @@ class OnSaleListFragment : Fragment() {
             // Update UI
             adapter.setOnSaleItemList(onSaleItemList)
             adapter.notifyDataSetChanged()
-            //Log.e(TAG, onSaleItemList.isEmpty().toString())
+            Log.e(TAG, onSaleItemList.size.toString())
             hideNoItemsHere(onSaleItemList)
 
         })
@@ -92,4 +100,5 @@ class OnSaleListFragment : Fragment() {
         else
             empty_list.visibility = View.GONE
     }
+
 }

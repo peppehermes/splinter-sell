@@ -19,16 +19,24 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.ktx.auth
+import com.firebase.ui.storage.images.FirebaseImageLoader
+import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import it.polito.mad.splintersell.*
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.data.ItemModelHolder
+import it.polito.mad.splintersell.data.storage
 import kotlinx.android.synthetic.main.fragment_item_list.*
 import java.io.File
 import java.io.FileInputStream
@@ -39,6 +47,9 @@ class ItemListFragment : Fragment() {
     lateinit var myItemList: LiveData<List<ItemModel>>
     private var adapter: FirestoreRecyclerAdapter<ItemModel, ItemModelHolder>? = null
     private val user = Firebase.auth.currentUser
+
+    private var firestoreListener: ListenerRegistration? = null
+    private var firestoreDB: FirebaseFirestore? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +62,7 @@ class ItemListFragment : Fragment() {
             .collection("items")
             .whereEqualTo("ownerId", user!!.uid)
 
+        var sref:StorageReference? = null
         // Configure recycler adapter options:
         //  * query is the Query object defined above.
         //  * ItemModel.class instructs the adapter to convert each DocumentSnapshot to a ItemModel object
@@ -66,6 +78,14 @@ class ItemListFragment : Fragment() {
             ) {
                 // Bind the ItemModel object to the ItemModelHolder
                 holder.bind(model)
+
+                //set image into the card
+                sref = storage.child("itemImages/${model.imgPath}")
+
+                    Glide.with(holder.image.context)
+                        .using(FirebaseImageLoader())
+                        .load(sref)
+                        .into(holder.image)
 
                 // Set the onClick listener
                 holder.card.setOnClickListener {
@@ -101,7 +121,6 @@ class ItemListFragment : Fragment() {
         val itemList = inflater.inflate(R.layout.fragment_item_list, container, false)
 
         val itemRecyclerView = itemList.findViewById<View>(R.id.item_list) as RecyclerView
-        val emptyList = itemList.findViewById<View>(R.id.empty_list) as TextView
 
         adapter!!.notifyDataSetChanged()
         itemRecyclerView.layoutManager = LinearLayoutManager(this.context)
@@ -153,18 +172,7 @@ class ItemListFragment : Fragment() {
             empty_list.visibility = View.GONE
     }
 
-    private fun retrieveImage(filename: String) : Bitmap? {
-        val file = File(activity?.filesDir, filename)
-        val fileExists = file.exists()
 
-        return if (fileExists) {
-            val fis: FileInputStream = requireActivity().openFileInput(filename)
-            val bitmap = BitmapFactory.decodeStream(fis)
-            fis.close()
-            bitmap
-        } else
-            null
-    }
 
     override fun onStart() {
         super.onStart()

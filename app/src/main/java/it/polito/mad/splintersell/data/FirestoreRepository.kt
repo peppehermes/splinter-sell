@@ -8,6 +8,11 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import io.grpc.Context
+
+val storage:StorageReference = FirebaseStorage.getInstance().reference
 
 class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskComplete) {
     val TAG = "FIREBASE_REPOSITORY"
@@ -23,19 +28,26 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
     fun getItemData() {
         val firstTask = FirebaseFirestore.getInstance()
             .collection("items")
-            .whereGreaterThan("ownerId", user!!.uid)
+            .whereLessThan("ownerId", user!!.uid)
             .get()
 
         val secondTask = FirebaseFirestore.getInstance()
             .collection("items")
-            .whereLessThan("ownerId", user!!.uid)
+            .whereGreaterThan("ownerId", user!!.uid)
             .get()
 
+        val list = ArrayList<ItemModel>()
         Tasks.whenAllSuccess<QuerySnapshot>(firstTask, secondTask)
             .addOnSuccessListener {querySnaps ->
                 for (docSnap in querySnaps)
-                    onFirestoreTaskComplete.itemListDataAdded(docSnap.toObjects(ItemModel::class.java))
+                    for(document in docSnap){
+                        val item = document.toObject(ItemModel::class.java)
+                        list.add(item)
+                    }
+                onFirestoreTaskComplete.itemListDataAdded(list)
+
             }
+
     }
 
     fun saveItem(item: ItemModel): Task<Void> {

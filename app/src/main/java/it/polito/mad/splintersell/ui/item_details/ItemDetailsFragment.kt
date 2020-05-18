@@ -13,17 +13,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.R
-import kotlinx.android.synthetic.main.fragment_item_details.category
-import kotlinx.android.synthetic.main.fragment_item_details.description
-import kotlinx.android.synthetic.main.fragment_item_details.expire_date
-import kotlinx.android.synthetic.main.fragment_item_details.location
-import kotlinx.android.synthetic.main.fragment_item_details.price
-import kotlinx.android.synthetic.main.fragment_item_details.title
+import it.polito.mad.splintersell.data.storage
+import kotlinx.android.synthetic.main.fragment_item_details.*
 import java.io.File
 import java.io.FileInputStream
 
@@ -71,22 +70,15 @@ class ItemDetailsFragment: Fragment() {
             category.text = cat
             location.text = it.location
             expire_date.text = it.expireDate
+
+            Glide.with(requireContext())
+                .using(FirebaseImageLoader())
+                .load(storage.child("/itemImages/${it.imgPath}"))
+                .into(detail_image)
         })
 
     }
 
-    private fun retrieveImage(filename: String) : Bitmap? {
-        val file = File(activity?.filesDir, filename)
-        val fileExists = file.exists()
-
-        return if (fileExists) {
-            val fis: FileInputStream = requireActivity().openFileInput(filename)
-            val bitmap = BitmapFactory.decodeStream(fis)
-            fis.close()
-            bitmap
-        } else
-            null
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {

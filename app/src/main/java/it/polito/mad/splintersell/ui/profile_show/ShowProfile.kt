@@ -2,8 +2,6 @@ package it.polito.mad.splintersell.ui.profile_show
 
 import android.app.Activity
 import android.content.Context
-import android.content.SharedPreferences
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,21 +12,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
-import androidx.core.graphics.drawable.RoundedBitmapDrawable
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.User
+import it.polito.mad.splintersell.data.storage
 import kotlinx.android.synthetic.main.fragment_show_profile.*
-import org.json.JSONObject
-import java.io.File
-import java.io.FileInputStream
 
 const val EXTRA_NAME = "it.polito.mad.splintersell.NAME"
 const val EXTRA_NICKNAME = "it.polito.mad.splintersell.NICKNAME"
@@ -66,14 +62,7 @@ class ShowProfile : Fragment() {
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)
 
-        //Retrieve all the information from the local file system
-        val sharedPref: SharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-
-        //this.retrievePreferences(profile)
-
         this.retrieveData()
-
-        this.retrieveImage()
 
         (activity as MainActivity?)?.refreshDataForDrawer()
     }
@@ -100,19 +89,17 @@ class ShowProfile : Fragment() {
 
 
     //TODO Fix retrieving image of User from Storage (ShowProfile)
-    private fun retrieveImage() {
-        val file = File(activity?.filesDir, filename)
-        val fileExists = file.exists()
-        if (fileExists) {
-            val fis: FileInputStream = requireActivity().openFileInput(filename)
-            val bitmap = BitmapFactory.decodeStream(fis)
-            val roundDrawable: RoundedBitmapDrawable =
-                RoundedBitmapDrawableFactory.create(resources, bitmap)
-            roundDrawable.isCircular = true
-            fis.close()
-            profile_photo.setImageDrawable(roundDrawable)
+    private fun retrieveImage(photoName: String) {
 
-        }
+        Log.d("profileImage","found this image : $photoName")
+
+        Glide.with(requireContext())
+            .using(FirebaseImageLoader())
+            .load(storage.child("/profileImages/$photoName"))
+            //.diskCacheStrategy(DiskCacheStrategy.NONE)
+            //.skipMemoryCache(true)
+            .into(profile_photo)
+
     }
 
 
@@ -130,6 +117,7 @@ class ShowProfile : Fragment() {
                     Log.d("ShowProfileTAG", "Success in retrieving data: "+ res.toString())
 
                     Log.d("ShowProfileTAG", userData.toString())
+                    Log.d("profileImage","image retrieved ${userData!!.photoName}")
 
                     if(userData?.fullname != "")
                         name.text = userData!!.fullname
@@ -139,6 +127,9 @@ class ShowProfile : Fragment() {
                         email.text = userData.email
                     if(userData.location != "")
                         location.text = userData.location
+
+                        retrieveImage(userData.photoName)
+
                 }
                 else
                     Log.d("ShowProfileTAG", "No document retrieved")
@@ -152,40 +143,6 @@ class ShowProfile : Fragment() {
     }
 
 
-    private fun retrievePreferences(profile: String?) {
-        if (profile != null) {
 
-            val jasonObject = JSONObject(profile)
-            val savedName: String
-            val savedNickname: String
-            val savedEmail: String
-            val savedLocation: String
-
-            savedName = if (jasonObject.has(EXTRA_NAME))
-                jasonObject.getString(EXTRA_NAME)
-            else
-                resources.getString(R.string.fname)
-
-            savedNickname = if (jasonObject.has(EXTRA_NICKNAME))
-                jasonObject.getString(EXTRA_NICKNAME)
-            else
-                resources.getString(R.string.nick)
-
-            savedEmail = if (jasonObject.has(EXTRA_EMAIL))
-                jasonObject.getString(EXTRA_EMAIL)
-            else
-                resources.getString(R.string.mail)
-
-            savedLocation = if (jasonObject.has(EXTRA_LOCATION))
-                jasonObject.getString(EXTRA_LOCATION)
-            else
-                resources.getString(R.string.location)
-
-            name.text = savedName
-            nickname.text = savedNickname
-            email.text = savedEmail
-            location.text = savedLocation
-        }
-
-    }
 }
+

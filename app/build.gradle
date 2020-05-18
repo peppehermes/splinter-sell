@@ -78,7 +78,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-config-ktx:19.1.4'
     implementation 'com.google.firebase:firebase-auth-ktx:19.3.1'
     implementation 'com.google.firebase:firebase-database-ktx:19.3.0'
-    implementation 'com.firebaseui:firebase-ui-database:6.2.1'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation 'com.firebaseui:firebase-ui-storage:0.6.0'
     implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
 
 }

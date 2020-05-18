@@ -1,5 +1,7 @@
 package it.polito.mad.splintersell.data
 
+import com.google.firebase.storage.StorageReference
+
 class ItemModel {
     var title: String? = null
     var description: String? = null
@@ -10,12 +12,13 @@ class ItemModel {
     var expireDate: String? = null
     var documentName: String? = null
     var ownerId: String? = null
+    var imgPath: String = ""
 
     constructor() {}
 
     constructor(title: String, description: String, price: String,
         mainCategory: String, secondCategory: String, location: String,
-                expireDate: String, documentName: String, ownerId: String) {
+                expireDate: String, documentName: String, ownerId: String, imgPath: String) {
         this.title = title
         this.description = description
         this.price = price
@@ -25,6 +28,7 @@ class ItemModel {
         this.expireDate = expireDate
         this.documentName = documentName
         this.ownerId = ownerId
+        this.imgPath = imgPath
     }
 
     fun toMap(): Map<String, Any> {

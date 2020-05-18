@@ -25,12 +25,25 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.R
+import it.polito.mad.splintersell.data.storage
 import kotlinx.android.synthetic.main.fragment_edit_item.*
+import kotlinx.android.synthetic.main.fragment_edit_item.description
+import kotlinx.android.synthetic.main.fragment_edit_item.detail_image
+import kotlinx.android.synthetic.main.fragment_edit_item.expire_date
+import kotlinx.android.synthetic.main.fragment_edit_item.location
+import kotlinx.android.synthetic.main.fragment_edit_item.price
+import kotlinx.android.synthetic.main.fragment_edit_item.title
+import kotlinx.android.synthetic.main.fragment_item_details.*
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,8 +56,12 @@ var photoFile: File? = null
 var photoURI: Uri? = null
 var filename: String? = null
 
-
 class ItemEditFragment : Fragment() {
+
+    val charPool = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+    var path:String = ""
+    var randomString:String = ""
+
     private val firestoreViewModel: FirestoreViewModel by viewModels()
 
     private val args: ItemEditFragmentArgs by navArgs()
@@ -74,8 +91,7 @@ class ItemEditFragment : Fragment() {
 
         this.setInputLimits()
 
-        //documentName = args.documentName
-        //Log.e("ID", index.toString())
+
         this.showDate()
         this.restoreImage(savedInstanceState)
         this.imageButtonMenu()
@@ -86,10 +102,20 @@ class ItemEditFragment : Fragment() {
             price.setText(it.price)
             location.setText(it.location)
             expire_date.setText(it.expireDate)
+
+            path = it.imgPath
+            if(path == "")
+                detail_image.setImageDrawable(requireContext().getDrawable(R.drawable.image_vectorized_lower))
+            else{
+
+            Glide.with(requireContext())
+                .using(FirebaseImageLoader())
+                .load(storage.child("/itemImages/$path"))
+                .into(detail_image)
+            }
+
         })
 
-        //this.populateEditText()
-        //this.retrieveImage()
 
         val adapter = ArrayAdapter(
             activity?.applicationContext!!,R.layout.spinner_text,
@@ -154,17 +180,6 @@ class ItemEditFragment : Fragment() {
         }
     }
 
-    private fun retrieveImage() {
-        val file = File(activity?.filesDir, filename!!)
-        val fileExists = file.exists()
-
-        if (fileExists) {
-            val fis: FileInputStream = requireActivity().openFileInput(filename)
-            val bitmap = BitmapFactory.decodeStream(fis)
-            fis.close()
-            detail_image.setImageBitmap(bitmap)
-        }
-    }
 
     private fun showDate() {
         //expire_date.setText(SimpleDateFormat("dd.MM.yyyy").format(System.currentTimeMillis()))
@@ -438,26 +453,25 @@ class ItemEditFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.saveProfile -> {
-                //Save bitmap
-                if (rotatedBitmap != null) {
-                    val fos: FileOutputStream =
-                        requireActivity().openFileOutput(filename, Context.MODE_PRIVATE)
-                    rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 75, fos)
-                    fos.close()
-                }
 
                 //Save image on Cloud Storage
-                /*
-                var profileRefs = storage.child("itemImages")
-                val profileImageName = storage.child(user!!.uid+"_"+index+".jpg")
-                val profileImageRefs= storage.child("itemImages/"+user!!.uid+"_"+index+".jpg")
-                Log.d("ItemEditTAG", "Name of the file to be stored: $profileImageRefs")
 
                 if(rotatedBitmap!=null){
-                    val baos = ByteArrayOutputStream()
-                    rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 75, baos)
-                    val rotBytes = baos.toByteArray()
 
+                    //computing a random name for the file
+                    randomString = (1..20)
+                        .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+                        .map(charPool::get)
+                        .joinToString("")
+
+                    randomString = "$randomString.jpg"
+
+                    val profileImageRefs= storage.child("itemImages/$randomString")
+                    Log.d("ItemEditTAG", "Name of the file to be stored: $profileImageRefs")
+
+                    val baos = ByteArrayOutputStream()
+                    rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+                    val rotBytes = baos.toByteArray()
                     val uploadTask = profileImageRefs.putBytes(rotBytes)
                     uploadTask.addOnFailureListener {
                         Log.d("ItemEditTAG", "Error in saving image to the Cloud Storage")
@@ -465,13 +479,21 @@ class ItemEditFragment : Fragment() {
                         Log.d("ItemEditTAG", "Success in saving image to the Cloud Storage")
                     }
 
-                }
+                    if(path != "") {
+                        val refToDelete = storage.child("itemImages/$path")
+                        refToDelete.delete().addOnSuccessListener {
+                            Log.d("deleteOfFile", "Delete complete on item $path")
+                        }.addOnFailureListener {
+                            Log.d("deleteOfFile", "Delete failed")
+                        }
+                    }
+
+                }else
+                    randomString = path
 
                 rotatedBitmap = null
 
-                //insertIntoDB()
 
-                 */
 
                 val newItem = ItemModel(
                     title.text.toString(),
@@ -482,10 +504,12 @@ class ItemEditFragment : Fragment() {
                     location.text.toString(),
                     expire_date.text.toString(),
                     args.documentName,
-                    user!!.uid
+                    user!!.uid,
+                    randomString
                 )
 
                 firestoreViewModel.saveItemToFirestore(newItem)
+
 
                 val action = ItemEditFragmentDirections.goToDetails(args.documentName, false)
                 Navigation.findNavController(requireView()).navigate(action)
