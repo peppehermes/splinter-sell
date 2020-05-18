@@ -3,7 +3,6 @@ package it.polito.mad.splintersell.ui.profile_show
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -13,32 +12,47 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
-import it.polito.mad.splintersell.data.User
+import it.polito.mad.splintersell.data.FirestoreViewModel
+import it.polito.mad.splintersell.data.UserModel
 import it.polito.mad.splintersell.data.storage
 import kotlinx.android.synthetic.main.fragment_show_profile.*
 
-const val EXTRA_NAME = "it.polito.mad.splintersell.NAME"
-const val EXTRA_NICKNAME = "it.polito.mad.splintersell.NICKNAME"
-const val EXTRA_EMAIL = "it.polito.mad.splintersell.EMAIL"
-const val EXTRA_LOCATION = "it.polito.mad.splintersell.LOCATION"
-const val filename = "proPic"
-
-val db = FirebaseFirestore.getInstance()
-val user = Firebase.auth.currentUser
 
 class ShowProfile : Fragment() {
 
+    // GLOBAL ATTRIBUTES
+
+    private val firestoreViewModel: FirestoreViewModel by viewModels()
+    val user = Firebase.auth.currentUser
+    lateinit var liveData: LiveData<UserModel>
+
+    private val args: ShowProfileArgs by navArgs()
+
+    // METHODS
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        liveData = if(args.userID == "currUser"){
+            firestoreViewModel.fetchUserFromFirestore(user!!.uid)
+            firestoreViewModel.myUser
+        } else{
+            firestoreViewModel.fetchUserFromFirestore(args.userID)
+            firestoreViewModel.myUser
+        }
+
+
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -62,9 +76,18 @@ class ShowProfile : Fragment() {
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)
 
-        this.retrieveData()
+        liveData.observe(viewLifecycleOwner, Observer {
+            // Update UI
+            name.text = it.fullname
+            nickname.text = it.nickname
+            email.text = it.email
+            location.text = it.location
 
-        (activity as MainActivity?)?.refreshDataForDrawer()
+            Glide.with(requireContext())
+                .using(FirebaseImageLoader())
+                .load(storage.child("/profileImages/${it.photoName}"))
+                .into(profile_photo)
+        })
     }
 
     private fun hideKeyboardFrom(context: Context, view: View) {
@@ -86,63 +109,6 @@ class ShowProfile : Fragment() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-
-    //TODO Fix retrieving image of User from Storage (ShowProfile)
-    private fun retrieveImage(photoName: String) {
-
-        Log.d("profileImage","found this image : $photoName")
-
-        Glide.with(requireContext())
-            .using(FirebaseImageLoader())
-            .load(storage.child("/profileImages/$photoName"))
-            //.diskCacheStrategy(DiskCacheStrategy.NONE)
-            //.skipMemoryCache(true)
-            .into(profile_photo)
-
-    }
-
-
-    private fun retrieveData(){
-
-        db.collection("users")
-            .document(user!!.uid)
-            .get()
-            .addOnSuccessListener {
-
-                res ->
-                if(res.exists()){
-                    val userData: User? = res.toObject(
-                        User::class.java)
-                    Log.d("ShowProfileTAG", "Success in retrieving data: "+ res.toString())
-
-                    Log.d("ShowProfileTAG", userData.toString())
-                    Log.d("profileImage","image retrieved ${userData!!.photoName}")
-
-                    if(userData?.fullname != "")
-                        name.text = userData!!.fullname
-                    if(userData.nickname != "")
-                        nickname.text = userData.nickname
-                    if(userData.email != "")
-                        email.text = userData.email
-                    if(userData.location != "")
-                        location.text = userData.location
-
-                        retrieveImage(userData.photoName)
-
-                }
-                else
-                    Log.d("ShowProfileTAG", "No document retrieved")
-
-
-            }
-            .addOnFailureListener{
-                Log.d("ShowProfileTAG", "Error in retrieving data")
-            }
-
-    }
-
-
 
 }
 

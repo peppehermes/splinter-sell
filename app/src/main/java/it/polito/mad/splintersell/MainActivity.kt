@@ -1,13 +1,11 @@
 package it.polito.mad.splintersell
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.viewModels
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -16,29 +14,24 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.graphics.drawable.RoundedBitmapDrawable
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.navigateUp
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import it.polito.mad.splintersell.data.User
+import it.polito.mad.splintersell.data.FirestoreViewModel
+import it.polito.mad.splintersell.data.UserModel
 import it.polito.mad.splintersell.data.storage
-import it.polito.mad.splintersell.ui.profile_show.EXTRA_EMAIL
-import it.polito.mad.splintersell.ui.profile_show.EXTRA_NICKNAME
-import it.polito.mad.splintersell.ui.profile_show.db
-import it.polito.mad.splintersell.ui.profile_show.user
-import org.json.JSONObject
-import java.io.File
-import java.io.FileInputStream
-
-const val filename = "proPic"
 
 class MainActivity : AppCompatActivity() {
+
+    private val user = Firebase.auth.currentUser
+
+    private val firestoreViewModel: FirestoreViewModel by viewModels()
+    lateinit var userLiveData: LiveData<UserModel>
+
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -58,6 +51,8 @@ class MainActivity : AppCompatActivity() {
             R.id.onSaleListFragment, R.id.nav_item_list, R.id.nav_show_profile, R.id.nav_signOut), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -70,11 +65,35 @@ class MainActivity : AppCompatActivity() {
         val textViewMail = headerView.findViewById(R.id.nav_profile_mail) as TextView
         val imgView = headerView.findViewById(R.id.imageView) as ImageView
 
+         Log.d("Xeros", user?.uid.toString())
+
+         // Retrieve User data
+         firestoreViewModel.fetchMyUserFromFirestore()
+         firestoreViewModel.myUserNav.observe(this, androidx.lifecycle.Observer {
+             textViewNick.text = it.nickname
+             textViewMail.text = it.email
+
+             Log.d("Xeros", "Data have changed")
+
+
+             Glide.with(this)
+                 .using(FirebaseImageLoader())
+                 .load(storage.child("/profileImages/${it.photoName}"))
+                 .into(imgView)
+
+         })
+
+
+
+
+         /*
+
 
         textViewMail.text = user!!.email
         textViewNick.text = user!!.displayName
 
-        //TODO: aggiustare il retrieve dell'immagine dopo aver costruito il viewmodel dello user
+
+
 
         db.collection("users")
             .document(user!!.uid)
@@ -83,8 +102,8 @@ class MainActivity : AppCompatActivity() {
 
                     res ->
                 if (res.exists()) {
-                    val userData: User? = res.toObject(
-                        User::class.java
+                    val userData: UserModel? = res.toObject(
+                        UserModel::class.java
                     )
 
                     Glide.with(applicationContext)
@@ -96,13 +115,19 @@ class MainActivity : AppCompatActivity() {
 
 
             }
+
+
+          */
     }
+
 
     fun refreshDataForDrawer(){
         val navView: NavigationView = findViewById(R.id.nav_view)
         val headerView = navView.getHeaderView(0)
         retrievePreferencesMain(headerView)
     }
+
+
 
 
 }

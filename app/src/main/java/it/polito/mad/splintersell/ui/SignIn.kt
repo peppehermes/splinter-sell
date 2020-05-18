@@ -21,7 +21,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
-import it.polito.mad.splintersell.data.User
+import it.polito.mad.splintersell.MainActivity
+import it.polito.mad.splintersell.data.UserModel
 import kotlinx.android.synthetic.main.sign_in_fragment.*
 
 const val RC_SIGN_IN = 2013
@@ -79,6 +80,8 @@ class SignIn : Fragment() {
     private fun checkUser(account: FirebaseUser?){
 
         if(account != null){
+
+            (activity as MainActivity?)?.refreshDataForDrawer()
 
             val navigationView:DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
             navigationView.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
@@ -151,11 +154,12 @@ class SignIn : Fragment() {
                 res ->
                 if(!res.exists()){
 
-                        val newUser = User(
+                        val newUser = UserModel(
                             user.displayName!!,
                             "",
                             user.email!!,
-                            ""
+                            "",
+                            "img_avatar.jpg"
                         )
 
                         db.collection("users")
@@ -178,12 +182,6 @@ class SignIn : Fragment() {
             .addOnFailureListener{
                 Log.d("SignInTAG", "Error in reading the DB")
             }
-
-
-
-
-
-
 
 
     }

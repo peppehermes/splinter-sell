@@ -21,14 +21,15 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import it.polito.mad.splintersell.R
 import androidx.exifinterface.media.ExifInterface
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import it.polito.mad.splintersell.data.User
+import it.polito.mad.splintersell.data.FirestoreViewModel
+import it.polito.mad.splintersell.data.UserModel
 import it.polito.mad.splintersell.data.storage
 import kotlinx.android.synthetic.main.fragment_edit_profile.email
 import kotlinx.android.synthetic.main.fragment_edit_profile.location
@@ -41,19 +42,32 @@ import java.util.*
 
 const val REQUEST_TAKE_PHOTO = 2
 const val GALLERY_REQUEST_CODE = 3
-var rotatedBitmap: Bitmap? = null
-var photoFile: File? = null
-var photoURI: Uri? = null
 
-val db = FirebaseFirestore.getInstance()
-val user = Firebase.auth.currentUser
 val charPool = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
 class EditProfile : Fragment() {
 
+    val user = Firebase.auth.currentUser
+    private val firestoreViewModel: FirestoreViewModel by viewModels()
+    lateinit var liveData: LiveData<UserModel>
+
     lateinit var currentPhotoPath: String
     lateinit var path:String
     var randomString:String = ""
+
+
+    var rotatedBitmap: Bitmap? = null
+    var photoFile: File? = null
+    var photoURI: Uri? = null
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        firestoreViewModel.fetchUserFromFirestore(user!!.uid)
+        liveData = firestoreViewModel.myUser
+
+    }
 
 
     override fun onCreateView(
@@ -71,14 +85,35 @@ class EditProfile : Fragment() {
 
         this.imageButtonMenu()
 
-        this.retrieveData()
-
 
         photoURI = savedInstanceState?.getString("imgUri")?.let { Uri.parse(it) }
 
         photoURI?.run {
             manageBitmap()
         }
+
+
+        liveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            name.setText(it.fullname)
+            nickname.setText(it.nickname)
+            email.setText(it.email)
+            location.setText(it.location)
+
+
+            path = it.photoName
+            if(path == "")
+                profile_photo.setImageDrawable(requireContext().getDrawable(R.drawable.image_vectorized_lower))
+            else{
+
+                Glide.with(requireContext())
+                    .using(FirebaseImageLoader())
+                    .load(storage.child("/profileImages/$path"))
+                    .into(profile_photo)
+            }
+
+        })
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -128,23 +163,17 @@ class EditProfile : Fragment() {
                 }else
                     randomString = path
 
-                val newUser = User(
+                val newUser = UserModel(
                     name.text.toString(), nickname.text.toString(),
                     email.text.toString(), location.text.toString(), randomString
                 )
 
-                // Update document on the DB
-                db.collection("users")
-                    .document(user!!.uid)
-                    .set(newUser)
-                    .addOnSuccessListener {
-                        Log.d("EditProfileTAG", "Instance succesfully updated!")
-                    }
-                    .addOnFailureListener{
-                        Log.d("EditProfileTAG", "Error in updating instance")
-                    }
+                firestoreViewModel.saveUserToFirestore(newUser)
 
-                Navigation.findNavController(requireView()).navigate(R.id.nav_show_profile)
+
+
+                val action = EditProfileDirections.editToShow()
+                Navigation.findNavController(requireView()).navigate(action)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -161,55 +190,6 @@ class EditProfile : Fragment() {
 
     }
 
-    private fun retrieveImage(path: String) {
-
-        Glide.with(requireContext())
-            .using(FirebaseImageLoader())
-            .load(storage.child("/profileImages/$path"))
-            .into(profile_photo)
-
-    }
-
-
-    private fun retrieveData(){
-
-        db.collection("users")
-            .document(user!!.uid)
-            .get()
-            .addOnSuccessListener {
-
-                    res ->
-                if(res.exists()){
-                    val userData: User? = res.toObject(
-                        User::class.java)
-                    Log.d("ShowProfileTAG", "Success in retrieving data: "+ res.toString())
-
-                    Log.d("ShowProfileTAG", userData.toString())
-
-                    if(userData?.fullname != "")
-                        name.setText(userData!!.fullname)
-                    if(userData.nickname != "")
-                        nickname.setText(userData.nickname)
-                    if(userData.email != "")
-                        email.setText(userData.email)
-                    if(userData.location != "")
-                        location.setText(userData.location)
-
-                    path = userData.photoName
-
-                    retrieveImage(path)
-
-                }
-                else
-                    Log.d("ShowProfileTAG", "No document retrieved")
-
-
-            }
-            .addOnFailureListener{
-                Log.d("ShowProfileTAG", "Error in retrieving data")
-            }
-
-    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun imageButtonMenu() {

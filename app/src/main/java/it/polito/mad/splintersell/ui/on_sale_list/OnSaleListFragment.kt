@@ -34,8 +34,6 @@ import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.*
-import it.polito.mad.splintersell.ui.profile_show.db
-import it.polito.mad.splintersell.ui.profile_show.user
 import kotlinx.android.synthetic.main.fragment_item_list.*
 
 
@@ -59,7 +57,6 @@ class OnSaleListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        (activity as MainActivity?)?.refreshDataForDrawer()
 
         listView = view.findViewById(R.id.on_sale_list)
         adapter = OnSaleListAdapter()

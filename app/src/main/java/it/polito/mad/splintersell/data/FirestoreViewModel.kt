@@ -12,6 +12,10 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     val TAG = "FIRESTORE_VIEW_MODEL"
     var firestoreRepository = FirestoreRepository(this)
     var user = FirebaseAuth.getInstance().currentUser
+
+    private var _myUser: MutableLiveData<UserModel> = MutableLiveData()
+    private var _myUserNav: MutableLiveData<UserModel> = MutableLiveData()
+
     private var _item: MutableLiveData<ItemModel> = MutableLiveData()
     private var _onSaleItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _myItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
@@ -91,6 +95,64 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
             _onSaleItemList.value = onSaleItems
         }
     }
+
+
+    fun fetchUserFromFirestore(userID:String) {
+        firestoreRepository.getUserDocument(userID)
+            .addSnapshotListener(EventListener { value, e ->
+                if (e != null) {
+                    Log.w(TAG, "USER Listen failed.", e)
+                    _myUser.value = null
+                    return@EventListener
+                }
+
+                if (value != null && value.exists()) {
+                    Log.d(TAG, "USER Current data: ${value.data}")
+                    _myUser.value = value.toObject(UserModel::class.java)
+                } else {
+                    Log.d(TAG, "USER Current data: null")
+                }
+            })
+    }
+
+
+    fun fetchMyUserFromFirestore() {
+        firestoreRepository.getUserDocument(user!!.uid)
+            .addSnapshotListener(EventListener { value, e ->
+                if (e != null) {
+                    Log.w(TAG, "USER Listen failed.", e)
+                    _myUserNav.value = null
+                    return@EventListener
+                }
+
+                if (value != null && value.exists()) {
+                    Log.d(TAG, "USER Current data: ${value.data}")
+                    _myUserNav.value = value.toObject(UserModel::class.java)
+                } else {
+                    Log.d(TAG, "USER Current data: null")
+                }
+            })
+    }
+
+
+
+    fun saveUserToFirestore(myUser: UserModel) {
+        firestoreRepository.saveUser(myUser).addOnFailureListener {
+            Log.e(TAG, "USER Failed to save User!")
+        }
+    }
+
+
+
+    internal var myUser: MutableLiveData<UserModel>
+        get() { return _myUser }
+        set(value) { _myUser = value }
+
+    internal var myUserNav: MutableLiveData<UserModel>
+        get() { return _myUserNav }
+        set(value) { _myUserNav = value }
+
+
 
     internal var item: MutableLiveData<ItemModel>
         get() { return _item }

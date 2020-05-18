@@ -59,6 +59,26 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
             .addOnFailureListener { Log.d(TAG, "Error in saving")}
     }
 
+
+
+    fun getUserDocument(userID: String): DocumentReference {
+        return firestoreDB.collection("users")
+            .document(userID)
+    }
+
+
+    fun saveUser(myUser: UserModel): Task<Void> {
+        val documentReferenceUser = firestoreDB.collection("users")
+            .document(user!!.uid)
+
+        return documentReferenceUser.set(myUser)
+            .addOnSuccessListener { Log.d(TAG, "USER Successfully saved") }
+            .addOnFailureListener { Log.d(TAG, "USER Error in saving")}
+    }
+
+
+
+
     interface OnFirestoreTaskComplete {
         fun itemListDataAdded(itemModelList: List<ItemModel>)
     }
