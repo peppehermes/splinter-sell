@@ -21,6 +21,9 @@
             android:name="onSale"
             app:argType="boolean" />
         <action
+            android:id="@+id/goToListItem"
+            app:destination="@id/onSaleListFragment" />
+        <action
             android:id="@+id/goToUserProfile"
             app:destination="@id/nav_show_profile"
             app:popUpTo="@id/nav_item_details" />
@@ -61,7 +64,7 @@
         android:id="@+id/nav_show_profile"
         android:name="it.polito.mad.splintersell.ui.profile_show.ShowProfile"
         android:label="My Profile"
-        tools:layout="@layout/fragment_show_profile">
+        tools:layout="@layout/fragment_show_profile" >
         <action
             android:id="@+id/edit"
             app:destination="@id/nav_edit_profile"
@@ -69,25 +72,13 @@
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
-        <argument
-            android:name="userID"
-            app:argType="string"
-            android:defaultValue="currUser" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_edit_profile"
         android:name="it.polito.mad.splintersell.ui.profile_edit.EditProfile"
         android:label="Edit Profile"
-        tools:layout="@layout/fragment_edit_profile">
-        <action
-            android:id="@+id/editToShow"
-            app:destination="@id/nav_show_profile" >
-            <argument
-                android:name="userID"
-                android:defaultValue="currUser" />
-        </action>
-    </fragment>
+        tools:layout="@layout/fragment_edit_profile"/>
     <fragment
         android:id="@+id/nav_signIn"
         android:name="it.polito.mad.splintersell.ui.SignIn"

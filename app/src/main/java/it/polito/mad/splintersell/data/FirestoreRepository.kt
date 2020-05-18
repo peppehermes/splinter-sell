@@ -23,6 +23,27 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
             .document(documentName)
     }
 
+    fun getItemNotification(itemId: String) {
+        var requested = false
+        val task = firestoreDB
+            .collection("notifications")
+            .whereEqualTo("id_item", itemId)
+            .get()
+
+        Tasks.whenAllSuccess<QuerySnapshot>(task)
+            .addOnSuccessListener { querySnaps ->
+                for (docSnap in querySnaps)
+                    for (document in docSnap) {
+                        val notification = document.toObject(NotificationModel::class.java)
+                        if (notification.id_user.toString() == user!!.uid) {
+                            requested = true
+                            break
+                        }
+                    }
+                onFirestoreTaskComplete.fetchNotifications(requested)
+            }
+    }
+
     fun getItemData() {
         val firstTask = FirebaseFirestore.getInstance()
             .collection("items")
@@ -54,7 +75,34 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
 
         return documentReferenceUser.set(item)
             .addOnSuccessListener { Log.d(TAG, "Successfully saved") }
-            .addOnFailureListener { Log.d(TAG, "Error in saving")}
+            .addOnFailureListener { Log.d(TAG, "Error in saving") }
+    }
+
+    fun saveNotification(not: NotificationModel): Task<Void> {
+        val documentReferenceUser = firestoreDB.collection("notifications")
+            .document("${not!!.id_user}_${not!!.id_item}")
+
+        return documentReferenceUser.set(not)
+            .addOnSuccessListener { Log.d(TAG, "Successfully saved") }
+            .addOnFailureListener { Log.d(TAG, "Error in saving") }
+    }
+
+    fun removeNotifications(itemId: String){
+        val task = firestoreDB.collection("notifications")
+            .whereEqualTo("id_item", itemId)
+            .whereEqualTo("id_user", user!!.uid)
+            .get()
+
+        Tasks.whenAllSuccess<QuerySnapshot>(task)
+            .addOnSuccessListener { querySnaps ->
+                for (docSnap in querySnaps)
+                    for (document in docSnap) {
+                        document.reference.delete().addOnSuccessListener(){
+                            Log.d(TAG, "Successfully removed")
+                        }
+                    }
+            }
+            .addOnFailureListener() { Log.d(TAG, "Error in removing") }
     }
 
     fun getUserDocument(userID: String): DocumentReference {
@@ -73,6 +121,7 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
 
     interface OnFirestoreTaskComplete {
         fun itemListDataAdded(itemModelList: List<ItemModel>)
+        fun fetchNotifications(requested:Boolean)
     }
 }
 

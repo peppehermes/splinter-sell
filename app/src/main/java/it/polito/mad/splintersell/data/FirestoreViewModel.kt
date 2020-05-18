@@ -14,6 +14,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     private var _myUser: MutableLiveData<UserModel> = MutableLiveData()
     private var _myUserNav: MutableLiveData<UserModel> = MutableLiveData()
 
+     var is_requested : MutableLiveData<Boolean> = MutableLiveData()
     private var _item: MutableLiveData<ItemModel> = MutableLiveData()
     private var _onSaleItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _myItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
@@ -28,11 +29,30 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         _onSaleItemList.value = itemModelList
     }
 
+    override fun fetchNotifications(requested:Boolean){
+        is_requested.value=requested
+    }
+
+    fun getNotifications(item_id :String){
+        firestoreRepository.getItemNotification(item_id)
+    }
+
     fun saveItemToFirestore(item: ItemModel) {
         firestoreRepository.saveItem(item).addOnFailureListener {
             Log.e(TAG, "Failed to save Item!")
         }
     }
+
+    fun saveNotificationToFirestore(not: NotificationModel) {
+        firestoreRepository.saveNotification(not).addOnFailureListener {
+            Log.e(TAG, "Failed to save Notification!")
+        }
+    }
+
+    fun cancelNotifications(item_id :String){
+        firestoreRepository.removeNotifications(item_id)
+    }
+
 
     fun fetchSingleItemFromFirestore(documentName:String) {
         firestoreRepository.getItemDocument(documentName)
@@ -50,7 +70,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
                     Log.d(TAG, "Current data: null")
                 }
             })
-    }
+
 
     fun fetchMyItemListFromFirestore() {
         firestoreRepository.itemRef
