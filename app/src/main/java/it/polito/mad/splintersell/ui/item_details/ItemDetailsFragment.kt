@@ -28,9 +28,7 @@ import java.io.File
 import java.io.FileInputStream
 
 class ItemDetailsFragment: Fragment() {
-    val user = Firebase.auth.currentUser
     private val firestoreViewModel: FirestoreViewModel by viewModels()
-    //private val user = firestoreViewModel.getUser()
     lateinit var liveData: LiveData<ItemModel>
 
     private val args: ItemDetailsFragmentArgs by navArgs()
@@ -52,9 +50,10 @@ class ItemDetailsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        liveData = firestoreViewModel.getItemFromFirestore(args.documentName)
+        firestoreViewModel.fetchItemFromFirestore(args.documentName)
+        liveData = firestoreViewModel.item
 
-        return inflater.inflate(R.layout.fragment_item_details, container, false)
+            return inflater.inflate(R.layout.fragment_item_details, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -10,18 +10,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.firestore.EventListener
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
+import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.*
+import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.data.ItemModelHolder
 import kotlinx.android.synthetic.main.fragment_item_list.*
@@ -29,19 +34,20 @@ import java.io.File
 import java.io.FileInputStream
 
 class ItemListFragment : Fragment() {
-    private var adapter: FirestoreRecyclerAdapter<ItemModel, ItemModelHolder>? = null
+    private val firestoreViewModel: FirestoreViewModel by viewModels()
 
-    private var firestoreListener: ListenerRegistration? = null
-    private var myItemList = mutableListOf<ItemModel>()
-    private var firestoreDB: FirebaseFirestore? = null
+    lateinit var myItemList: LiveData<List<ItemModel>>
+    private var adapter: FirestoreRecyclerAdapter<ItemModel, ItemModelHolder>? = null
+    private val user = Firebase.auth.currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        firestoreDB = FirebaseFirestore.getInstance()
+        firestoreViewModel.fetchMyItemListFromFirestore()
+        myItemList = firestoreViewModel.myItemList
 
-        // Take the query from Cloud Firestore
-        val query: Query = firestoreDB!!
+        // Take my items
+        val query: Query = FirebaseFirestore.getInstance()
             .collection("items")
             .whereEqualTo("ownerId", user!!.uid)
 
@@ -59,15 +65,7 @@ class ItemListFragment : Fragment() {
                 model: ItemModel
             ) {
                 // Bind the ItemModel object to the ItemModelHolder
-                holder.title.text = model.title
-                holder.description.text = model.description
-                holder.price.text = model.price
-                holder.mainCategory = model.mainCategory
-                holder.secondCategory = model.secondCategory
-                holder.location = model.location
-                holder.expireDate = model.expireDate
-                holder.documentName = model.documentName
-                holder.ownerId = model.ownerId
+                holder.bind(model)
 
                 // Set the onClick listener
                 holder.card.setOnClickListener {
@@ -85,6 +83,13 @@ class ItemListFragment : Fragment() {
                     .inflate(R.layout.item_card, group, false)
                 return ItemModelHolder(v)
             }
+
+            override fun onDataChanged() {
+                // Called each time there is a new query snapshot. You may want to use this method
+                // to hide a loading spinner or check for the "no documents" state and update your UI.
+                // ...
+
+            }
         }
     }
 
@@ -96,33 +101,16 @@ class ItemListFragment : Fragment() {
         val itemList = inflater.inflate(R.layout.fragment_item_list, container, false)
 
         val itemRecyclerView = itemList.findViewById<View>(R.id.item_list) as RecyclerView
+        val emptyList = itemList.findViewById<View>(R.id.empty_list) as TextView
 
         adapter!!.notifyDataSetChanged()
         itemRecyclerView.layoutManager = LinearLayoutManager(this.context)
         itemRecyclerView.setHasFixedSize(true)
         itemRecyclerView.adapter = adapter
 
-        firestoreListener = firestoreDB!!.collection("items")
-            .whereEqualTo("ownerId", user!!.uid)
-            .addSnapshotListener(EventListener { documentSnapshots, e ->
-                if (e != null) {
-                    Log.e("MYITEMS", "Listen failed!", e)
-                    return@EventListener
-                }
-                myItemList = mutableListOf()
-
-                if (documentSnapshots != null) {
-                    for (doc in documentSnapshots) {
-                        val item = doc.toObject(ItemModel::class.java)
-                        item.documentName = doc.id
-                        Log.e("IDTAG", "${item.documentName}")
-                        myItemList.add(item)
-                    }
-                }
-
-                adapter!!.notifyDataSetChanged()
-                itemRecyclerView.adapter = adapter
-            })
+        myItemList.observe(viewLifecycleOwner, Observer { items ->
+            hideNoItemsHere(items)
+        })
 
         return itemList
     }
@@ -134,7 +122,7 @@ class ItemListFragment : Fragment() {
         hideKeyboardFrom(requireContext(), view)
 
         fab.setOnClickListener {
-            val documentName = "${user!!.uid}_${myItemList.size}"
+            val documentName = "${user!!.uid}_${myItemList.value!!.size}"
             val action = ItemListFragmentDirections.newItem(documentName)
             Log.e("DOC", documentName)
             it.findNavController().navigate(action)
@@ -158,6 +146,13 @@ class ItemListFragment : Fragment() {
         Navigation.findNavController(view).navigate(action)
     }
 
+    private fun hideNoItemsHere(list: List<ItemModel>) {
+        if (list.isEmpty())
+            empty_list.visibility = View.VISIBLE
+        else
+            empty_list.visibility = View.GONE
+    }
+
     private fun retrieveImage(filename: String) : Bitmap? {
         val file = File(activity?.filesDir, filename)
         val fileExists = file.exists()
@@ -169,12 +164,6 @@ class ItemListFragment : Fragment() {
             bitmap
         } else
             null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        firestoreListener!!.remove()
     }
 
     override fun onStart() {

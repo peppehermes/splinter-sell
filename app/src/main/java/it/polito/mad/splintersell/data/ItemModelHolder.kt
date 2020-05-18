@@ -21,4 +21,17 @@ class ItemModelHolder(v: View) : RecyclerView.ViewHolder(v) {
     var expireDate: String? = null
     var documentName: String? = null
     var ownerId: String? = null
+
+    fun bind(model: ItemModel) {
+        // Bind the ItemModel object to the ItemModelHolder
+        description.text = model.description
+        title.text = model.title
+        price.text = model.price
+        mainCategory = model.mainCategory
+        secondCategory = model.secondCategory
+        location = model.location
+        expireDate = model.expireDate
+        documentName = model.documentName
+        ownerId = model.ownerId
+    }
 }

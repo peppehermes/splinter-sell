@@ -31,9 +31,6 @@ import java.io.FileInputStream
 
 const val filename = "proPic"
 
-val db = FirebaseFirestore.getInstance()
-val user = Firebase.auth.currentUser
-
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration

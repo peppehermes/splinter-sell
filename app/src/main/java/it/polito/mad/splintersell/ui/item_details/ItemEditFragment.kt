@@ -49,7 +49,7 @@ class ItemEditFragment : Fragment() {
 
     private val args: ItemEditFragmentArgs by navArgs()
     private lateinit var currentPhotoPath: String
-    val user = Firebase.auth.currentUser
+    private val user = Firebase.auth.currentUser
     lateinit var liveData: LiveData<ItemModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +61,9 @@ class ItemEditFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        liveData = firestoreViewModel.getItemFromFirestore(args.documentName)
+        firestoreViewModel.fetchItemFromFirestore(args.documentName)
+        liveData = firestoreViewModel.item
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_item, container, false)
     }
