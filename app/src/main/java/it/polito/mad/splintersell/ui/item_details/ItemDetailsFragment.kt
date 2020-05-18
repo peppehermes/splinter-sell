@@ -2,8 +2,6 @@ package it.polito.mad.splintersell.ui.item_details
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -14,17 +12,12 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.storage.images.FirebaseImageLoader
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.storage
 import kotlinx.android.synthetic.main.fragment_item_details.*
-import java.io.File
-import java.io.FileInputStream
 
 class ItemDetailsFragment: Fragment() {
     private val firestoreViewModel: FirestoreViewModel by viewModels()
@@ -49,10 +42,10 @@ class ItemDetailsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        firestoreViewModel.fetchItemFromFirestore(args.documentName)
+        firestoreViewModel.fetchSingleItemFromFirestore(args.documentName)
         liveData = firestoreViewModel.item
 
-            return inflater.inflate(R.layout.fragment_item_details, container, false)
+        return inflater.inflate(R.layout.fragment_item_details, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

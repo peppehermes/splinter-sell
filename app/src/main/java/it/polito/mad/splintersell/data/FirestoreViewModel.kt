@@ -3,10 +3,8 @@ package it.polito.mad.splintersell.data
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.EventListener
-import com.google.firebase.firestore.QuerySnapshot
 
 class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskComplete {
     val TAG = "FIRESTORE_VIEW_MODEL"
@@ -19,6 +17,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     private var _item: MutableLiveData<ItemModel> = MutableLiveData()
     private var _onSaleItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _myItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
+    private var _allItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
 
     init {
         firestoreRepository.getItemData()
@@ -35,7 +34,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         }
     }
 
-    fun fetchItemFromFirestore(documentName:String) {
+    fun fetchSingleItemFromFirestore(documentName:String) {
         firestoreRepository.getItemDocument(documentName)
             .addSnapshotListener(EventListener { value, e ->
                 if (e != null) {
@@ -56,7 +55,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     fun fetchMyItemListFromFirestore() {
         firestoreRepository.itemRef
             .whereEqualTo("ownerId", user!!.uid)
-            .addSnapshotListener(EventListener<QuerySnapshot> { value, e ->
+            .addSnapshotListener(EventListener { value, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
                     _myItemList.value = null
@@ -72,28 +71,22 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
             })
     }
 
-    private fun fetchOnSaleItemList() {
-        val itemCollection = firestoreRepository.itemRef
-        val onSaleItems = ArrayList<ItemModel>()
-
-        val task1 = itemCollection.whereLessThan("ownerId", user!!.uid)
-            .get()
-
-        val task2 = itemCollection.whereGreaterThan("ownerId", user!!.uid)
-            .get()
-
-        val allTasks = Tasks.whenAllSuccess<QuerySnapshot>(task1, task2)
-
-        allTasks.addOnSuccessListener { querySnapshots ->
-            for (queryDocumentSnapshots in querySnapshots) {
-                for (documentSnapshot in queryDocumentSnapshots) {
-                    val item = documentSnapshot.toObject(ItemModel::class.java)
-
-                    onSaleItems.add(item)
+    fun fetchAllItemListFromFirestore() {
+        firestoreRepository.itemRef
+            .addSnapshotListener(EventListener { value, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    _myItemList.value = null
+                    return@EventListener
                 }
-            }
-            _onSaleItemList.value = onSaleItems
-        }
+
+                val allItemList : MutableList<ItemModel> = mutableListOf()
+                for (doc in value!!) {
+                    val item = doc.toObject(ItemModel::class.java)
+                    allItemList.add(item)
+                }
+                _allItemList.value = allItemList
+            })
     }
 
 
@@ -165,4 +158,8 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     internal var myItemList: MutableLiveData<List<ItemModel>>
         get() { return _myItemList }
         set(value) { _myItemList = value }
+
+    internal var allItemList: MutableLiveData<List<ItemModel>>
+        get() { return _allItemList }
+        set(value) { _allItemList = value }
 }

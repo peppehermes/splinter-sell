@@ -48,9 +48,6 @@ class ItemListFragment : Fragment() {
     private var adapter: FirestoreRecyclerAdapter<ItemModel, ItemModelHolder>? = null
     private val user = Firebase.auth.currentUser
 
-    private var firestoreListener: ListenerRegistration? = null
-    private var firestoreDB: FirebaseFirestore? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -62,7 +59,6 @@ class ItemListFragment : Fragment() {
             .collection("items")
             .whereEqualTo("ownerId", user!!.uid)
 
-        var sref:StorageReference? = null
         // Configure recycler adapter options:
         //  * query is the Query object defined above.
         //  * ItemModel.class instructs the adapter to convert each DocumentSnapshot to a ItemModel object
@@ -79,13 +75,13 @@ class ItemListFragment : Fragment() {
                 // Bind the ItemModel object to the ItemModelHolder
                 holder.bind(model)
 
-                //set image into the card
+                /*//set image into the card
                 sref = storage.child("itemImages/${model.imgPath}")
 
-                    Glide.with(holder.image.context)
+                    Glide.with(holder.itemView.context)
                         .using(FirebaseImageLoader())
                         .load(sref)
-                        .into(holder.image)
+                        .into(holder.image)*/
 
                 // Set the onClick listener
                 holder.card.setOnClickListener {

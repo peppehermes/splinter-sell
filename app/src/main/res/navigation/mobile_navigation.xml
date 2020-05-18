@@ -21,8 +21,9 @@
             android:name="onSale"
             app:argType="boolean" />
         <action
-            android:id="@+id/action_nav_item_details_to_nav_show_profile"
-            app:destination="@id/nav_show_profile" />
+            android:id="@+id/goToUserProfile"
+            app:destination="@id/nav_show_profile"
+            app:popUpTo="@id/nav_item_details" />
     </fragment>
 
     <fragment
@@ -109,6 +110,10 @@
         <action
             android:id="@+id/showOnSaleItem"
             app:destination="@id/nav_item_details" />
+        <action
+            android:id="@+id/goToUserProfile"
+            app:destination="@id/nav_show_profile"
+            app:popUpTo="@id/onSaleListFragment" />
     </fragment>
 
 

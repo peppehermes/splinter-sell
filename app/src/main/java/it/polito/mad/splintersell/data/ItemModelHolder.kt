@@ -5,6 +5,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.android.material.card.MaterialCardView
 import it.polito.mad.splintersell.R
 
@@ -33,5 +35,18 @@ class ItemModelHolder(v: View) : RecyclerView.ViewHolder(v) {
         expireDate = model.expireDate
         documentName = model.documentName
         ownerId = model.ownerId
+
+        //set image into the card
+        val sref = storage.child("itemImages/${model.imgPath}")
+
+        Glide.with(image.context)
+            .using(FirebaseImageLoader())
+            .load(sref)
+            .into(image)
+
+        /*Glide.with(holder.itemView.context)
+            //.using(FirebaseImageLoader())
+            .load("https://firebasestorage.googleapis.com/v0/b/***REMOVED***.appspot.com/o/itemImages%2FG7B0a6aFsOtLcHYmXF26.jpg?alt=media&token=cef98d74-942d-46bc-bce6-60e6ce0ef23a")
+            .into(holder.image)*/
     }
 }

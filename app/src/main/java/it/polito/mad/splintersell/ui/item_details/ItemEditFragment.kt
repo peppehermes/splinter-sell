@@ -26,12 +26,9 @@ import androidx.lifecycle.LiveData
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.R
@@ -43,7 +40,6 @@ import kotlinx.android.synthetic.main.fragment_edit_item.expire_date
 import kotlinx.android.synthetic.main.fragment_edit_item.location
 import kotlinx.android.synthetic.main.fragment_edit_item.price
 import kotlinx.android.synthetic.main.fragment_edit_item.title
-import kotlinx.android.synthetic.main.fragment_item_details.*
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -78,7 +74,7 @@ class ItemEditFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        firestoreViewModel.fetchItemFromFirestore(args.documentName)
+        firestoreViewModel.fetchSingleItemFromFirestore(args.documentName)
         liveData = firestoreViewModel.item
 
         // Inflate the layout for this fragment
@@ -104,7 +100,7 @@ class ItemEditFragment : Fragment() {
             expire_date.setText(it.expireDate)
 
             path = it.imgPath
-            if(path == "")
+            if (path == "")
                 detail_image.setImageDrawable(requireContext().getDrawable(R.drawable.image_vectorized_lower))
             else{
 
@@ -527,10 +523,3 @@ class ItemEditFragment : Fragment() {
         }
     }
 }
-
-
-
-
-
-
-

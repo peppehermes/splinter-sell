@@ -30,6 +30,7 @@
     <string name="expire_date">Expire date (dd/mm/yyyy)</string>
 
     <string name="edit">Edit</string>
+    <string name="view_user">View User</string>
     <string name="empty_list">No items here</string>
 
     //SHOW PROFILE
@@ -43,6 +44,7 @@
     <string name="save">Save</string>
     <string name="update_profile_photo">update_profile_photo</string>
     <string name="add_photo">add_photo</string>
+    <string name="search">Search</string>
 
     <string-array name="macroCategories">
 
