@@ -81,7 +81,6 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     fun fetchMyItemListFromFirestore() {
         firestoreRepository.itemRef
             .whereEqualTo("ownerId", user!!.uid)
-            .whereEqualTo("status","Available")
             .addSnapshotListener(EventListener { value, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)

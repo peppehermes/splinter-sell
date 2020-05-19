@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -58,7 +60,6 @@ class ItemListFragment : Fragment() {
         val query: Query = FirebaseFirestore.getInstance()
             .collection("items")
             .whereEqualTo("ownerId", user!!.uid)
-            .whereEqualTo("status","Available")
 
         // Configure recycler adapter options:
         //  * query is the Query object defined above.
@@ -76,12 +77,30 @@ class ItemListFragment : Fragment() {
                 // Bind the ItemModel object to the ItemModelHolder
                 holder.bind(model)
 
-                // Set the onClick listener
-                holder.card.setOnClickListener {
-                    navigateToItemDetails(holder.itemView, model.documentName!!)
+                if (model.status !="Available"){
+
+                    val matrix = ColorMatrix()
+                    matrix.setSaturation(0f)
+
+                    val filter = ColorMatrixColorFilter(matrix)
+
+                    holder.button.text = model.status
+                    holder.image.colorFilter = filter
+                    holder.button.setTextColor(holder.itemView.context.getColor(R.color.colorRed))
+                    holder.button.textSize = 24F
+                    holder.card.isClickable = false
+
+
                 }
-                holder.button.setOnClickListener {
-                    navigateToItemEdit(holder.itemView, model.documentName!!)
+                else {
+
+                    // Set the onClick listener
+                    holder.card.setOnClickListener {
+                        navigateToItemDetails(holder.itemView, model.documentName!!)
+                    }
+                    holder.button.setOnClickListener {
+                        navigateToItemEdit(holder.itemView, model.documentName!!)
+                    }
                 }
             }
 

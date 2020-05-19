@@ -54,7 +54,7 @@ class UserListAdapter (private var UserList: ArrayList<UserModel>, itemID: Strin
         holder.button.setOnClickListener{
 
             val builder = AlertDialog.Builder(it.context)
-            builder.setMessage("Are you sure you want to Delete?")
+            builder.setMessage("Are you sure you want to accept?")
                 .setCancelable(false)
                 .setPositiveButton("Yes") { dialog,id ->
                     // Delete selected note from database
@@ -126,7 +126,7 @@ class UserListAdapter (private var UserList: ArrayList<UserModel>, itemID: Strin
     }
 
     private fun navigateToMyItemList(view: View){
-        val action = UserListFragmentDirections.goToItemList()
+        val action = UserListFragmentDirections.goToMyItems()
         Navigation.findNavController(view).navigate(action)
 
     }

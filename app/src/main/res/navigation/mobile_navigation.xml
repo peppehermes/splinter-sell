@@ -148,7 +148,7 @@
             android:name="itemID"
             app:argType="string" />
         <action
-            android:id="@+id/goToItemList"
+            android:id="@+id/goToMyItems"
             app:destination="@id/nav_item_list" />
     </fragment>
 
