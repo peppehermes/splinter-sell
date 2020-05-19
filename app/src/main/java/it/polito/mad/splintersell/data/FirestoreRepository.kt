@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
@@ -16,6 +17,7 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
     val TAG = "FIREBASE_REPOSITORY"
     var firestore = FirebaseFirestore.getInstance()
     val itemRef = firestore.collection("items")
+    val notRef = firestore.collection("notifications")
     var user = FirebaseAuth.getInstance().currentUser
 
     fun getItemDocument(documentName: String): DocumentReference {
@@ -119,9 +121,45 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
             .addOnFailureListener { Log.d(TAG, "USER Error in saving")}
     }
 
+    fun getNotificationData() {
+        val likedItems = ArrayList<String>()
+        val list = ArrayList<ItemModel>()
+        FirebaseFirestore.getInstance()
+            .collection("notifications")
+            .whereEqualTo("id_user", user!!.uid)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (doc in documents) {
+                    val itemname = doc.get("id_item").toString()
+                    likedItems.add(itemname)
+                    Log.d("liked", itemname)
+                    Log.d("likedList",likedItems.toString())
+                }
+
+                if(likedItems.isNotEmpty()){
+                FirebaseFirestore.getInstance()
+                    .collection("items")
+                    .whereIn(FieldPath.documentId(), likedItems)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents) {
+                            Log.d("documento",document.toString())
+                            val item = document.toObject(ItemModel::class.java)
+                            list.add(item)
+                            Log.d("listNot1",list.toString())
+                        }
+
+                        onFirestoreTaskComplete.notListDataAdded(list)
+                    }}
+
+            }
+
+            }
+
     interface OnFirestoreTaskComplete {
         fun itemListDataAdded(itemModelList: List<ItemModel>)
         fun fetchNotifications(requested:Boolean)
+        fun notListDataAdded(notificationList: List<ItemModel>)
     }
 }
 

@@ -19,6 +19,11 @@
             android:title="@string/menu_on_sale" />
 
         <item
+            android:id="@+id/nav_wish_list"
+            android:icon="@drawable/ic_attach_money_black_24dp"
+            android:title="@string/menu_follow_list" />
+
+        <item
             android:id="@+id/nav_signOut"
             android:icon="@drawable/ic_attach_money_black_24dp"
             android:title="@string/SignOut" />

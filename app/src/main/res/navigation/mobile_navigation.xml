@@ -118,6 +118,18 @@
             app:destination="@id/nav_show_profile"
             app:popUpTo="@id/onSaleListFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_wish_list"
+        android:name="it.polito.mad.splintersell.ui.wish_list.WishList"
+        android:label="Wish List"
+        tools:layout="@layout/fragment_wish_list">
+        <action
+            android:id="@+id/showOnSaleItem"
+            app:destination="@id/nav_item_details" />
+        <action
+            android:id="@+id/goToUserProfile"
+            app:destination="@id/nav_show_profile" />
+    </fragment>
 
 
 </navigation>

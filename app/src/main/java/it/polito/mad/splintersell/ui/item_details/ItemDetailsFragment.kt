@@ -75,7 +75,7 @@ class ItemDetailsFragment: Fragment() {
                         val newNot = NotificationModel(
                             args.documentName,
                             user!!.uid,
-                            liveData.value!!.ownerId
+                            liveData.value!!.ownerId!!
                         )
                         firestoreViewModel.saveNotificationToFirestore(newNot)
                         Navigation.findNavController(requireView()).navigate(action1)

@@ -13,18 +13,14 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
 
     private var _myUser: MutableLiveData<UserModel> = MutableLiveData()
     private var _myUserNav: MutableLiveData<UserModel> = MutableLiveData()
+    private var _notificationsList: MutableLiveData<List<NotificationModel>> = MutableLiveData()
+    private var _wishItemsList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _isrequested: MutableLiveData<Boolean> = MutableLiveData()
-
     private var _item: MutableLiveData<ItemModel> = MutableLiveData()
     private var _onSaleItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _myItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _allItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
 
-
-    init {
-        firestoreRepository.getItemData()
-        //fetchOnSaleItemList()
-    }
 
     override fun itemListDataAdded(itemModelList: List<ItemModel>) {
         _onSaleItemList.value = itemModelList
@@ -36,6 +32,10 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
 
     fun getNotifications(item_id: String) {
         firestoreRepository.getItemNotification(item_id)
+    }
+
+    override fun notListDataAdded(notificationList: List<ItemModel>) {
+        _wishItemsList.value = notificationList
     }
 
     fun saveItemToFirestore(item: ItemModel) {
@@ -73,93 +73,112 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
             })
     }
 
-        fun fetchMyItemListFromFirestore() {
-            firestoreRepository.itemRef
-                .whereEqualTo("ownerId", user!!.uid)
-                .addSnapshotListener(EventListener { value, e ->
-                    if (e != null) {
-                        Log.w(TAG, "Listen failed.", e)
-                        _myItemList.value = null
-                        return@EventListener
-                    }
+    fun fetchMyItemListFromFirestore() {
+        firestoreRepository.itemRef
+            .whereEqualTo("ownerId", user!!.uid)
+            .addSnapshotListener(EventListener { value, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    _myItemList.value = null
+                    return@EventListener
+                }
 
-                    val savedItemList: MutableList<ItemModel> = mutableListOf()
-                    for (doc in value!!) {
-                        val item = doc.toObject(ItemModel::class.java)
-                        savedItemList.add(item)
-                    }
+                val savedItemList : MutableList<ItemModel> = mutableListOf()
+                for (doc in value!!) {
+                    val item = doc.toObject(ItemModel::class.java)
+                    savedItemList.add(item)
+                }
                     _myItemList.value = savedItemList
-                })
+            })
+    }
+
+    fun fetchAllItemListFromFirestore() {
+        firestoreRepository.itemRef
+            .addSnapshotListener(EventListener { value, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    _myItemList.value = null
+                    return@EventListener
+                }
+
+                val allItemList : MutableList<ItemModel> = mutableListOf()
+                for (doc in value!!) {
+                    val item = doc.toObject(ItemModel::class.java)
+                    allItemList.add(item)
+                }
+                _allItemList.value = allItemList
+            })
+    }
+
+
+    fun fetchUserFromFirestore(userID:String) {
+        firestoreRepository.getUserDocument(userID)
+            .addSnapshotListener(EventListener { value, e ->
+                if (e != null) {
+                    Log.w(TAG, "USER Listen failed.", e)
+                    _myUser.value = null
+                    return@EventListener
+                }
+
+                if (value != null && value.exists()) {
+                    Log.d(TAG, "USER Current data: ${value.data}")
+                    _myUser.value = value.toObject(UserModel::class.java)
+                } else {
+                    Log.d(TAG, "USER Current data: null")
+                }
+            })
+    }
+
+
+    fun fetchMyUserFromFirestore() {
+        firestoreRepository.getUserDocument(user!!.uid)
+            .addSnapshotListener(EventListener { value, e ->
+                if (e != null) {
+                    Log.w(TAG, "USER Listen failed.", e)
+                    _myUserNav.value = null
+                    return@EventListener
+                }
+
+                if (value != null && value.exists()) {
+                    Log.d(TAG, "USER Current data: ${value.data}")
+                    _myUserNav.value = value.toObject(UserModel::class.java)
+                } else {
+                    Log.d(TAG, "USER Current data: null")
+                }
+            })
+    }
+
+    fun fetchAllNotificationsFromFirestore() {
+        firestoreRepository.notRef
+            .addSnapshotListener(EventListener { value, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    _notificationsList.value = null
+                    return@EventListener
+                }
+
+                val notificatioList : MutableList<NotificationModel> = mutableListOf()
+                for (doc in value!!) {
+                    val notification = doc.toObject(NotificationModel::class.java)
+                    notificatioList.add(notification)
+                }
+                _notificationsList.value = notificatioList
+            })
+    }
+
+
+
+    fun saveUserToFirestore(myUser: UserModel) {
+        firestoreRepository.saveUser(myUser).addOnFailureListener {
+            Log.e(TAG, "USER Failed to save User!")
         }
+    }
 
-        fun fetchAllItemListFromFirestore() {
-            firestoreRepository.itemRef
-                .addSnapshotListener(EventListener { value, e ->
-                    if (e != null) {
-                        Log.w(TAG, "Listen failed.", e)
-                        _myItemList.value = null
-                        return@EventListener
-                    }
-
-                    val allItemList: MutableList<ItemModel> = mutableListOf()
-                    for (doc in value!!) {
-                        val item = doc.toObject(ItemModel::class.java)
-                        allItemList.add(item)
-                    }
-                    _allItemList.value = allItemList
-                })
-        }
-
-
-        fun fetchUserFromFirestore(userID: String) {
-            firestoreRepository.getUserDocument(userID)
-                .addSnapshotListener(EventListener { value, e ->
-                    if (e != null) {
-                        Log.w(TAG, "USER Listen failed.", e)
-                        _myUser.value = null
-                        return@EventListener
-                    }
-
-                    if (value != null && value.exists()) {
-                        Log.d(TAG, "USER Current data: ${value.data}")
-                        _myUser.value = value.toObject(UserModel::class.java)
-                    } else {
-                        Log.d(TAG, "USER Current data: null")
-                    }
-                })
-        }
-
-
-        fun fetchMyUserFromFirestore() {
-            firestoreRepository.getUserDocument(user!!.uid)
-                .addSnapshotListener(EventListener { value, e ->
-                    if (e != null) {
-                        Log.w(TAG, "USER Listen failed.", e)
-                        _myUserNav.value = null
-                        return@EventListener
-                    }
-
-                    if (value != null && value.exists()) {
-                        Log.d(TAG, "USER Current data: ${value.data}")
-                        _myUserNav.value = value.toObject(UserModel::class.java)
-                    } else {
-                        Log.d(TAG, "USER Current data: null")
-                    }
-                })
-        }
-
-
-        fun saveUserToFirestore(myUser: UserModel) {
-            firestoreRepository.saveUser(myUser).addOnFailureListener {
-                Log.e(TAG, "USER Failed to save User!")
-            }
-        }
 
 
     internal var myUser: MutableLiveData<UserModel>
         get() { return _myUser }
         set(value) { _myUser = value }
-
 
     internal var myUserNav: MutableLiveData<UserModel>
         get() { return _myUserNav }
@@ -168,6 +187,13 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     internal var isrequested : MutableLiveData<Boolean>
         get() { return _isrequested }
         set(value) { _isrequested = value }
+    internal var myNotificationsList: MutableLiveData<List<NotificationModel>>
+        get() { return _notificationsList }
+        set(value) { _notificationsList = value }
+
+    internal var wishItemsList: MutableLiveData<List<ItemModel>>
+        get() { return _wishItemsList }
+        set(value) { _wishItemsList = value }
 
     internal var item: MutableLiveData<ItemModel>
         get() { return _item }
@@ -184,5 +210,4 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     internal var allItemList: MutableLiveData<List<ItemModel>>
         get() { return _allItemList }
         set(value) { _allItemList = value }
-
 }

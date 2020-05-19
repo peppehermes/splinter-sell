@@ -39,6 +39,7 @@ import kotlinx.android.synthetic.main.fragment_edit_profile.profile_photo
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 const val REQUEST_TAKE_PHOTO = 2
 const val GALLERY_REQUEST_CODE = 3
@@ -300,6 +301,7 @@ class EditProfile : Fragment() {
 
     private fun manageBitmap() {
         var bitmap = handleSamplingAndRotationBitmap(requireContext(), photoURI)
+        Log.d("photoURI", photoURI.toString())
         profile_photo.setImageBitmap(bitmap)
         rotatedBitmap = bitmap
     }
@@ -319,6 +321,8 @@ class EditProfile : Fragment() {
         BitmapFactory.decodeStream(imageStream, null, options)
         imageStream!!.close()
 
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, MAX_WIDTH, MAX_HEIGHT)
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false
@@ -326,6 +330,42 @@ class EditProfile : Fragment() {
         var img = BitmapFactory.decodeStream(imageStream, null, options)
         img = rotateImageIfRequired(context, img!!, selectedImage)
         return img
+    }
+
+    private fun calculateInSampleSize(
+        options: BitmapFactory.Options,
+        reqWidth: Int, reqHeight: Int
+    ): Int {
+        // Raw height and width of image
+        val height = options.outHeight
+        val width = options.outWidth
+        var inSampleSize = 1
+        if (height > reqHeight || width > reqWidth) {
+
+            // Calculate ratios of height and width to requested height and width
+            val heightRatio =
+                (height.toFloat() / reqHeight.toFloat()).roundToInt()
+            val widthRatio =
+                (width.toFloat() / reqWidth.toFloat()).roundToInt()
+
+            // Choose the smallest ratio as inSampleSize value, this will guarantee a final image
+            // with both dimensions larger than or equal to the requested height and width.
+            inSampleSize = if (heightRatio < widthRatio) heightRatio else widthRatio
+
+            // This offers some additional logic in case the image has a strange
+            // aspect ratio. For example, a panorama may have a much larger
+            // width than height. In these cases the total pixels might still
+            // end up being too large to fit comfortably in memory, so we should
+            // be more aggressive with sample down the image (=larger inSampleSize).
+            val totalPixels = width * height.toFloat()
+
+            // Anything more than 2x the requested pixels we'll sample down further
+            val totalReqPixelsCap = reqWidth * reqHeight * 2.toFloat()
+            while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
+                inSampleSize++
+            }
+        }
+        return inSampleSize
     }
 
     @Throws(IOException::class)
@@ -358,17 +398,6 @@ class EditProfile : Fragment() {
         img.recycle()
         return rotatedImg
     }
-
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        photoURI?.run {
-            outState.putString("imgUri", this.toString())
-        }
-    }
-
-
-
 
 
 }
