@@ -32,7 +32,9 @@
 
     <string name="edit">Edit</string>
     <string name="view_user">View User</string>
+    <string name="show_users">Show Interested Users</string>
     <string name="empty_list">No items here</string>
+    <string name="empty_list_users">No users interested</string>
 
     //SHOW PROFILE
     <string name="fname">Full Name</string>

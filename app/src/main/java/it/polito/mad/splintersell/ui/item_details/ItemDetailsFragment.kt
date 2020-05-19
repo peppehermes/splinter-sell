@@ -37,7 +37,7 @@ class ItemDetailsFragment: Fragment() {
     // Inflate the edit menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (!args.onSale)
-            inflater.inflate(R.menu.menu, menu)
+            inflater.inflate(R.menu.detail_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -56,7 +56,7 @@ class ItemDetailsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        firestoreViewModel.getNotifications(args.documentName)
+        firestoreViewModel.firestoreRepository.getItemNotification(args.documentName)
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)
 
@@ -66,7 +66,7 @@ class ItemDetailsFragment: Fragment() {
                     fab.setImageResource(R.drawable.ic_strikethrough_s_black_24dp)
                     fab.setBackgroundTintList(resources.getColorStateList(R.color.colorPrimaryLight))
                     fab.setOnClickListener {
-                       firestoreViewModel.cancelNotifications(args.documentName)
+                       firestoreViewModel.firestoreRepository.removeNotifications(args.documentName)
                         Navigation.findNavController(requireView()).navigate(action1)
                     }
                 }
@@ -109,6 +109,11 @@ class ItemDetailsFragment: Fragment() {
         return when (item.itemId) {
             R.id.edit -> {
                 val action = ItemDetailsFragmentDirections.editItem(args.documentName)
+                Navigation.findNavController(requireView()).navigate(action)
+                true
+            }
+            R.id.show -> {
+                val action = ItemDetailsFragmentDirections.goToInterestedUsers(args.documentName,liveData.value!!.ownerId!!)
                 Navigation.findNavController(requireView()).navigate(action)
                 true
             }

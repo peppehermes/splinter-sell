@@ -121,6 +121,42 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
             .addOnFailureListener { Log.d(TAG, "USER Error in saving")}
     }
 
+
+    fun getUsersData(itemID :String) {
+        val interestedUsers = ArrayList<String>()
+        val list = ArrayList<UserModel>()
+        FirebaseFirestore.getInstance()
+            .collection("notifications")
+            .whereEqualTo("id_item", itemID)
+            .whereEqualTo("id_owner", user!!.uid)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (doc in documents) {
+                    val username = doc.get("id_user").toString()
+                    interestedUsers.add(username)
+                    Log.d("interested", username)
+                    Log.d("interestedList",interestedUsers.toString())
+                }
+
+                if(interestedUsers.isNotEmpty()){
+                    FirebaseFirestore.getInstance()
+                        .collection("users")
+                        .whereIn(FieldPath.documentId(), interestedUsers)
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            for (document in documents) {
+                                Log.d("documento",document.toString())
+                                val user = document.toObject(UserModel::class.java)
+                                list.add(user)
+                                Log.d("listUsers",list.toString())
+                                onFirestoreTaskComplete.userListDataAdded(list)
+                            }
+                        }}
+                else
+                    onFirestoreTaskComplete.userListDataAdded(list)
+            }
+    }
+
     fun getNotificationData() {
         val likedItems = ArrayList<String>()
         val list = ArrayList<ItemModel>()
@@ -160,6 +196,7 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
         fun itemListDataAdded(itemModelList: List<ItemModel>)
         fun fetchNotifications(requested:Boolean)
         fun notListDataAdded(notificationList: List<ItemModel>)
+        fun userListDataAdded(userList: List<UserModel>)
     }
 }
 

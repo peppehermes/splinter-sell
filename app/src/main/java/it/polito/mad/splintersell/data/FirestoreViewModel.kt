@@ -20,6 +20,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     private var _onSaleItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _myItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _allItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
+    private var _interestedUserList: MutableLiveData<List<UserModel>> = MutableLiveData()
 
 
     override fun itemListDataAdded(itemModelList: List<ItemModel>) {
@@ -30,8 +31,8 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         _isrequested.value = requested
     }
 
-    fun getNotifications(item_id: String) {
-        firestoreRepository.getItemNotification(item_id)
+    override fun userListDataAdded(userList: List<UserModel>) {
+        _interestedUserList.value=userList
     }
 
     override fun notListDataAdded(notificationList: List<ItemModel>) {
@@ -48,10 +49,6 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         firestoreRepository.saveNotification(not).addOnFailureListener {
             Log.e(TAG, "Failed to save Notification!")
         }
-    }
-
-    fun cancelNotifications(item_id: String) {
-        firestoreRepository.removeNotifications(item_id)
     }
 
 
@@ -210,4 +207,8 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     internal var allItemList: MutableLiveData<List<ItemModel>>
         get() { return _allItemList }
         set(value) { _allItemList = value }
+
+    internal var interestedUserList: MutableLiveData<List<UserModel>>
+        get() { return _interestedUserList }
+        set(value) { _interestedUserList = value }
 }
