@@ -74,13 +74,10 @@ class UserListAdapter (private var UserList: ArrayList<UserModel>, itemID: Strin
 
         }
 
- /*   // Set the onClick listener
-     holder.card.setOnClickListener {
-         navigateToUserProfile(holder.itemView)
-     }
-
-
-*/}
+        holder.card.setOnClickListener {
+            navigateToUserProfile(holder.itemView,item.userid!!)
+        }
+    }
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {

@@ -7,7 +7,7 @@ class UserModel{
     var email: String? = null
     var location: String? = null
     var photoName: String = "img_avatar.jpg"
-
+    var userid: String? = null
     constructor() {}
 
     constructor(fullname: String, nickname: String, email: String,

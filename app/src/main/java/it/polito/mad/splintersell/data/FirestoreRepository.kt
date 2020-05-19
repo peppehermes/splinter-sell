@@ -167,6 +167,7 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
                             for (document in documents) {
                                 Log.d("documento",document.toString())
                                 val user = document.toObject(UserModel::class.java)
+                                user.userid = document.id
                                 list.add(user)
                                 Log.d("listUsers",list.toString())
                                 onFirestoreTaskComplete.userListDataAdded(list)

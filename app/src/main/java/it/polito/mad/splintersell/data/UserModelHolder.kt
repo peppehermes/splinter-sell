@@ -18,7 +18,7 @@ class UserModelHolder(v: View) : RecyclerView.ViewHolder(v) {
     val nickname: TextView = v.findViewById(R.id.card_description)
     val email : TextView = v.findViewById(R.id.card_price)
     var location: String? = null
-
+    var userid: String? = null
 
 
 
@@ -28,6 +28,7 @@ class UserModelHolder(v: View) : RecyclerView.ViewHolder(v) {
         nickname.text = model.nickname
         email.text = model.email
         location = model.location
+        userid = model.userid
 
 
 
