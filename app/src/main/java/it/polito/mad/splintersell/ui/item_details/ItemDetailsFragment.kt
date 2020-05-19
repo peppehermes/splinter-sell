@@ -25,6 +25,7 @@ class ItemDetailsFragment: Fragment() {
     private val firestoreViewModel: FirestoreViewModel by viewModels()
     lateinit var liveData: LiveData<ItemModel>
     var user = FirebaseAuth.getInstance().currentUser
+    val action1 = ItemDetailsFragmentDirections.goToListItem()
 
     private val args: ItemDetailsFragmentArgs by navArgs()
 
@@ -66,7 +67,7 @@ class ItemDetailsFragment: Fragment() {
                     fab.setBackgroundTintList(resources.getColorStateList(R.color.colorPrimaryLight))
                     fab.setOnClickListener {
                        firestoreViewModel.cancelNotifications(args.documentName)
-                        Navigation.findNavController(requireView()).navigate(R.id.goToListItem)
+                        Navigation.findNavController(requireView()).navigate(action1)
                     }
                 }
                 else{
@@ -77,7 +78,7 @@ class ItemDetailsFragment: Fragment() {
                             liveData.value!!.ownerId
                         )
                         firestoreViewModel.saveNotificationToFirestore(newNot)
-                        Navigation.findNavController(requireView()).navigate(R.id.goToListItem)
+                        Navigation.findNavController(requireView()).navigate(action1)
                     }
                 }
                 fab.show()
