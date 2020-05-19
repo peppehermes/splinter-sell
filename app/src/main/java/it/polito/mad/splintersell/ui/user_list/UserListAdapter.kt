@@ -15,9 +15,10 @@ import it.polito.mad.splintersell.data.UserModel
 import java.util.*
 import kotlin.collections.ArrayList
 
-class UserListAdapter (private var UserList: ArrayList<UserModel>)
+class UserListAdapter (private var UserList: ArrayList<UserModel>, itemID: String)
     : RecyclerView.Adapter<UserModelHolder>(), Filterable {
     private var userFilterList = ArrayList<UserModel>()
+    var id_item = itemID
 
     init {
         userFilterList = UserList
