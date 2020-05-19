@@ -14,15 +14,18 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
+import com.google.firebase.auth.FirebaseAuth
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.R
+import it.polito.mad.splintersell.data.NotificationModel
 import it.polito.mad.splintersell.data.storage
 import kotlinx.android.synthetic.main.fragment_item_details.*
 
 class ItemDetailsFragment: Fragment() {
     private val firestoreViewModel: FirestoreViewModel by viewModels()
     lateinit var liveData: LiveData<ItemModel>
+    var user = FirebaseAuth.getInstance().currentUser
 
     private val args: ItemDetailsFragmentArgs by navArgs()
 
@@ -58,7 +61,7 @@ class ItemDetailsFragment: Fragment() {
         hideKeyboardFrom(requireContext(), view)
 
         if(args.onSale) {
-            firestoreViewModel.is_requested.observe(viewLifecycleOwner, Observer { requested ->
+            firestoreViewModel._isrequested.observe(viewLifecycleOwner, Observer { requested ->
                 if (requested == true) {
                     fab.setImageResource(R.drawable.ic_strikethrough_s_black_24dp)
                     fab.setBackgroundTintList(resources.getColorStateList(R.color.colorPrimaryLight))

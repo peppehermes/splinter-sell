@@ -13,12 +13,11 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
 
     private var _myUser: MutableLiveData<UserModel> = MutableLiveData()
     private var _myUserNav: MutableLiveData<UserModel> = MutableLiveData()
-
-     var is_requested : MutableLiveData<Boolean> = MutableLiveData()
     private var _item: MutableLiveData<ItemModel> = MutableLiveData()
     private var _onSaleItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _myItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _allItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
+    var _isrequested : MutableLiveData<Boolean> = MutableLiveData()
 
     init {
         firestoreRepository.getItemData()
@@ -30,7 +29,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     override fun fetchNotifications(requested:Boolean){
-        is_requested.value=requested
+        _isrequested.value=requested
     }
 
     fun getNotifications(item_id :String){

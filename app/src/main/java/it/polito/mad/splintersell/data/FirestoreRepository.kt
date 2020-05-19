@@ -25,7 +25,7 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
 
     fun getItemNotification(itemId: String) {
         var requested = false
-        val task = firestoreDB
+        val task = firestore
             .collection("notifications")
             .whereEqualTo("id_item", itemId)
             .get()
@@ -79,7 +79,7 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
     }
 
     fun saveNotification(not: NotificationModel): Task<Void> {
-        val documentReferenceUser = firestoreDB.collection("notifications")
+        val documentReferenceUser = firestore.collection("notifications")
             .document("${not!!.id_user}_${not!!.id_item}")
 
         return documentReferenceUser.set(not)
@@ -88,7 +88,7 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
     }
 
     fun removeNotifications(itemId: String){
-        val task = firestoreDB.collection("notifications")
+        val task = firestore.collection("notifications")
             .whereEqualTo("id_item", itemId)
             .whereEqualTo("id_user", user!!.uid)
             .get()
