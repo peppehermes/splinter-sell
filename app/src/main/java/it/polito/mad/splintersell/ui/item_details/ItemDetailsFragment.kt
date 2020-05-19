@@ -113,7 +113,7 @@ class ItemDetailsFragment: Fragment() {
                 true
             }
             R.id.show -> {
-                val action = ItemDetailsFragmentDirections.goToInterestedUsers(args.documentName,liveData.value!!.ownerId!!)
+                val action = ItemDetailsFragmentDirections.goToInterestedUsers(args.documentName)
                 Navigation.findNavController(requireView()).navigate(action)
                 true
             }

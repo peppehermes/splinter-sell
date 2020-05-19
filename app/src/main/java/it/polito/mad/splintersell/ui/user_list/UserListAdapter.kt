@@ -15,7 +15,7 @@ import it.polito.mad.splintersell.data.UserModel
 import java.util.*
 import kotlin.collections.ArrayList
 
-class UserListAdapter (private var UserList: ArrayList<UserModel>, ownerID : String)
+class UserListAdapter (private var UserList: ArrayList<UserModel>)
     : RecyclerView.Adapter<UserModelHolder>(), Filterable {
     private var userFilterList = ArrayList<UserModel>()
 
@@ -43,10 +43,10 @@ class UserListAdapter (private var UserList: ArrayList<UserModel>, ownerID : Str
         holder.bind(item)
 
         holder.button.text = "Accept"
-/*
-    // Set the onClick listener
+
+ /*   // Set the onClick listener
      holder.card.setOnClickListener {
-         navigateToUserProfile(holder.itemView,ownerID)
+         navigateToUserProfile(holder.itemView)
      }
 
      holder.button.setOnClickListener {

@@ -144,9 +144,6 @@
         <argument
             android:name="itemID"
             app:argType="string" />
-        <argument
-            android:name="ownerID"
-            app:argType="string" />
     </fragment>
 
 

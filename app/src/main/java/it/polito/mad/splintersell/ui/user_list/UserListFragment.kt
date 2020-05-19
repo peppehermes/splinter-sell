@@ -75,7 +75,7 @@ class UserListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         listView = view.findViewById(R.id.user_list)
-        adapter = UserListAdapter(list,args.ownerID)
+        adapter = UserListAdapter(list)
 
                 listView.layoutManager = LinearLayoutManager(context)
                 listView.setHasFixedSize(true)
