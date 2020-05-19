@@ -1,5 +1,7 @@
 package it.polito.mad.splintersell.ui.on_sale_list
 
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,7 @@ import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.data.ItemModelHolder
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>)
     : RecyclerView.Adapter<ItemModelHolder>(), Filterable {
@@ -41,25 +44,34 @@ class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>)
         val item = itemFilterList[position]
         holder.bind(item)
 
-        /*//set image into the card
-        val sref = storage.child("itemImages/${item.imgPath}")
 
-        Glide.with(holder.itemView.context)
-            .using(FirebaseImageLoader())
-            .load(sref)
-            .into(holder.image)*/
 
-        // Hide EDIT button
+        if (item.status =="Sold"){
 
-        holder.button.text = "View user"
+            val matrix = ColorMatrix()
+            matrix.setSaturation(0f)
 
-        // Set the onClick listener
-        holder.card.setOnClickListener {
-            navigateToItemDetails(holder.itemView, item.documentName!!)
-        }
+            val filter = ColorMatrixColorFilter(matrix)
 
-        holder.button.setOnClickListener {
-            navigateToUserDetails(holder.itemView, item.ownerId!!)
+            holder.button.text = "SOLD"
+            holder.image.colorFilter = filter
+            holder.button.setTextColor(holder.itemView.context.getColor(R.color.colorRed))
+            holder.button.textSize = 24F
+            holder.card.isClickable = false
+
+
+        }else {
+
+            holder.button.text = "View user"
+
+            // Set the onClick listener
+            holder.card.setOnClickListener {
+                navigateToItemDetails(holder.itemView, item.documentName!!)
+            }
+
+            holder.button.setOnClickListener {
+                navigateToUserDetails(holder.itemView, item.ownerId!!)
+            }
         }
     }
 

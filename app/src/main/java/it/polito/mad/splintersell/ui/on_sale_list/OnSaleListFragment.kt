@@ -18,6 +18,8 @@ import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
 import kotlinx.android.synthetic.main.fragment_item_list.*
+import kotlinx.android.synthetic.main.fragment_item_list.empty_list
+import kotlinx.android.synthetic.main.fragment_wish_list.*
 
 
 class OnSaleListFragment : Fragment() {

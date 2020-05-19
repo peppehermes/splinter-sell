@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
@@ -50,11 +51,13 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
         val firstTask = FirebaseFirestore.getInstance()
             .collection("items")
             .whereLessThan("ownerId", user!!.uid)
+            .whereEqualTo("status","Available")
             .get()
 
         val secondTask = FirebaseFirestore.getInstance()
             .collection("items")
             .whereGreaterThan("ownerId", user!!.uid)
+            .whereEqualTo("status","Available")
             .get()
 
         val list = ArrayList<ItemModel>()
@@ -93,6 +96,23 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
         val task = firestore.collection("notifications")
             .whereEqualTo("id_item", itemId)
             .whereEqualTo("id_user", user!!.uid)
+            .get()
+
+        Tasks.whenAllSuccess<QuerySnapshot>(task)
+            .addOnSuccessListener { querySnaps ->
+                for (docSnap in querySnaps)
+                    for (document in docSnap) {
+                        document.reference.delete().addOnSuccessListener(){
+                            Log.d(TAG, "Successfully removed")
+                        }
+                    }
+            }
+            .addOnFailureListener() { Log.d(TAG, "Error in removing") }
+    }
+
+    fun removeAllNotifications(itemId: String){
+        val task = firestore.collection("notifications")
+            .whereEqualTo("id_item", itemId)
             .get()
 
         Tasks.whenAllSuccess<QuerySnapshot>(task)
@@ -191,6 +211,15 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
             }
 
             }
+
+    fun updateStatus(status:String,itemId: String){
+
+        firestore
+            .collection("items")
+            .document(itemId)
+            .update("status",status)
+
+    }
 
     interface OnFirestoreTaskComplete {
         fun itemListDataAdded(itemModelList: List<ItemModel>)

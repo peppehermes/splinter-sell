@@ -52,6 +52,14 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
 
+    fun updateStatus(status: String, item_id: String) {
+        firestoreRepository.updateStatus(status,item_id)
+    }
+
+    fun cancelAllNotifications(item_id: String) {
+        firestoreRepository.removeAllNotifications(item_id)
+    }
+
     fun fetchSingleItemFromFirestore(documentName: String) {
         firestoreRepository.getItemDocument(documentName)
             .addSnapshotListener(EventListener { value, e ->
@@ -73,6 +81,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     fun fetchMyItemListFromFirestore() {
         firestoreRepository.itemRef
             .whereEqualTo("ownerId", user!!.uid)
+            .whereEqualTo("status","Available")
             .addSnapshotListener(EventListener { value, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
@@ -91,6 +100,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
 
     fun fetchAllItemListFromFirestore() {
         firestoreRepository.itemRef
+            .whereEqualTo("status","Available")
             .addSnapshotListener(EventListener { value, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)

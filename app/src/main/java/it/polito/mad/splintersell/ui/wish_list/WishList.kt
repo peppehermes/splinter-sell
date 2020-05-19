@@ -30,6 +30,7 @@ import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.*
 import it.polito.mad.splintersell.ui.on_sale_list.OnSaleListAdapter
 import kotlinx.android.synthetic.main.fragment_item_list.*
+import kotlinx.android.synthetic.main.fragment_wish_list.*
 import java.util.concurrent.TimeUnit
 
 class WishList : Fragment() {
@@ -85,9 +86,9 @@ class WishList : Fragment() {
 
     private fun hideNoItemsHere(list: List<ItemModel>) {
         if (list.isEmpty())
-            empty_list.visibility = View.VISIBLE
+            empty_list_wish.visibility = View.VISIBLE
         else
-            empty_list.visibility = View.GONE
+            empty_list_wish.visibility = View.GONE
     }
 
 

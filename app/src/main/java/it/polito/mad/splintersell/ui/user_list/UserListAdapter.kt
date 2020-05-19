@@ -1,23 +1,29 @@
 package it.polito.mad.splintersell.ui.user_list
 
 import UserModelHolder
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.splintersell.R
+import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModelHolder
 import it.polito.mad.splintersell.data.UserModel
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.coroutines.coroutineContext
 
 class UserListAdapter (private var UserList: ArrayList<UserModel>, itemID: String)
     : RecyclerView.Adapter<UserModelHolder>(), Filterable {
     private var userFilterList = ArrayList<UserModel>()
+
     var id_item = itemID
 
     init {
@@ -45,14 +51,35 @@ class UserListAdapter (private var UserList: ArrayList<UserModel>, itemID: Strin
 
         holder.button.text = "Accept"
 
+        holder.button.setOnClickListener{
+
+            val builder = AlertDialog.Builder(it.context)
+            builder.setMessage("Are you sure you want to Delete?")
+                .setCancelable(false)
+                .setPositiveButton("Yes") { dialog,id ->
+                    // Delete selected note from database
+
+                    FirestoreViewModel().updateStatus("Sold",id_item)
+
+                    navigateToMyItemList(holder.itemView)
+
+                }
+                .setNegativeButton("No") { dialog, id ->
+                    // Dismiss the dialog
+                    dialog.dismiss()
+                }
+
+            val alert = builder.create()
+            alert.show()
+
+        }
+
  /*   // Set the onClick listener
      holder.card.setOnClickListener {
          navigateToUserProfile(holder.itemView)
      }
 
-     holder.button.setOnClickListener {
-         navigateToUserDetails(holder.itemView, item.ownerId!!)
-     }
+
 */}
     override fun getFilter(): Filter {
         return object : Filter() {
@@ -96,6 +123,12 @@ class UserListAdapter (private var UserList: ArrayList<UserModel>, itemID: Strin
         val action = UserListFragmentDirections.goToInterestedUserProfile(id)
         Log.e("POS", id)
         Navigation.findNavController(view).navigate(action)
+    }
+
+    private fun navigateToMyItemList(view: View){
+        val action = UserListFragmentDirections.goToItemList()
+        Navigation.findNavController(view).navigate(action)
+
     }
 
 }

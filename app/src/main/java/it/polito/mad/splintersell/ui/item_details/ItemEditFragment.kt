@@ -1,6 +1,7 @@
 package it.polito.mad.splintersell.ui.item_details
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -501,7 +502,8 @@ class ItemEditFragment : Fragment() {
                     expire_date.text.toString(),
                     args.documentName,
                     user!!.uid,
-                    randomString
+                    randomString,
+                    "Available"
                 )
 
                 firestoreViewModel.saveItemToFirestore(newItem)
@@ -509,6 +511,34 @@ class ItemEditFragment : Fragment() {
 
                 val action = ItemEditFragmentDirections.goToDetails(args.documentName, false)
                 Navigation.findNavController(requireView()).navigate(action)
+
+                true
+            }
+            R.id.deleteItem ->{
+
+                val builder = AlertDialog.Builder(requireContext())
+                builder.setMessage("Are you sure you want to Delete?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes") { dialog, id ->
+                        // Delete selected note from database
+
+                        firestoreViewModel.updateStatus("Blocked",args.documentName)
+
+                        firestoreViewModel.cancelAllNotifications(args.documentName)
+
+                        val action = ItemEditFragmentDirections.goToItemList()
+                        Navigation.findNavController(requireView()).navigate(action)
+                    }
+                    .setNegativeButton("No") { dialog, id ->
+                        // Dismiss the dialog
+                        dialog.dismiss()
+                    }
+
+                val alert = builder.create()
+                alert.show()
+
+
+
 
                 true
             }

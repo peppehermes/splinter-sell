@@ -13,12 +13,13 @@ class ItemModel {
     var documentName: String? = null
     var ownerId: String? = null
     var imgPath: String = ""
+    var status:String? = null
 
     constructor() {}
 
     constructor(title: String, description: String, price: String,
         mainCategory: String, secondCategory: String, location: String,
-                expireDate: String, documentName: String, ownerId: String, imgPath: String) {
+                expireDate: String, documentName: String, ownerId: String, imgPath: String, status: String) {
         this.title = title
         this.description = description
         this.price = price
@@ -29,6 +30,7 @@ class ItemModel {
         this.documentName = documentName
         this.ownerId = ownerId
         this.imgPath = imgPath
+        this.status = status
     }
 
     fun toMap(): Map<String, Any> {

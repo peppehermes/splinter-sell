@@ -58,6 +58,7 @@ class ItemListFragment : Fragment() {
         val query: Query = FirebaseFirestore.getInstance()
             .collection("items")
             .whereEqualTo("ownerId", user!!.uid)
+            .whereEqualTo("status","Available")
 
         // Configure recycler adapter options:
         //  * query is the Query object defined above.
@@ -74,14 +75,6 @@ class ItemListFragment : Fragment() {
             ) {
                 // Bind the ItemModel object to the ItemModelHolder
                 holder.bind(model)
-
-                /*//set image into the card
-                sref = storage.child("itemImages/${model.imgPath}")
-
-                    Glide.with(holder.itemView.context)
-                        .using(FirebaseImageLoader())
-                        .load(sref)
-                        .into(holder.image)*/
 
                 // Set the onClick listener
                 holder.card.setOnClickListener {
