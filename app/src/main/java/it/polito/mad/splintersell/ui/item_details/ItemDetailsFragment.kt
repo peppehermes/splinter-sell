@@ -1,6 +1,5 @@
 package it.polito.mad.splintersell.ui.item_details
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
@@ -52,7 +51,7 @@ class ItemDetailsFragment: Fragment() {
         return inflater.inflate(R.layout.fragment_item_details, container, false)
     }
 
-    @SuppressLint("ResourceAsColor")
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -61,7 +60,7 @@ class ItemDetailsFragment: Fragment() {
         hideKeyboardFrom(requireContext(), view)
 
         if(args.onSale) {
-            firestoreViewModel._isrequested.observe(viewLifecycleOwner, Observer { requested ->
+            firestoreViewModel.isrequested.observe(viewLifecycleOwner, Observer { requested ->
                 if (requested == true) {
                     fab.setImageResource(R.drawable.ic_strikethrough_s_black_24dp)
                     fab.setBackgroundTintList(resources.getColorStateList(R.color.colorPrimaryLight))
