@@ -154,8 +154,7 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
                 for (doc in documents) {
                     val username = doc.get("id_user").toString()
                     interestedUsers.add(username)
-                    Log.d("interested", username)
-                    Log.d("interestedList",interestedUsers.toString())
+
                 }
 
                 if(interestedUsers.isNotEmpty()){
@@ -165,11 +164,9 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
                         .get()
                         .addOnSuccessListener { documents ->
                             for (document in documents) {
-                                Log.d("documento",document.toString())
                                 val user = document.toObject(UserModel::class.java)
                                 user.userid = document.id
                                 list.add(user)
-                                Log.d("listUsers",list.toString())
                                 onFirestoreTaskComplete.userListDataAdded(list)
                             }
                         }}

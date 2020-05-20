@@ -105,7 +105,6 @@ class UserListFragment : Fragment() {
 
         private fun hideNoUsersHere(list: List<UserModel>) {
                 if (list.isEmpty()) {
-                        Log.d("pio","soio")
                         empty_list_users.visibility = View.VISIBLE
                 }
                 else

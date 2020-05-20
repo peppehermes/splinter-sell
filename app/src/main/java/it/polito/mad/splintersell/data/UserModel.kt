@@ -8,6 +8,7 @@ class UserModel{
     var location: String? = null
     var photoName: String = "img_avatar.jpg"
     var userid: String? = null
+
     constructor() {}
 
     constructor(fullname: String, nickname: String, email: String,
