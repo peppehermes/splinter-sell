@@ -35,6 +35,10 @@
             android:name="userID"
             app:argType="string"
             android:defaultValue="currUser" />
+        <argument
+            android:name="source"
+            app:argType="string"
+            android:defaultValue="unknown" />
     </fragment>
 
     <fragment
@@ -87,6 +91,9 @@
             android:name="userID"
             app:argType="string"
             android:defaultValue="currUser" />
+        <argument
+            android:name="source"
+            android:defaultValue="unknown" />
     </fragment>
 
     <fragment

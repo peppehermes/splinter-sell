@@ -486,10 +486,17 @@ class ItemEditFragment : Fragment() {
                         randomString = path
 
                         setNewItem()
-                        navigateMyItemDetails()
+                        val dialog = AlertDialog.Builder(requireContext())
+                        dialog.setMessage("Done!")
+                            .setCancelable(false)
+                            .setPositiveButton("Great!"){
+                                dialog, _ ->
+                                dialog.dismiss()
+                                navigateMyItemDetails()
+                            }
+                        dialog.show()
+
                     }
-
-
                 }
                 else
                     Log.d("EditItemTAG", "Error in Item Form Validation")
@@ -521,9 +528,6 @@ class ItemEditFragment : Fragment() {
 
                 val alert = builder.create()
                 alert.show()
-
-
-
 
                 true
             }
@@ -655,8 +659,10 @@ class ItemEditFragment : Fragment() {
 
     private fun navigateMyItemDetails(){
 
-        val action = ItemEditFragmentDirections.goToDetails(args.documentName, false)
+        val action = ItemEditFragmentDirections.goToDetails(args.documentName, false,source="edit")
         Navigation.findNavController(requireView()).navigate(action)
 
     }
+
+
 }

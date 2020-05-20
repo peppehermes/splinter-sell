@@ -54,8 +54,8 @@ class EditProfile : Fragment() {
     lateinit var liveData: LiveData<UserModel>
 
     lateinit var currentPhotoPath: String
-    lateinit var path:String
-    var randomString:String = ""
+    lateinit var path: String
+    var randomString: String = ""
 
 
     var rotatedBitmap: Bitmap? = null
@@ -103,9 +103,9 @@ class EditProfile : Fragment() {
 
 
             path = it.photoName
-            if(path == "")
+            if (path == "")
                 profile_photo.setImageDrawable(requireContext().getDrawable(R.drawable.image_vectorized_lower))
-            else{
+            else {
 
                 Glide.with(requireContext())
                     .using(FirebaseImageLoader())
@@ -131,14 +131,14 @@ class EditProfile : Fragment() {
 
                 val checkError = formValidation()
 
-                if (!checkError){
+                if (!checkError) {
 
                     Log.d("EditItemTAG", "Error in Item Form Validation")
 
 
                     //Save image on Cloud Storage
 
-                    if(rotatedBitmap!=null){
+                    if (rotatedBitmap != null) {
 
                         randomString = (1..20)
                             .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
@@ -152,16 +152,22 @@ class EditProfile : Fragment() {
                         uploadImageOnStorage()
 
 
-                    }else {
+                    } else {
                         randomString = path
 
                         setNewUser()
-                        navigateMyProfile()
+                        val dialog = AlertDialog.Builder(requireContext())
+                        dialog.setMessage("Done!")
+                            .setCancelable(false)
+                            .setPositiveButton("Great!") { dialog, _ ->
+                                dialog.dismiss()
+                                navigateMyProfile()
+                            }
+                        dialog.show()
                     }
 
 
-                }
-                else
+                } else
                     Log.d("EditProfileTAG", "Error in Form Validation")
 
 
@@ -171,23 +177,23 @@ class EditProfile : Fragment() {
         }
     }
 
-    private fun formValidation(): Boolean{
+    private fun formValidation(): Boolean {
 
         var result = false
 
-        if (name.text.isEmpty()){
+        if (name.text.isEmpty()) {
             name.error = getString(R.string.please_fill)
             result = true
         }
-        if (nickname.text.isEmpty()){
+        if (nickname.text.isEmpty()) {
             nickname.error = getString(R.string.please_fill)
             result = true
         }
-        if (email.text.isEmpty()){
+        if (email.text.isEmpty()) {
             email.error = getString(R.string.please_fill)
             result = true
         }
-        if (location.text.isEmpty()){
+        if (location.text.isEmpty()) {
             location.error = getString(R.string.please_fill)
             result = true
         }
@@ -197,10 +203,8 @@ class EditProfile : Fragment() {
     }
 
 
-
-
     //Limits the lenght of the input of the EditText fields
-    private fun setInputLimits(){
+    private fun setInputLimits() {
 
         name.filters = arrayOf(InputFilter.LengthFilter(20))
         nickname.filters = arrayOf(InputFilter.LengthFilter(20))
@@ -251,7 +255,8 @@ class EditProfile : Fragment() {
 
                 val bmOptions = BitmapFactory.Options()
                 BitmapFactory.decodeFile(
-                    photoFile?.absolutePath, bmOptions)?.run {
+                    photoFile?.absolutePath, bmOptions
+                )?.run {
                     photoURI?.run {
                         Log.e("photo", "uri: $photoURI")
                         manageBitmap()
@@ -305,7 +310,8 @@ class EditProfile : Fragment() {
     private fun createImageFile(): File {
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val storageDir: File? =
+            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(
             "JPEG_${timeStamp}_", /* prefix */
             ".jpg", /* suffix */
@@ -417,7 +423,7 @@ class EditProfile : Fragment() {
         return rotatedImg
     }
 
-    private fun uploadImageOnStorage(){
+    private fun uploadImageOnStorage() {
 
         val dialog1 = AlertDialog.Builder(requireContext()).create()
         val dialog2 = AlertDialog.Builder(requireContext())
@@ -425,13 +431,13 @@ class EditProfile : Fragment() {
         dialog1.setCancelable(false)
         dialog1.show()
 
-        val profileImageRefs= storage.child("profileImages/$randomString")
+        val profileImageRefs = storage.child("profileImages/$randomString")
         Log.d("ItemEditTAG", "Name of the file to be stored: $profileImageRefs")
 
         val baos = ByteArrayOutputStream()
         rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, baos)
         val rotBytes = baos.toByteArray()
-        val uploadTask = profileImageRefs.putBytes(rotBytes).addOnCompleteListener{
+        val uploadTask = profileImageRefs.putBytes(rotBytes).addOnCompleteListener {
             dialog1.cancel()
             dialog2.setMessage("Done!")
                 .setCancelable(false)
@@ -450,7 +456,7 @@ class EditProfile : Fragment() {
             Log.d("ItemEditTAG", "Success in saving image to the Cloud Storage")
         }
 
-        if(path != "img_avatar.jpg") {
+        if (path != "img_avatar.jpg") {
             val refToDelete = storage.child("itemImages/$path")
             refToDelete.delete().addOnSuccessListener {
                 Log.d("deleteOfFile", "Delete complete on item $path")
@@ -462,7 +468,7 @@ class EditProfile : Fragment() {
 
     }
 
-    private fun setNewUser(){
+    private fun setNewUser() {
 
         val newUser = UserModel(
             name.text.toString(), nickname.text.toString(),
@@ -472,8 +478,8 @@ class EditProfile : Fragment() {
 
     }
 
-    private fun navigateMyProfile(){
-        val action = EditProfileDirections.editToShow()
+    private fun navigateMyProfile() {
+        val action = EditProfileDirections.editToShow(source = "edit")
         Navigation.findNavController(requireView()).navigate(action)
     }
 

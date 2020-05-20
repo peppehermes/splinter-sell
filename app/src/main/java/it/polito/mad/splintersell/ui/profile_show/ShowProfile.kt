@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.UserModel
@@ -46,6 +47,7 @@ class ShowProfile : Fragment() {
         super.onCreate(savedInstanceState)
 
         liveData = if(args.userID == "currUser"){
+            (activity as MainActivity?)?.refreshDataForDrawer()
             firestoreViewModel.fetchUserFromFirestore(user!!.uid)
             firestoreViewModel.myUser
         } else{
@@ -53,15 +55,14 @@ class ShowProfile : Fragment() {
             firestoreViewModel.myUser
         }
 
-
-
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 // Handle the back button event
-                findNavController().navigate(R.id.nav_item_list)
+                    findNavController().navigate(R.id.onSaleListFragment)
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+        if(args.source == "edit")
+            requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun onCreateView(
