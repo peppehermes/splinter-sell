@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
+    android:label="Welcome"
     app:startDestination="@id/nav_signIn"
     tools:ignore="UnusedNavigation">
 
@@ -35,6 +36,10 @@
             android:name="userID"
             app:argType="string"
             android:defaultValue="currUser" />
+        <argument
+            android:name="source"
+            app:argType="string"
+            android:defaultValue="unknown" />
     </fragment>
 
     <fragment
@@ -87,6 +92,9 @@
             android:name="userID"
             app:argType="string"
             android:defaultValue="currUser" />
+        <argument
+            android:name="source"
+            android:defaultValue="unknown" />
     </fragment>
 
     <fragment
@@ -105,7 +113,7 @@
     <fragment
         android:id="@+id/nav_signIn"
         android:name="it.polito.mad.splintersell.ui.SignIn"
-        android:label="Sign In"
+        android:label="Welcome"
         tools:layout="@layout/sign_in_fragment" >
         <action
             android:id="@+id/action_nav_signIn_to_onSaleListFragment"

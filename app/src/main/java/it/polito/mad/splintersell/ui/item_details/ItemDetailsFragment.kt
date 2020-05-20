@@ -5,11 +5,13 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
@@ -30,6 +32,14 @@ class ItemDetailsFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Handle the back button event
+                    findNavController().navigate(R.id.nav_item_list)
+            }
+        }
+        if(args.source=="edit")
+            requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
     // Inflate the edit menu
@@ -159,11 +169,6 @@ class ItemDetailsFragment: Fragment() {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-
-    private fun onOwnerClick(){
-
-
-    }
 
 
 }
