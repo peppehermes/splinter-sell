@@ -11,6 +11,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import java.util.*
+import kotlin.collections.ArrayList
 
 val storage: StorageReference = FirebaseStorage.getInstance().reference
 
@@ -67,6 +69,9 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
                 for (docSnap in querySnaps)
                     for (document in docSnap) {
                         val item = document.toObject(ItemModel::class.java)
+                        val date=item.expireDate!!.split("/")
+                        Log.d(TAG,validate_date(date).toString()+ " " +item.expireDate)
+                        if(validate_date(date))
                         list.add(item)
                     }
 
@@ -224,6 +229,19 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
         fun fetchNotifications(requested:Boolean)
         fun notListDataAdded(notificationList: List<ItemModel>)
         fun userListDataAdded(userList: List<UserModel>)
+    }
+
+    private fun validate_date(date: List<String>): Boolean{
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)+1
+        val day = c.get(Calendar.DAY_OF_MONTH)
+        val years = date [2].toInt()
+        val monthOfYear = date [1].toInt()
+        val dayOfMonth = date [0].toInt()
+        return !(years<year
+                || ((years==year) && (monthOfYear<month))
+                || ((years==year) && (monthOfYear==month) && dayOfMonth<day))
     }
 }
 
