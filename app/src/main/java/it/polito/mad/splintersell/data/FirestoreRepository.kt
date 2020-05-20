@@ -231,6 +231,7 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
         fun userListDataAdded(userList: List<UserModel>)
     }
 
+
     private fun validate_date(date: List<String>): Boolean{
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
@@ -242,6 +243,7 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
         return !(years<year
                 || ((years==year) && (monthOfYear<month))
                 || ((years==year) && (monthOfYear==month) && dayOfMonth<day))
+
     }
 }
 
