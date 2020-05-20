@@ -186,20 +186,25 @@ class ItemEditFragment : Fragment() {
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
-
+        var datevalid : Boolean
 
         expire_date.setOnClickListener {
             DatePickerDialog(
                 requireActivity().window.context,
-                DatePickerDialog.OnDateSetListener { it, year, monthOfYear, dayOfMonth ->
+                DatePickerDialog.OnDateSetListener { it, years, monthOfYear, dayOfMonth ->
                     // Display Selected date in TextView
-                    var monthConverted = "" + (monthOfYear + 1).toString()
-                    var dayConverted = "" + dayOfMonth.toString()
-                    if (monthOfYear < 10) monthConverted = "0$monthConverted"
-                    if (dayOfMonth < 10) dayConverted = "0$dayConverted"
+                    datevalid= validate_date(years,monthOfYear, dayOfMonth)
+                    if(datevalid) {
+                        var monthConverted = "" + (monthOfYear + 1).toString()
+                        var dayConverted = "" + dayOfMonth.toString()
+                        if (monthOfYear < 10) monthConverted = "0$monthConverted"
+                        if (dayOfMonth < 10) dayConverted = "0$dayConverted"
 
-                    val date = "$dayConverted/$monthConverted/$year"
-                    expire_date.setText(date)
+                        val date = "$dayConverted/$monthConverted/$years"
+                        expire_date.setText(date)
+                    }
+                    else
+                        Toast.makeText( requireActivity().window.context,getString(R.string.Wrong_date), Toast.LENGTH_SHORT).show()
                 },
                 year,
                 month,
@@ -562,6 +567,17 @@ class ItemEditFragment : Fragment() {
 
         return result
 
+    }
+
+    private fun validate_date(years : Int,monthOfYear:Int, dayOfMonth:Int): Boolean{
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+
+        return !(years<year
+                || ((years==year) && (monthOfYear<month))
+                || ((years==year) && (monthOfYear==month) && dayOfMonth<day))
     }
 
 
