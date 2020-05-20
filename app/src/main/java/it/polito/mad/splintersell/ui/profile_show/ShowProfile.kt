@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.ActionBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -67,6 +68,7 @@ class ShowProfile : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_show_profile, container, false)
     }
 
@@ -78,10 +80,24 @@ class ShowProfile : Fragment() {
 
         liveData.observe(viewLifecycleOwner, Observer {
             // Update UI
-            name.text = it.fullname
-            nickname.text = it.nickname
-            email.text = it.email
-            location.text = it.location
+
+            if(args.userID == "currUser"){
+                name.text = it.fullname
+                nickname.text = it.nickname
+                email.text = it.email
+                location.text = it.location
+            }
+            else{
+                nickname.text = it.nickname
+                email.text = it.email
+
+                name.text = getString(R.string.hiddentext)
+                name.setTextColor(resources.getColor(R.color.colorPrimary))
+                location.text = getString(R.string.hiddentext)
+                location.setTextColor(resources.getColor(R.color.colorPrimary))
+
+            }
+
 
             Glide.with(requireContext())
                 .using(FirebaseImageLoader())
@@ -99,7 +115,9 @@ class ShowProfile : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (args.userID == "currUser")
             return inflater.inflate(R.menu.menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {

@@ -118,7 +118,7 @@ class EditProfile : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        return inflater.inflate(R.menu.save_menu, menu)
+        return inflater.inflate(R.menu.edit_profile_menu, menu)
     }
 
     @SuppressLint("WrongThread")
@@ -126,60 +126,100 @@ class EditProfile : Fragment() {
         return when (item.itemId) {
             R.id.saveProfile -> {
 
-                //save img on Storage
-                if(rotatedBitmap!=null) {
-                    Log.d("rotated", rotatedBitmap.toString())
-                    //computing a random name for the file
-                    randomString = (1..20)
-                        .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
-                        .map(charPool::get)
-                        .joinToString("")
+                //Form validation
 
-                    randomString = "$randomString.jpg"
+                val checkError = formValidation()
 
-                    //taking the reference of Storage path
-                    val profileImageRefs = storage.child("profileImages/$randomString")
-                    Log.d("EditProfileTAG", "Name of the file to be stored: $profileImageRefs")
+                if (!checkError){
 
-                    val baos = ByteArrayOutputStream()
-                    rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, baos)
-                    val rotBytes = baos.toByteArray()
+                    Log.d("EditProfileTAG", "Success in Form Validation")
 
-                    val uploadTask = profileImageRefs.putBytes(rotBytes)
+                    //save img on Storage
+                    if(rotatedBitmap!=null) {
+                        Log.d("rotated", rotatedBitmap.toString())
+                        //computing a random name for the file
+                        randomString = (1..20)
+                            .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+                            .map(charPool::get)
+                            .joinToString("")
 
-                    uploadTask.addOnFailureListener {
-                        Log.d("EditProfileTAG", "Error in saving image to the Cloud Storage")
-                    }.addOnSuccessListener {
-                        Log.d("EditProfileTAG", "Success in saving image to the Cloud Storage")
-                    }
+                        randomString = "$randomString.jpg"
 
-                    if(path != "img_avatar.jpg") {
-                        val refToDelete = storage.child("profileImages/$path")
-                        refToDelete.delete().addOnSuccessListener {
-                            Log.d("deleteOfFile", "Delete complete")
-                        }.addOnFailureListener {
-                            Log.d("deleteOfFile", "Delete failed")
+                        //taking the reference of Storage path
+                        val profileImageRefs = storage.child("profileImages/$randomString")
+                        Log.d("EditProfileTAG", "Name of the file to be stored: $profileImageRefs")
+
+                        val baos = ByteArrayOutputStream()
+                        rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+                        val rotBytes = baos.toByteArray()
+
+                        val uploadTask = profileImageRefs.putBytes(rotBytes)
+
+                        uploadTask.addOnFailureListener {
+                            Log.d("EditProfileTAG", "Error in saving image to the Cloud Storage")
+                        }.addOnSuccessListener {
+                            Log.d("EditProfileTAG", "Success in saving image to the Cloud Storage")
                         }
-                    }
-                }else
-                    randomString = path
 
-                val newUser = UserModel(
-                    name.text.toString(), nickname.text.toString(),
-                    email.text.toString(), location.text.toString(), randomString
-                )
+                        if(path != "img_avatar.jpg") {
+                            val refToDelete = storage.child("profileImages/$path")
+                            refToDelete.delete().addOnSuccessListener {
+                                Log.d("deleteOfFile", "Delete complete")
+                            }.addOnFailureListener {
+                                Log.d("deleteOfFile", "Delete failed")
+                            }
+                        }
+                    }else
+                        randomString = path
 
-                firestoreViewModel.saveUserToFirestore(newUser)
+                    val newUser = UserModel(
+                        name.text.toString(), nickname.text.toString(),
+                        email.text.toString(), location.text.toString(), randomString
+                    )
+
+                    firestoreViewModel.saveUserToFirestore(newUser)
+
+                    val action = EditProfileDirections.editToShow()
+                    Navigation.findNavController(requireView()).navigate(action)
+
+                }
+                else
+                    Log.d("EditProfileTAG", "Error in Form Validation")
 
 
-
-                val action = EditProfileDirections.editToShow()
-                Navigation.findNavController(requireView()).navigate(action)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    private fun formValidation(): Boolean{
+
+        var result = false
+
+        if (name.text.isEmpty()){
+            name.error = getString(R.string.please_fill)
+            result = true
+        }
+        if (nickname.text.isEmpty()){
+            nickname.error = getString(R.string.please_fill)
+            result = true
+        }
+        if (email.text.isEmpty()){
+            email.error = getString(R.string.please_fill)
+            result = true
+        }
+        if (location.text.isEmpty()){
+            location.error = getString(R.string.please_fill)
+            result = true
+        }
+
+        return result
+
+    }
+
+
+
 
     //Limits the lenght of the input of the EditText fields
     private fun setInputLimits(){

@@ -52,7 +52,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/detail_image"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:errorEnabled = "true"
+            app:counterEnabled="true"
+            app:counterMaxLength="30">
 
             <EditText
                 android:id="@+id/title"
@@ -75,7 +79,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/til_title"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:errorEnabled = "true"
+            app:counterEnabled="true"
+            app:counterMaxLength="50">
 
 
             <EditText
@@ -97,7 +105,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/til_description"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:errorEnabled = "true">
 
             <EditText
                 android:id="@+id/price"
@@ -118,9 +128,10 @@
             android:id="@+id/spinner_1"
             android:layout_below="@id/til_price"
             android:layout_width="match_parent"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            app:errorEnabled = "true">
             <!-- Google themselves instruct us to use the deprecated editable attribute -->
             <AutoCompleteTextView
                 android:id="@+id/dropdow_main_category"
@@ -138,9 +149,10 @@
             android:id="@+id/spinner_2"
             android:layout_below="@id/spinner_1"
             android:layout_width="match_parent"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            app:errorEnabled = "true">
             <!-- Google themselves instruct us to use the deprecated editable attribute -->
             <AutoCompleteTextView
                 android:id="@+id/dropdow_sub_category"
@@ -160,7 +172,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/spinner_2"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:errorEnabled = "true"
+            app:counterEnabled="true"
+            app:counterMaxLength="30">
 
             <EditText
                 android:id="@+id/location"
@@ -184,7 +200,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/til_location"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:errorEnabled = "true">
 
             <EditText
                 android:id="@+id/expire_date"

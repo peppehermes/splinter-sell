@@ -451,66 +451,80 @@ class ItemEditFragment : Fragment() {
         return when (item.itemId) {
             R.id.saveProfile -> {
 
-                //Save image on Cloud Storage
 
-                if(rotatedBitmap!=null){
+                val checkError : Boolean = formValidation()
 
-                    //computing a random name for the file
-                    randomString = (1..20)
-                        .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
-                        .map(charPool::get)
-                        .joinToString("")
+                if(!checkError){
 
-                    randomString = "$randomString.jpg"
+                    Log.d("EditItemTAG", "Error in Item Form Validation")
 
-                    val profileImageRefs= storage.child("itemImages/$randomString")
-                    Log.d("ItemEditTAG", "Name of the file to be stored: $profileImageRefs")
 
-                    val baos = ByteArrayOutputStream()
-                    rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, baos)
-                    val rotBytes = baos.toByteArray()
-                    val uploadTask = profileImageRefs.putBytes(rotBytes)
-                    uploadTask.addOnFailureListener {
-                        Log.d("ItemEditTAG", "Error in saving image to the Cloud Storage")
-                    }.addOnSuccessListener {
-                        Log.d("ItemEditTAG", "Success in saving image to the Cloud Storage")
-                    }
+                    //Save image on Cloud Storage
 
-                    if(path != "") {
-                        val refToDelete = storage.child("itemImages/$path")
-                        refToDelete.delete().addOnSuccessListener {
-                            Log.d("deleteOfFile", "Delete complete on item $path")
-                        }.addOnFailureListener {
-                            Log.d("deleteOfFile", "Delete failed")
+                    if(rotatedBitmap!=null){
+
+                        //computing a random name for the file
+                        randomString = (1..20)
+                            .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+                            .map(charPool::get)
+                            .joinToString("")
+
+                        randomString = "$randomString.jpg"
+
+                        val profileImageRefs= storage.child("itemImages/$randomString")
+                        Log.d("ItemEditTAG", "Name of the file to be stored: $profileImageRefs")
+
+                        val baos = ByteArrayOutputStream()
+                        rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+                        val rotBytes = baos.toByteArray()
+                        val uploadTask = profileImageRefs.putBytes(rotBytes)
+                        uploadTask.addOnFailureListener {
+                            Log.d("ItemEditTAG", "Error in saving image to the Cloud Storage")
+                        }.addOnSuccessListener {
+                            Log.d("ItemEditTAG", "Success in saving image to the Cloud Storage")
                         }
-                    }
 
-                }else
-                    randomString = path
+                        if(path != "") {
+                            val refToDelete = storage.child("itemImages/$path")
+                            refToDelete.delete().addOnSuccessListener {
+                                Log.d("deleteOfFile", "Delete complete on item $path")
+                            }.addOnFailureListener {
+                                Log.d("deleteOfFile", "Delete failed")
+                            }
+                        }
 
-                rotatedBitmap = null
+                    }else
+                        randomString = path
 
-
-
-                val newItem = ItemModel(
-                    title.text.toString(),
-                    description.text.toString(),
-                    price.text.toString(),
-                    dropdow_main_category.text.toString(),
-                    dropdow_sub_category.text.toString(),
-                    location.text.toString(),
-                    expire_date.text.toString(),
-                    args.documentName,
-                    user!!.uid,
-                    randomString,
-                    "Available"
-                )
-
-                firestoreViewModel.saveItemToFirestore(newItem)
+                    rotatedBitmap = null
 
 
-                val action = ItemEditFragmentDirections.goToDetails(args.documentName, false)
-                Navigation.findNavController(requireView()).navigate(action)
+
+                    val newItem = ItemModel(
+                        title.text.toString(),
+                        description.text.toString(),
+                        price.text.toString(),
+                        dropdow_main_category.text.toString(),
+                        dropdow_sub_category.text.toString(),
+                        location.text.toString(),
+                        expire_date.text.toString(),
+                        args.documentName,
+                        user!!.uid,
+                        randomString,
+                        "Available"
+                    )
+
+                    firestoreViewModel.saveItemToFirestore(newItem)
+
+
+                    val action = ItemEditFragmentDirections.goToDetails(args.documentName, false)
+                    Navigation.findNavController(requireView()).navigate(action)
+
+
+                }
+                else
+                    Log.d("EditItemTAG", "Error in Item Form Validation")
+
 
                 true
             }
@@ -545,6 +559,45 @@ class ItemEditFragment : Fragment() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
+    private fun formValidation(): Boolean{
+
+        var result = false
+
+        if (title.text.isEmpty()){
+            title.error = getString(R.string.please_fill)
+            result = true
+        }
+        if (description.text.isEmpty()){
+            description.error = getString(R.string.please_fill)
+            result = true
+        }
+        if (price.text.isEmpty()){
+            price.error = getString(R.string.please_fill)
+            result = true
+        }
+        if (location.text.isEmpty()){
+            location.error = getString(R.string.please_fill)
+            result = true
+        }
+        if (expire_date.text.isEmpty()){
+            expire_date.error = getString(R.string.please_fill)
+            result = true
+        }
+        if (dropdow_main_category.text.isEmpty()){
+            dropdow_main_category.error = getString(R.string.please_select)
+            result = true
+        }
+        if (dropdow_sub_category.text.isEmpty()){
+            dropdow_sub_category.error = getString(R.string.please_select)
+            result = true
+        }
+
+        return result
+
+    }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
