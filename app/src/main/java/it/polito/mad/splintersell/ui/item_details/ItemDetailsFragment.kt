@@ -14,16 +14,14 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.FirebaseAuth
-import it.polito.mad.splintersell.data.FirestoreViewModel
-import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.R
-import it.polito.mad.splintersell.data.NotificationModel
-import it.polito.mad.splintersell.data.storage
+import it.polito.mad.splintersell.data.*
 import kotlinx.android.synthetic.main.fragment_item_details.*
 
 class ItemDetailsFragment: Fragment() {
     private val firestoreViewModel: FirestoreViewModel by viewModels()
     lateinit var liveData: LiveData<ItemModel>
+    lateinit var userLiveData: LiveData<UserModel>
     var user = FirebaseAuth.getInstance().currentUser
     val action1 = ItemDetailsFragmentDirections.goToListItem()
 
@@ -49,6 +47,12 @@ class ItemDetailsFragment: Fragment() {
         firestoreViewModel.fetchSingleItemFromFirestore(args.documentName)
         liveData = firestoreViewModel.item
 
+        if(args.userID != "currUser"){
+            firestoreViewModel.fetchUserFromFirestore(args.userID)
+            userLiveData = firestoreViewModel.myUser
+        }
+
+
         return inflater.inflate(R.layout.fragment_item_details, container, false)
     }
 
@@ -59,6 +63,31 @@ class ItemDetailsFragment: Fragment() {
         firestoreViewModel.firestoreRepository.getItemNotification(args.documentName)
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)
+
+        if(args.userID == "currUser"){
+            ownerlabel.visibility = View.GONE
+            owner.visibility = View.GONE
+            ownerline.visibility = View.GONE
+        }
+        else{
+
+            owner.setTextColor(resources.getColor(R.color.colorPrimary))
+
+            owner.setOnClickListener{
+                val action2 = ItemDetailsFragmentDirections.goToUserProfile(args.userID)
+                Navigation.findNavController(requireView()).navigate(action2)
+
+            }
+
+
+            userLiveData.observe(viewLifecycleOwner, Observer {
+                owner.text = it.nickname
+            })
+
+
+        }
+
+
 
         if(args.onSale) {
             firestoreViewModel.isrequested.observe(viewLifecycleOwner, Observer { requested ->
@@ -102,6 +131,9 @@ class ItemDetailsFragment: Fragment() {
                 .into(detail_image)
         })
 
+
+
+
     }
 
 
@@ -126,6 +158,14 @@ class ItemDetailsFragment: Fragment() {
             context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
+
+
+    private fun onOwnerClick(){
+
+
+    }
+
+
 }
 
 

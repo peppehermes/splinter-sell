@@ -164,6 +164,35 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/round_corners" />
 
+
+            <TextView
+                android:id="@+id/ownerlabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/owner"
+                style="@style/InputLabel" />
+
+            <TextView
+                android:id="@+id/owner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/owner"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="24sp"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <View
+                android:id="@+id/ownerline"
+                android:layout_width="match_parent"
+                android:layout_height="1.5dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/round_corners" />
+
+
+
+
         </LinearLayout>
     </ScrollView>
 

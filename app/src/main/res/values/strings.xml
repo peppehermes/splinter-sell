@@ -29,6 +29,7 @@
     <string name="subcategory">Sub Category</string>
     <string name="location">Location</string>
     <string name="expire_date">Expire date (dd/mm/yyyy)</string>
+    <string name="owner">Owner</string>
 
     <string name="edit">Edit</string>
     <string name="view_user">View User</string>

@@ -31,6 +31,10 @@
             android:id="@+id/goToInterestedUsers"
             app:destination="@id/userListFragment"
             app:popUpTo="@id/nav_item_details"/>
+        <argument
+            android:name="userID"
+            app:argType="string"
+            android:defaultValue="currUser" />
     </fragment>
 
     <fragment

@@ -66,7 +66,7 @@ class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>)
 
             // Set the onClick listener
             holder.card.setOnClickListener {
-                navigateToItemDetails(holder.itemView, item.documentName!!)
+                navigateToItemDetails(holder.itemView, item.documentName!!, item.ownerId!!)
             }
 
             holder.button.setOnClickListener {
@@ -113,8 +113,8 @@ class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>)
         }
     }
 
-    private fun navigateToItemDetails(view: View, id: String) {
-        val action = OnSaleListFragmentDirections.showOnSaleItem(id, true)
+    private fun navigateToItemDetails(view: View, id: String, ownerID: String) {
+        val action = OnSaleListFragmentDirections.showOnSaleItem(id, true, ownerID)
         Log.e("POS", id)
         Navigation.findNavController(view).navigate(action)
     }
