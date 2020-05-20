@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.content.Context
 import android.media.ExifInterface
 import android.net.Uri
@@ -20,6 +21,7 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -28,6 +30,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.data.FirestoreViewModel
@@ -51,7 +54,6 @@ const val GALLERY_REQUEST_CODE = 3
 var rotatedBitmap: Bitmap? = null
 var photoFile: File? = null
 var photoURI: Uri? = null
-var filename: String? = null
 
 class ItemEditFragment : Fragment() {
 
@@ -463,7 +465,6 @@ class ItemEditFragment : Fragment() {
 
                     if(rotatedBitmap!=null){
 
-                        //computing a random name for the file
                         randomString = (1..20)
                             .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
                             .map(charPool::get)
@@ -471,54 +472,17 @@ class ItemEditFragment : Fragment() {
 
                         randomString = "$randomString.jpg"
 
-                        val profileImageRefs= storage.child("itemImages/$randomString")
-                        Log.d("ItemEditTAG", "Name of the file to be stored: $profileImageRefs")
+                        setNewItem()
 
-                        val baos = ByteArrayOutputStream()
-                        rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, baos)
-                        val rotBytes = baos.toByteArray()
-                        val uploadTask = profileImageRefs.putBytes(rotBytes)
-                        uploadTask.addOnFailureListener {
-                            Log.d("ItemEditTAG", "Error in saving image to the Cloud Storage")
-                        }.addOnSuccessListener {
-                            Log.d("ItemEditTAG", "Success in saving image to the Cloud Storage")
-                        }
+                        uploadImageOnStorage()
 
-                        if(path != "") {
-                            val refToDelete = storage.child("itemImages/$path")
-                            refToDelete.delete().addOnSuccessListener {
-                                Log.d("deleteOfFile", "Delete complete on item $path")
-                            }.addOnFailureListener {
-                                Log.d("deleteOfFile", "Delete failed")
-                            }
-                        }
 
-                    }else
+                    }else {
                         randomString = path
 
-                    rotatedBitmap = null
-
-
-
-                    val newItem = ItemModel(
-                        title.text.toString(),
-                        description.text.toString(),
-                        price.text.toString(),
-                        dropdow_main_category.text.toString(),
-                        dropdow_sub_category.text.toString(),
-                        location.text.toString(),
-                        expire_date.text.toString(),
-                        args.documentName,
-                        user!!.uid,
-                        randomString,
-                        "Available"
-                    )
-
-                    firestoreViewModel.saveItemToFirestore(newItem)
-
-
-                    val action = ItemEditFragmentDirections.goToDetails(args.documentName, false)
-                    Navigation.findNavController(requireView()).navigate(action)
+                        setNewItem()
+                        navigateMyItemDetails()
+                    }
 
 
                 }
@@ -533,17 +497,19 @@ class ItemEditFragment : Fragment() {
                 val builder = AlertDialog.Builder(requireContext())
                 builder.setMessage("Are you sure you want to Delete?")
                     .setCancelable(false)
-                    .setPositiveButton("Yes") { dialog, id ->
+                    .setPositiveButton("Yes") { dialog, _ ->
                         // Delete selected note from database
 
                         firestoreViewModel.updateStatus("Blocked",args.documentName)
 
                         firestoreViewModel.cancelAllNotifications(args.documentName)
 
+                        dialog.dismiss()
+
                         val action = ItemEditFragmentDirections.goToItemList()
                         Navigation.findNavController(requireView()).navigate(action)
                     }
-                    .setNegativeButton("No") { dialog, id ->
+                    .setNegativeButton("No") { dialog, _ ->
                         // Dismiss the dialog
                         dialog.dismiss()
                     }
@@ -604,5 +570,77 @@ class ItemEditFragment : Fragment() {
         photoURI?.run {
             outState.putString("imgUri", this.toString())
         }
+    }
+
+    private fun uploadImageOnStorage(){
+
+        val dialog1 = AlertDialog.Builder(requireContext()).create()
+        val dialog2 = AlertDialog.Builder(requireContext())
+        dialog1.setMessage("Uploading Your Item")
+        dialog1.setCancelable(false)
+        dialog1.show()
+
+        val profileImageRefs= storage.child("itemImages/$randomString")
+        Log.d("ItemEditTAG", "Name of the file to be stored: $profileImageRefs")
+
+        val baos = ByteArrayOutputStream()
+        rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+        val rotBytes = baos.toByteArray()
+        val uploadTask = profileImageRefs.putBytes(rotBytes).addOnCompleteListener{
+            dialog1.cancel()
+            dialog2.setMessage("Done!")
+                .setCancelable(false)
+            dialog2.setPositiveButton("Great!") { dialog, _ ->
+                dialog.dismiss()
+                navigateMyItemDetails()
+            }
+            dialog2.show()
+
+
+        }
+
+        uploadTask.addOnFailureListener {
+            Log.d("ItemEditTAG", "Error in saving image to the Cloud Storage")
+        }.addOnSuccessListener {
+            Log.d("ItemEditTAG", "Success in saving image to the Cloud Storage")
+        }
+
+        if(path != "") {
+            val refToDelete = storage.child("itemImages/$path")
+            refToDelete.delete().addOnSuccessListener {
+                Log.d("deleteOfFile", "Delete complete on item $path")
+            }.addOnFailureListener {
+                Log.d("deleteOfFile", "Delete failed")
+            }
+        }
+
+
+    }
+
+    private fun setNewItem(){
+
+        val newItem = ItemModel(
+            title.text.toString(),
+            description.text.toString(),
+            price.text.toString(),
+            dropdow_main_category.text.toString(),
+            dropdow_sub_category.text.toString(),
+            location.text.toString(),
+            expire_date.text.toString(),
+            args.documentName,
+            user!!.uid,
+            randomString,
+            "Available"
+        )
+
+        firestoreViewModel.saveItemToFirestore(newItem)
+
+    }
+
+    private fun navigateMyItemDetails(){
+
+        val action = ItemEditFragmentDirections.goToDetails(args.documentName, false)
+        Navigation.findNavController(requireView()).navigate(action)
+
     }
 }

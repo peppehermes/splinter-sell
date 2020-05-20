@@ -87,7 +87,7 @@ class ItemListFragment : Fragment() {
                     holder.button.text = model.status
                     holder.image.colorFilter = filter
                     holder.button.setTextColor(holder.itemView.context.getColor(R.color.colorRed))
-                    holder.button.textSize = 24F
+                    holder.button.textSize = 18F
                     holder.card.isClickable = false
 
 

@@ -56,7 +56,7 @@ class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>)
             holder.button.text = "SOLD"
             holder.image.colorFilter = filter
             holder.button.setTextColor(holder.itemView.context.getColor(R.color.colorRed))
-            holder.button.textSize = 24F
+            holder.button.textSize = 18F
             holder.card.isClickable = false
 
 
@@ -66,7 +66,7 @@ class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>)
 
             // Set the onClick listener
             holder.card.setOnClickListener {
-                navigateToItemDetails(holder.itemView, item.documentName!!, item.ownerId!!)
+                navigateToItemDetails(holder.itemView, item.documentName!!)
             }
 
             holder.button.setOnClickListener {
@@ -113,8 +113,8 @@ class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>)
         }
     }
 
-    private fun navigateToItemDetails(view: View, id: String, ownerID: String) {
-        val action = OnSaleListFragmentDirections.showOnSaleItem(id, true, ownerID)
+    private fun navigateToItemDetails(view: View, id: String) {
+        val action = OnSaleListFragmentDirections.showOnSaleItem(id, true)
         Log.e("POS", id)
         Navigation.findNavController(view).navigate(action)
     }

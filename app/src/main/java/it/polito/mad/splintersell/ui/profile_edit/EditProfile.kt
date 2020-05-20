@@ -1,6 +1,7 @@
 package it.polito.mad.splintersell.ui.profile_edit
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -132,12 +133,13 @@ class EditProfile : Fragment() {
 
                 if (!checkError){
 
-                    Log.d("EditProfileTAG", "Success in Form Validation")
+                    Log.d("EditItemTAG", "Error in Item Form Validation")
 
-                    //save img on Storage
-                    if(rotatedBitmap!=null) {
-                        Log.d("rotated", rotatedBitmap.toString())
-                        //computing a random name for the file
+
+                    //Save image on Cloud Storage
+
+                    if(rotatedBitmap!=null){
+
                         randomString = (1..20)
                             .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
                             .map(charPool::get)
@@ -145,42 +147,18 @@ class EditProfile : Fragment() {
 
                         randomString = "$randomString.jpg"
 
-                        //taking the reference of Storage path
-                        val profileImageRefs = storage.child("profileImages/$randomString")
-                        Log.d("EditProfileTAG", "Name of the file to be stored: $profileImageRefs")
+                        setNewUser()
 
-                        val baos = ByteArrayOutputStream()
-                        rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, baos)
-                        val rotBytes = baos.toByteArray()
+                        uploadImageOnStorage()
 
-                        val uploadTask = profileImageRefs.putBytes(rotBytes)
 
-                        uploadTask.addOnFailureListener {
-                            Log.d("EditProfileTAG", "Error in saving image to the Cloud Storage")
-                        }.addOnSuccessListener {
-                            Log.d("EditProfileTAG", "Success in saving image to the Cloud Storage")
-                        }
-
-                        if(path != "img_avatar.jpg") {
-                            val refToDelete = storage.child("profileImages/$path")
-                            refToDelete.delete().addOnSuccessListener {
-                                Log.d("deleteOfFile", "Delete complete")
-                            }.addOnFailureListener {
-                                Log.d("deleteOfFile", "Delete failed")
-                            }
-                        }
-                    }else
+                    }else {
                         randomString = path
 
-                    val newUser = UserModel(
-                        name.text.toString(), nickname.text.toString(),
-                        email.text.toString(), location.text.toString(), randomString
-                    )
+                        setNewUser()
+                        navigateMyProfile()
+                    }
 
-                    firestoreViewModel.saveUserToFirestore(newUser)
-
-                    val action = EditProfileDirections.editToShow()
-                    Navigation.findNavController(requireView()).navigate(action)
 
                 }
                 else
@@ -437,6 +415,66 @@ class EditProfile : Fragment() {
             Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
         img.recycle()
         return rotatedImg
+    }
+
+    private fun uploadImageOnStorage(){
+
+        val dialog1 = AlertDialog.Builder(requireContext()).create()
+        val dialog2 = AlertDialog.Builder(requireContext())
+        dialog1.setMessage("Uploading Your Profile")
+        dialog1.setCancelable(false)
+        dialog1.show()
+
+        val profileImageRefs= storage.child("profileImages/$randomString")
+        Log.d("ItemEditTAG", "Name of the file to be stored: $profileImageRefs")
+
+        val baos = ByteArrayOutputStream()
+        rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+        val rotBytes = baos.toByteArray()
+        val uploadTask = profileImageRefs.putBytes(rotBytes).addOnCompleteListener{
+            dialog1.cancel()
+            dialog2.setMessage("Done!")
+                .setCancelable(false)
+            dialog2.setPositiveButton("Great!") { dialog, _ ->
+                dialog.dismiss()
+                navigateMyProfile()
+            }
+            dialog2.show()
+
+
+        }
+
+        uploadTask.addOnFailureListener {
+            Log.d("ItemEditTAG", "Error in saving image to the Cloud Storage")
+        }.addOnSuccessListener {
+            Log.d("ItemEditTAG", "Success in saving image to the Cloud Storage")
+        }
+
+        if(path != "img_avatar.jpg") {
+            val refToDelete = storage.child("itemImages/$path")
+            refToDelete.delete().addOnSuccessListener {
+                Log.d("deleteOfFile", "Delete complete on item $path")
+            }.addOnFailureListener {
+                Log.d("deleteOfFile", "Delete failed")
+            }
+        }
+
+
+    }
+
+    private fun setNewUser(){
+
+        val newUser = UserModel(
+            name.text.toString(), nickname.text.toString(),
+            email.text.toString(), location.text.toString(), randomString
+        )
+        firestoreViewModel.saveUserToFirestore(newUser)
+
+    }
+
+    private fun navigateMyProfile(){
+        val action = EditProfileDirections.editToShow()
+        Navigation.findNavController(requireView()).navigate(action)
     }
 
 
