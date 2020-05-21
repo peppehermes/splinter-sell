@@ -83,37 +83,82 @@ class ItemEditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        var savedTitle : String? = null
+        var savedDescription : String? = null
+        var savedPrice : String? = null
+        var savedLocation : String? = null
+        var savedDate : String? = null
+        var savedImg : String? = null
+
+        savedInstanceState?.run {
+            savedTitle = savedInstanceState!!.get(getString(R.string.title)).toString()
+            savedDescription = savedInstanceState!!.get(getString(R.string.description)).toString()
+            savedPrice = savedInstanceState!!.get(getString(R.string.price)).toString()
+            savedLocation = savedInstanceState!!.get(getString(R.string.location)).toString()
+            savedDate = savedInstanceState!!.get(getString(R.string.expire_date)).toString()
+            // If an image has been taken , retrieve Uri
+            if(savedInstanceState!!.get("imgUri").toString() != "null")
+                savedImg = savedInstanceState!!.get("imgUri").toString()
+        }
+
         this.setInputLimits()
-
-
         this.showDate()
-        this.restoreImage(savedInstanceState)
         this.imageButtonMenu()
 
         liveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            til_title.editText!!.setText(it.title)
-            til_description.editText!!.setText(it.description)
-            til_price.editText!!.setText(it.price)
-            til_location.editText!!.setText(it.location)
-            til_expire_date.editText!!.setText(it.expireDate)
 
-            path = it.imgPath
-            if (path == ""){
-                image.setImageDrawable(
-                    requireContext().getDrawable(R.drawable.image_vectorized_lower))
+            if(savedTitle == null)
+                til_title.editText!!.setText(it.title)
 
-                // Set the check for the successive from validation
-                isImage = false
+            else
+                til_title.editText!!.setText(savedTitle)
+
+            if(savedDescription == null)
+                til_description.editText!!.setText(it.description)
+
+            else
+                til_description.editText!!.setText(savedDescription)
+
+           if(savedPrice == null)
+               til_price.editText!!.setText(it.price)
+
+            else
+               til_price.editText!!.setText(savedPrice)
+
+            if(savedLocation == null)
+                til_location.editText!!.setText(it.location)
+
+            else
+                til_location.editText!!.setText(savedLocation)
+
+            if(savedDate == null)
+                til_expire_date.editText!!.setText(it.expireDate)
+
+            else
+                til_expire_date.editText!!.setText(savedDate)
+
+            if(savedImg == null) {
+
+                path = it.imgPath
+                if (path == "") {
+                    image.setImageDrawable(
+                        requireContext().getDrawable(R.drawable.image_vectorized_lower)
+                    )
+
+                    // Set the check for the successive from validation
+                    isImage = false
+                }
+                else {
+                    Glide.with(requireContext()).using(FirebaseImageLoader())
+                        .load(storage.child("/itemImages/$path")).into(image)
+
+                    // Set the check for the successive from validation
+                    isImage = true
+                }
             }
             else {
-                Glide.with(requireContext()).using(FirebaseImageLoader())
-                    .load(storage.child("/itemImages/$path")).into(image)
-
-                // Set the check for the successive from validation
-                isImage = true
-
+                this.restoreImage(savedImg)
             }
-
         })
 
         manageSpinner()
@@ -202,9 +247,9 @@ class ItemEditFragment : Fragment() {
 
     }
 
-    private fun restoreImage(savedInstanceState: Bundle?) {
+    private fun restoreImage(savedImg : String?) {
 
-        photoURI = savedInstanceState?.getString("imgUri")?.let { Uri.parse(it) }
+        photoURI = savedImg?.let { Uri.parse(it) }
         photoURI?.run {
             manageBitmap()
         }
@@ -599,9 +644,18 @@ class ItemEditFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        photoURI?.run {
-            outState.putString("imgUri", this.toString())
-        }
+
+        if (rotatedBitmap != null)
+
+            photoURI?.run {
+                outState.putString("imgUri", this.toString())
+            }
+
+        outState.putString(getString(R.string.title),til_title.editText!!.text.toString())
+        outState.putString(getString(R.string.description),til_description.editText!!.text.toString())
+        outState.putString(getString(R.string.price),til_price.editText!!.text.toString())
+        outState.putString(getString(R.string.location),til_location.editText!!.text.toString())
+        outState.putString(getString(R.string.expire_date),til_expire_date.editText!!.text.toString())
     }
 
     private fun uploadImageOnStorage() {

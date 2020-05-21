@@ -85,32 +85,55 @@ class EditProfile : Fragment() {
 
         this.imageButtonMenu()
 
+        var savedName : String? = null
+        var savedNickname : String? = null
+        var savedLocation : String? = null
+        var savedImg : String? = null
 
-        photoURI = savedInstanceState?.getString("imgUri")?.let { Uri.parse(it) }
-
-        photoURI?.run {
-            manageBitmap()
+        savedInstanceState?.run {
+            savedName = savedInstanceState!!.get(getString(R.string.full_name)).toString()
+            savedNickname = savedInstanceState!!.get(getString(R.string.nick)).toString()
+            savedLocation = savedInstanceState!!.get(getString(R.string.location)).toString()
+            // If an image has been taken , retrieve Uri
+            if(savedInstanceState!!.get("imgUri").toString() != "null")
+                savedImg = savedInstanceState!!.get("imgUri").toString()
         }
 
-
         liveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            name.setText(it.fullname)
-            nickname.setText(it.nickname)
+            if(savedName == null)
+                name.setText(it.fullname)
+
+            else
+                name.setText(savedName)
+
+            if(savedNickname == null)
+                nickname.setText(it.nickname)
+
+            else
+                nickname.setText(savedNickname)
+
+            if(savedLocation == null)
+                location.setText(it.location)
+
+            else
+                location.setText(savedLocation)
+
             email.setText(it.email)
-            location.setText(it.location)
 
+            if(savedImg == null) {
 
-            path = it.photoName
-            if (path == "") profile_photo.setImageDrawable(requireContext().getDrawable(R.drawable.image_vectorized_lower))
-            else {
+                path = it.photoName
+                if (path == "") profile_photo.setImageDrawable(requireContext().getDrawable(R.drawable.image_vectorized_lower))
 
-                Glide.with(requireContext()).using(FirebaseImageLoader())
-                    .load(storage.child("/profileImages/$path")).into(profile_photo)
+                else {
+
+                    Glide.with(requireContext()).using(FirebaseImageLoader())
+                        .load(storage.child("/profileImages/$path")).into(profile_photo)
+                }
             }
-
+            else
+                this.restoreImage(savedImg)
         })
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -166,6 +189,14 @@ class EditProfile : Fragment() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun restoreImage(savedImg : String?) {
+
+        photoURI = savedImg?.let { Uri.parse(it) }
+        photoURI?.run {
+            manageBitmap()
         }
     }
 
@@ -405,6 +436,20 @@ class EditProfile : Fragment() {
         val rotatedImg = Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
         img.recycle()
         return rotatedImg
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        if (rotatedBitmap != null)
+
+            photoURI?.run {
+            outState.putString("imgUri", this.toString())
+        }
+
+        outState.putString(getString(R.string.full_name),name.text.toString())
+        outState.putString(getString(R.string.nick),nickname.text.toString())
+        outState.putString(getString(R.string.location),location.text.toString())
     }
 
     private fun uploadImageOnStorage() {
