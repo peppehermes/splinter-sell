@@ -55,6 +55,7 @@ class ItemEditFragment : Fragment() {
     private val charPool = ('a'..'z') + ('A'..'Z') + ('0'..'9')
     private var path: String = ""
     private var randomString: String = ""
+    private var isImage : Boolean = false
 
     private val firestoreViewModel: FirestoreViewModel by viewModels()
 
@@ -97,12 +98,20 @@ class ItemEditFragment : Fragment() {
             til_expire_date.editText!!.setText(it.expireDate)
 
             path = it.imgPath
-            if (path == "")
+            if (path == ""){
                 image.setImageDrawable(
                     requireContext().getDrawable(R.drawable.image_vectorized_lower))
+
+                // Set the check for the successive from validation
+                isImage = false
+            }
             else {
                 Glide.with(requireContext()).using(FirebaseImageLoader())
                     .load(storage.child("/itemImages/$path")).into(image)
+
+                // Set the check for the successive from validation
+                isImage = true
+
             }
 
         })
@@ -467,14 +476,11 @@ class ItemEditFragment : Fragment() {
 
                 val checkError: Boolean = formValidation()
 
-                if (!checkError) {
+                if (!checkError) {  // All fields are declared
 
                     Log.d("EditItemTAG", "Error in Item Form Validation")
 
-
-                    //Save image on Cloud Storage
-
-                    if (rotatedBitmap != null) {
+                    if (rotatedBitmap != null) {    // An image has been taken
 
                         randomString =
                             (1..20).map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
@@ -487,17 +493,26 @@ class ItemEditFragment : Fragment() {
                         uploadImageOnStorage()
 
 
-                    } else {
-                        randomString = path
+                    }else {     // No image taken
 
-                        setNewItem()
-                        val dialog = AlertDialog.Builder(requireContext())
-                        dialog.setMessage("Done!").setCancelable(false)
-                            .setPositiveButton("Great!") { dialogBox, _ ->
-                                dialogBox.dismiss()
-                                navigateMyItemDetails()
-                            }
-                        dialog.show()
+                        if(isImage){    //There is an Image in the Storage
+
+                            randomString = path
+
+                            setNewItem()
+                            val dialog = AlertDialog.Builder(requireContext())
+                            dialog.setMessage("Done!").setCancelable(false)
+                                .setPositiveButton("Great!") { dialogBox, _ ->
+                                    dialogBox.dismiss()
+                                    navigateMyItemDetails()
+                                }
+                            dialog.show()
+                        }
+                        else{       // Apply Constraint
+                            Snackbar.make(
+                                this.requireView(), "An image must be uploaded", Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
 
                     }
                 } else Log.d("EditItemTAG", "Error in Item Form Validation")

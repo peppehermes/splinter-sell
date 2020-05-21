@@ -43,7 +43,7 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
             .setContentTitle(title)
             .setContentText(message)
-            .setSmallIcon(R.drawable.img_avatar)
+            .setSmallIcon(R.drawable.icon)
             .setColor(resources.getColor(R.color.colorAccent))
 
 
