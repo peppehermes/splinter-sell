@@ -15,29 +15,28 @@ import android.provider.MediaStore
 import android.text.InputFilter
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.ImageButton
 import android.widget.PopupMenu
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
-import it.polito.mad.splintersell.R
 import androidx.exifinterface.media.ExifInterface
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
-import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.UserModel
 import it.polito.mad.splintersell.data.storage
-import kotlinx.android.synthetic.main.fragment_edit_profile.email
-import kotlinx.android.synthetic.main.fragment_edit_profile.location
-import kotlinx.android.synthetic.main.fragment_edit_profile.name
-import kotlinx.android.synthetic.main.fragment_edit_profile.nickname
-import kotlinx.android.synthetic.main.fragment_edit_profile.profile_photo
-import java.io.*
+import kotlinx.android.synthetic.main.fragment_edit_profile.*
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -73,8 +72,7 @@ class EditProfile : Fragment() {
 
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_edit_profile, container, false)
     }
@@ -103,14 +101,11 @@ class EditProfile : Fragment() {
 
 
             path = it.photoName
-            if (path == "")
-                profile_photo.setImageDrawable(requireContext().getDrawable(R.drawable.image_vectorized_lower))
+            if (path == "") profile_photo.setImageDrawable(requireContext().getDrawable(R.drawable.image_vectorized_lower))
             else {
 
-                Glide.with(requireContext())
-                    .using(FirebaseImageLoader())
-                    .load(storage.child("/profileImages/$path"))
-                    .into(profile_photo)
+                Glide.with(requireContext()).using(FirebaseImageLoader())
+                    .load(storage.child("/profileImages/$path")).into(profile_photo)
             }
 
         })
@@ -125,7 +120,7 @@ class EditProfile : Fragment() {
     @SuppressLint("WrongThread")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.saveProfile -> {
+            R.id.save -> {
 
                 //Form validation
 
@@ -140,10 +135,9 @@ class EditProfile : Fragment() {
 
                     if (rotatedBitmap != null) {
 
-                        randomString = (1..20)
-                            .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
-                            .map(charPool::get)
-                            .joinToString("")
+                        randomString =
+                            (1..20).map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+                                .map(charPool::get).joinToString("")
 
                         randomString = "$randomString.jpg"
 
@@ -157,18 +151,16 @@ class EditProfile : Fragment() {
 
                         setNewUser()
                         val dialog = AlertDialog.Builder(requireContext())
-                        dialog.setMessage("Done!")
-                            .setCancelable(false)
-                            .setPositiveButton("Great!") { dialog, _ ->
-                                dialog.dismiss()
+                        dialog.setMessage("Done!").setCancelable(false)
+                            .setPositiveButton("Great!") { dialogBox, _ ->
+                                dialogBox.dismiss()
                                 navigateMyProfile()
                             }
                         dialog.show()
                     }
 
 
-                } else
-                    Log.d("EditProfileTAG", "Error in Form Validation")
+                } else Log.d("EditProfileTAG", "Error in Form Validation")
 
 
                 true
@@ -181,19 +173,19 @@ class EditProfile : Fragment() {
 
         var result = false
 
-        if (name.text.isEmpty()) {
+        if (name.text!!.isEmpty()) {
             name.error = getString(R.string.please_fill)
             result = true
         }
-        if (nickname.text.isEmpty()) {
+        if (nickname.text!!.isEmpty()) {
             nickname.error = getString(R.string.please_fill)
             result = true
         }
-        if (email.text.isEmpty()) {
+        if (email.text!!.isEmpty()) {
             email.error = getString(R.string.please_fill)
             result = true
         }
-        if (location.text.isEmpty()) {
+        if (location.text!!.isEmpty()) {
             location.error = getString(R.string.please_fill)
             result = true
         }
@@ -209,14 +201,14 @@ class EditProfile : Fragment() {
         name.filters = arrayOf(InputFilter.LengthFilter(20))
         nickname.filters = arrayOf(InputFilter.LengthFilter(20))
         email.filters = arrayOf(InputFilter.LengthFilter(30))
-        location.filters = arrayOf(InputFilter.LengthFilter(30))
+        location.filters = arrayOf(InputFilter.LengthFilter(60))
 
     }
 
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun imageButtonMenu() {
-        // Show menu when tapping on imagebutton
+        // Show show_profile_menu when tapping on imagebutton
         val button = requireView().findViewById<ImageButton>(R.id.select_photo)
         button.setOnClickListener {
             val popupMenu = PopupMenu(requireContext(), button)
@@ -240,8 +232,10 @@ class EditProfile : Fragment() {
         val imageIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
             type = "image/*"
         }
-        if (imageIntent.resolveActivity(requireActivity().packageManager) != null)
-            startActivityForResult(imageIntent, GALLERY_REQUEST_CODE)
+        if (imageIntent.resolveActivity(requireActivity().packageManager) != null) startActivityForResult(
+            imageIntent,
+            GALLERY_REQUEST_CODE
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -292,9 +286,7 @@ class EditProfile : Fragment() {
                 // Continue only if the File was successfully created
                 photoFile?.also {
                     photoURI = FileProvider.getUriForFile(
-                        requireContext(),
-                        "it.polito.mad.splintersell",
-                        it
+                        requireContext(), "it.polito.mad.splintersell", it
                     )
                     //currentPhotoUri = photoURI
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
@@ -324,7 +316,7 @@ class EditProfile : Fragment() {
     }
 
     private fun manageBitmap() {
-        var bitmap = handleSamplingAndRotationBitmap(requireContext(), photoURI)
+        val bitmap = handleSamplingAndRotationBitmap(requireContext(), photoURI)
         Log.d("photoURI", photoURI.toString())
         profile_photo.setImageBitmap(bitmap)
         rotatedBitmap = bitmap
@@ -332,8 +324,7 @@ class EditProfile : Fragment() {
 
     @Throws(IOException::class)
     fun handleSamplingAndRotationBitmap(
-        context: Context,
-        selectedImage: Uri?
+        context: Context, selectedImage: Uri?
     ): Bitmap? {
         val MAX_HEIGHT = 1024
         val MAX_WIDTH = 1024
@@ -357,8 +348,7 @@ class EditProfile : Fragment() {
     }
 
     private fun calculateInSampleSize(
-        options: BitmapFactory.Options,
-        reqWidth: Int, reqHeight: Int
+        options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int
     ): Int {
         // Raw height and width of image
         val height = options.outHeight
@@ -367,10 +357,8 @@ class EditProfile : Fragment() {
         if (height > reqHeight || width > reqWidth) {
 
             // Calculate ratios of height and width to requested height and width
-            val heightRatio =
-                (height.toFloat() / reqHeight.toFloat()).roundToInt()
-            val widthRatio =
-                (width.toFloat() / reqWidth.toFloat()).roundToInt()
+            val heightRatio = (height.toFloat() / reqHeight.toFloat()).roundToInt()
+            val widthRatio = (width.toFloat() / reqWidth.toFloat()).roundToInt()
 
             // Choose the smallest ratio as inSampleSize value, this will guarantee a final image
             // with both dimensions larger than or equal to the requested height and width.
@@ -394,14 +382,11 @@ class EditProfile : Fragment() {
 
     @Throws(IOException::class)
     private fun rotateImageIfRequired(
-        context: Context,
-        img: Bitmap,
-        selectedImage: Uri
+        context: Context, img: Bitmap, selectedImage: Uri
     ): Bitmap? {
         val input: InputStream = context.contentResolver.openInputStream(selectedImage)!!
         val ei: ExifInterface
-        ei =
-            ExifInterface(input)
+        ei = ExifInterface(input)
         Log.e("photo_orientation", ei.getAttribute(ExifInterface.TAG_ORIENTATION).toString())
         val orientation =
             ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
@@ -417,8 +402,7 @@ class EditProfile : Fragment() {
     private fun rotateImage(img: Bitmap, degree: Int): Bitmap? {
         val matrix = Matrix()
         matrix.postRotate(degree.toFloat())
-        val rotatedImg =
-            Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
+        val rotatedImg = Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
         img.recycle()
         return rotatedImg
     }
@@ -439,8 +423,7 @@ class EditProfile : Fragment() {
         val rotBytes = baos.toByteArray()
         val uploadTask = profileImageRefs.putBytes(rotBytes).addOnCompleteListener {
             dialog1.cancel()
-            dialog2.setMessage("Done!")
-                .setCancelable(false)
+            dialog2.setMessage("Done!").setCancelable(false)
             dialog2.setPositiveButton("Great!") { dialog, _ ->
                 dialog.dismiss()
                 navigateMyProfile()
@@ -471,16 +454,19 @@ class EditProfile : Fragment() {
     private fun setNewUser() {
 
         val newUser = UserModel(
-            name.text.toString(), nickname.text.toString(),
-            email.text.toString(), location.text.toString(), randomString
+            name.text.toString(),
+            nickname.text.toString(),
+            email.text.toString(),
+            location.text.toString(),
+            randomString
         )
         firestoreViewModel.saveUserToFirestore(newUser)
 
     }
 
     private fun navigateMyProfile() {
-        val action = EditProfileDirections.editToShow(source = "edit")
-        Navigation.findNavController(requireView()).navigate(action)
+        val action = EditProfileDirections.showProfile(source = "edit")
+        findNavController().navigate(action)
     }
 
 

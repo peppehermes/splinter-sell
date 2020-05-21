@@ -3,15 +3,9 @@ package it.polito.mad.splintersell.ui.profile_show
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.ActionBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -23,7 +17,6 @@ import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.UserModel
@@ -46,11 +39,10 @@ class ShowProfile : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        liveData = if(args.userID == "currUser"){
-            (activity as MainActivity?)?.refreshDataForDrawer()
+        liveData = if (args.userID == "currUser") {
             firestoreViewModel.fetchUserFromFirestore(user!!.uid)
             firestoreViewModel.myUser
-        } else{
+        } else {
             firestoreViewModel.fetchUserFromFirestore(args.userID)
             firestoreViewModel.myUser
         }
@@ -58,16 +50,17 @@ class ShowProfile : Fragment() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 // Handle the back button event
-                    findNavController().navigate(R.id.onSaleListFragment)
+                findNavController().navigate(R.id.nav_on_sale_list)
             }
         }
-        if(args.source == "edit")
-            requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+        if (args.source == "edit") requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            callback
+        )
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_show_profile, container, false)
@@ -82,28 +75,25 @@ class ShowProfile : Fragment() {
         liveData.observe(viewLifecycleOwner, Observer {
             // Update UI
 
-            if(args.userID == "currUser"){
+            if (args.userID == "currUser") {
                 name.text = it.fullname
                 nickname.text = it.nickname
                 email.text = it.email
                 location.text = it.location
-            }
-            else{
+            } else {
                 nickname.text = it.nickname
                 email.text = it.email
 
                 name.text = getString(R.string.hiddentext)
-                name.setTextColor(resources.getColor(R.color.colorPrimary))
+                name.setTextColor(name.context.getColor(R.color.colorPrimary))
                 location.text = getString(R.string.hiddentext)
-                location.setTextColor(resources.getColor(R.color.colorPrimary))
+                location.setTextColor(location.context.getColor(R.color.colorPrimary))
 
             }
 
 
-            Glide.with(requireContext())
-                .using(FirebaseImageLoader())
-                .load(storage.child("/profileImages/${it.photoName}"))
-                .into(profile_photo)
+            Glide.with(requireContext()).using(FirebaseImageLoader())
+                .load(storage.child("/profileImages/${it.photoName}")).into(profile_photo)
         })
     }
 
@@ -114,11 +104,9 @@ class ShowProfile : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (args.userID == "currUser")
-            return inflater.inflate(R.menu.menu, menu)
+        if (args.userID == "currUser") return inflater.inflate(R.menu.show_profile_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {

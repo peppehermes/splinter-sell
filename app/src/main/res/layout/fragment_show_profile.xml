@@ -34,7 +34,7 @@
         android:layout_marginStart="16dp"
         android:drawableStart="@drawable/ic_person_black_16dp"
         android:drawablePadding="8dp"
-        android:text="@string/fname"
+        android:text="@string/full_name"
         app:layout_constraintBottom_toTopOf="@+id/name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -46,9 +46,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:text="@string/full_name"
         android:textSize="24sp"
         app:autoSizeTextType="uniform"
-        android:text="@string/fname"
         app:layout_constraintBottom_toTopOf="@+id/nickname"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -192,20 +192,19 @@
         app:layout_constraintTop_toBottomOf="@+id/guideline_bot" />
 
 
-
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_photo"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:contentDescription="@string/profile_photo"
+        app:civ_border_color="@color/colorPrimary"
+        app:civ_border_width="2dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline_top"
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:civ_border_width="2dp"
-        app:civ_border_color="@color/colorPrimary"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

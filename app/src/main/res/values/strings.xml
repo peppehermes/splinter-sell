@@ -12,7 +12,7 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_item_details">Item details</string>
     <string name="menu_item_list">My Items</string>
-    <string name="SignOut">Sign Out</string>
+    <string name="sign_out">Sign Out</string>
     <string name="menu_on_sale">On sale</string>
     <string name="menu_follow_list">Wish List</string>
     <string name="menu_edit_item">Edit Item</string>
@@ -26,10 +26,10 @@
     <string name="detail_image">detail_image</string>
     <string name="price">Price</string>
     <string name="category">Main Category</string>
-    <string name="showcategory">Category</string>
+    <string name="show_category">Category</string>
     <string name="subcategory">Sub Category</string>
     <string name="location">Location</string>
-    <string name="expire_date">Expire date (dd/mm/yyyy)</string>
+    <string name="expire_date">Expire date</string>
     <string name="owner">Owner</string>
 
     <string name="edit">Edit</string>
@@ -37,9 +37,10 @@
     <string name="show_users">Show Interested Users</string>
     <string name="empty_list">No items here</string>
     <string name="empty_list_users">No users interested</string>
+    <string name="sold">Sold</string>
 
     //SHOW PROFILE
-    <string name="fname">Full Name</string>
+    <string name="full_name">Full Name</string>
     <string name="nick">Nickname</string>
     <string name="mail">email@address</string>
     <string name="location_show_profile">Location</string>
@@ -50,6 +51,8 @@
     <string name="update_profile_photo">update_profile_photo</string>
     <string name="add_photo">add_photo</string>
     <string name="search">Search</string>
+    <string name="accept">Accept</string>
+    <string name="filter">Filter</string>
     <string name="hiddentext">Hidden</string>
     <string name="please_fill">Please, fill this field!</string>
     <string name="please_select">Please, select an option</string>
@@ -160,6 +163,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="min">Min</string>
+    <string name="max">Max</string>
     <string name="continue_with">Continue with:</string>
     <string name="powered_by_breadsticks">Powered by Breadsticks</string>
     <string name="advertisement_1">Fast and Simple</string>

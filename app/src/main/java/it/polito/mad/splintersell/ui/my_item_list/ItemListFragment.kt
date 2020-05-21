@@ -1,9 +1,7 @@
-package it.polito.mad.splintersell.ui.item_list
+package it.polito.mad.splintersell.ui.my_item_list
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
@@ -12,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -21,27 +18,17 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.ktx.auth
-import com.firebase.ui.storage.images.FirebaseImageLoader
-import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import it.polito.mad.splintersell.*
+import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.data.ItemModelHolder
-import it.polito.mad.splintersell.data.storage
 import kotlinx.android.synthetic.main.fragment_item_list.*
-import java.io.File
-import java.io.FileInputStream
 
 class ItemListFragment : Fragment() {
     private val firestoreViewModel: FirestoreViewModel by viewModels()
@@ -57,27 +44,25 @@ class ItemListFragment : Fragment() {
         myItemList = firestoreViewModel.myItemList
 
         // Take my items
-        val query: Query = FirebaseFirestore.getInstance()
-            .collection("items")
-            .whereEqualTo("ownerId", user!!.uid)
+        val query: Query =
+            FirebaseFirestore.getInstance().collection("items").whereEqualTo("ownerId", user!!.uid)
+                .orderBy("status")
 
         // Configure recycler adapter options:
         //  * query is the Query object defined above.
         //  * ItemModel.class instructs the adapter to convert each DocumentSnapshot to a ItemModel object
-        val options = FirestoreRecyclerOptions.Builder<ItemModel>()
-            .setQuery(query, ItemModel::class.java)
-            .build()
+        val options =
+            FirestoreRecyclerOptions.Builder<ItemModel>().setQuery(query, ItemModel::class.java)
+                .build()
 
         adapter = object : FirestoreRecyclerAdapter<ItemModel, ItemModelHolder>(options) {
             override fun onBindViewHolder(
-                holder: ItemModelHolder,
-                position: Int,
-                model: ItemModel
+                holder: ItemModelHolder, position: Int, model: ItemModel
             ) {
                 // Bind the ItemModel object to the ItemModelHolder
                 holder.bind(model)
 
-                if (model.status !="Available"){
+                if (model.status != "Available") {
 
                     val matrix = ColorMatrix()
                     matrix.setSaturation(0f)
@@ -86,13 +71,12 @@ class ItemListFragment : Fragment() {
 
                     holder.button.text = model.status
                     holder.image.colorFilter = filter
-                    holder.button.setTextColor(holder.itemView.context.getColor(R.color.colorRed))
-                    holder.button.textSize = 18F
+                    holder.button.setTextColor(holder.itemView.context.getColor(R.color.white))
+                    holder.button.setBackgroundColor(holder.itemView.context.getColor(R.color.colorRed))
                     holder.card.isClickable = false
 
 
-                }
-                else {
+                } else {
 
                     // Set the onClick listener
                     holder.card.setOnClickListener {
@@ -107,8 +91,8 @@ class ItemListFragment : Fragment() {
             override fun onCreateViewHolder(group: ViewGroup, i: Int): ItemModelHolder {
                 // Create a new instance of the ViewHolder, in this case we are using a custom
                 // layout called R.layout.message for each item
-                val v: View = LayoutInflater.from(group.context)
-                    .inflate(R.layout.item_card, group, false)
+                val v: View =
+                    LayoutInflater.from(group.context).inflate(R.layout.item_card, group, false)
                 return ItemModelHolder(v)
             }
 
@@ -122,8 +106,7 @@ class ItemListFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val itemList = inflater.inflate(R.layout.fragment_item_list, container, false)
@@ -163,7 +146,7 @@ class ItemListFragment : Fragment() {
     }
 
     private fun navigateToItemDetails(view: View, id: String) {
-        val action = ItemListFragmentDirections.showItemDetail(id, false)
+        val action = ItemListFragmentDirections.showItemDetails(id, false)
         Log.e("POS", id)
         Navigation.findNavController(view).navigate(action)
     }
@@ -174,12 +157,9 @@ class ItemListFragment : Fragment() {
     }
 
     private fun hideNoItemsHere(list: List<ItemModel>) {
-        if (list.isEmpty())
-            empty_list.visibility = View.VISIBLE
-        else
-            empty_list.visibility = View.GONE
+        if (list.isEmpty()) empty_list.visibility = View.VISIBLE
+        else empty_list.visibility = View.GONE
     }
-
 
 
     override fun onStart() {

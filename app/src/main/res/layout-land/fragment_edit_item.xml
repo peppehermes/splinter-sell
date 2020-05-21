@@ -2,11 +2,10 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
     android:id="@+id/edit_view"
-    android:fillViewport="true"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
 
     <RelativeLayout
@@ -16,29 +15,36 @@
         android:orientation="vertical"
         android:padding="8dp">
 
-
-        <ImageView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/detail_image"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerInParent="true"
-            android:contentDescription="@string/detail_image"
-            android:paddingBottom="10dp"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/image_vectorized_lower"
-            tools:srcCompat="@drawable/image_vectorized_lower" />
+            android:layout_height="200dp">
 
-        <ImageButton
-            android:id="@+id/select_photo"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignTop="@+id/detail_image"
-            android:layout_alignEnd="@+id/detail_image"
-            android:background="@drawable/round_corners"
-            android:contentDescription="@string/add_photo"
-            android:padding="10dp"
-            android:src="@drawable/ic_photo_camera_white_24dp" />
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/detail_image"
+                android:paddingBottom="10dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/image_vectorized_lower"
+                tools:srcCompat="@drawable/image_vectorized_lower" />
+
+            <ImageButton
+                android:id="@+id/select_photo"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom|end"
+                android:layout_alignTop="@+id/detail_image"
+                android:layout_alignEnd="@+id/detail_image"
+                android:background="@drawable/round_corners"
+                android:contentDescription="@string/add_photo"
+                android:padding="10dp"
+                android:src="@drawable/ic_edit_white_24dp" />
+
+        </com.google.android.material.card.MaterialCardView>
 
         <View
             android:layout_width="match_parent"
@@ -49,15 +55,15 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_title"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/detail_image"
             android:layout_marginTop="10dp"
             android:padding="10dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:errorEnabled = "true"
             app:counterEnabled="true"
-            app:counterMaxLength="30">
+            app:counterMaxLength="30"
+            app:errorEnabled="true">
 
             <EditText
                 android:id="@+id/title"
@@ -76,14 +82,14 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_description"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/til_title"
             android:padding="10dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:errorEnabled = "true"
             app:counterEnabled="true"
-            app:counterMaxLength="50">
+            app:counterMaxLength="50"
+            app:errorEnabled="true">
 
             <EditText
                 android:id="@+id/description"
@@ -101,12 +107,12 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_price"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/til_description"
             android:padding="10dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:errorEnabled = "true">
+            app:errorEnabled="true">
 
             <EditText
                 android:id="@+id/price"
@@ -121,20 +127,19 @@
                 android:textStyle="bold" />
 
 
-
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_location"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/spinner_2"
             android:padding="10dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:errorEnabled = "true"
             app:counterEnabled="true"
-            app:counterMaxLength="30">
+            app:counterMaxLength="30"
+            app:errorEnabled="true">
 
             <EditText
                 android:id="@+id/location"
@@ -151,14 +156,14 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_expire_date"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/til_location"
             android:padding="10dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:errorEnabled = "true"
             app:counterEnabled="true"
-            app:counterMaxLength="20">
+            app:counterMaxLength="20"
+            app:errorEnabled="true">
 
             <EditText
                 android:id="@+id/expire_date"
@@ -172,47 +177,46 @@
                 android:textSize="24sp" />
 
 
-
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/spinner_1"
-            android:layout_below="@id/til_price"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             android:layout_width="match_parent"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_height="wrap_content"
+            android:layout_below="@id/til_price"
             android:padding="10dp">
             <!-- Google themselves instruct us to use the deprecated editable attribute -->
             <AutoCompleteTextView
-                android:id="@+id/dropdow_main_category"
-                android:textSize="24sp"
-                android:hint="@string/category"
+                android:id="@+id/dropdown_main_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
                 android:editable="false"
-                />
+                android:hint="@string/category"
+                android:inputType="none"
+                android:textSize="24sp"
+                tools:ignore="Deprecated" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/spinner_2"
-            android:layout_below="@id/spinner_1"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             android:layout_width="match_parent"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_height="wrap_content"
+            android:layout_below="@id/spinner_1"
             android:padding="10dp">
             <!-- Google themselves instruct us to use the deprecated editable attribute -->
             <AutoCompleteTextView
-                android:id="@+id/dropdow_sub_category"
-                android:textSize="24sp"
-                android:hint="@string/subcategory"
+                android:id="@+id/dropdown_sub_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
                 android:editable="false"
-                />
+                android:hint="@string/subcategory"
+                android:inputType="none"
+                android:textSize="24sp"
+                tools:ignore="Deprecated" />
         </com.google.android.material.textfield.TextInputLayout>
 
 

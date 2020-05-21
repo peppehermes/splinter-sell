@@ -1,27 +1,25 @@
 package it.polito.mad.splintersell.ui
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import it.polito.mad.splintersell.R
-
-import android.content.Intent
-import android.util.Log
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.Navigation
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.MainActivity
+import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.UserModel
 import kotlinx.android.synthetic.main.sign_in_fragment.*
 
@@ -85,7 +83,7 @@ class SignIn : Fragment() {
 
             val navigationView:DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
             navigationView.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-            Navigation.findNavController(requireView()).navigate(R.id.onSaleListFragment)
+            findNavController().navigate(SignInDirections.goToHome())
 
         }
         else Log.d("SignInTAG", "User not logged in")

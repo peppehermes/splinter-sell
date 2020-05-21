@@ -10,23 +10,23 @@
             android:title="@string/menu_show_profile" />
         <item
             android:id="@+id/nav_item_list"
-            android:icon="@drawable/ic_attach_money_black_24dp"
+            android:icon="@drawable/ic_home_black_24dp"
             android:title="@string/menu_item_list" />
 
         <item
-            android:id="@+id/onSaleListFragment"
+            android:id="@+id/nav_on_sale_list"
             android:icon="@drawable/ic_attach_money_black_24dp"
             android:title="@string/menu_on_sale" />
 
         <item
             android:id="@+id/nav_wish_list"
-            android:icon="@drawable/ic_attach_money_black_24dp"
+            android:icon="@drawable/ic_favorite_black_24dp"
             android:title="@string/menu_follow_list" />
 
         <item
-            android:id="@+id/nav_signOut"
-            android:icon="@drawable/ic_attach_money_black_24dp"
-            android:title="@string/SignOut" />
+            android:id="@+id/nav_sign_out"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
+            android:title="@string/sign_out" />
 
     </group>
 

@@ -1,11 +1,13 @@
 package it.polito.mad.splintersell.ui.item_details
 
+import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -15,17 +17,18 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.*
 import kotlinx.android.synthetic.main.fragment_item_details.*
 
-class ItemDetailsFragment: Fragment() {
+class ItemDetailsFragment : Fragment() {
     private val firestoreViewModel: FirestoreViewModel by viewModels()
     lateinit var liveData: LiveData<ItemModel>
     lateinit var userLiveData: LiveData<UserModel>
     var user = FirebaseAuth.getInstance().currentUser
-    val action1 = ItemDetailsFragmentDirections.goToListItem()
+    private lateinit var coordinator: CoordinatorLayout
 
     private val args: ItemDetailsFragmentArgs by navArgs()
 
@@ -35,29 +38,28 @@ class ItemDetailsFragment: Fragment() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 // Handle the back button event
-                    findNavController().navigate(R.id.nav_item_list)
+                findNavController().navigate(R.id.nav_item_list)
             }
         }
-        if(args.source=="edit")
-            requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+        if (args.source == "edit") requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            callback
+        )
     }
 
-    // Inflate the edit menu
+    // Inflate the edit show_profile_menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (!args.onSale)
-            inflater.inflate(R.menu.detail_menu, menu)
+        if (!args.onSale) inflater.inflate(R.menu.detail_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         firestoreViewModel.fetchSingleItemFromFirestore(args.documentName)
         liveData = firestoreViewModel.item
 
-        if(args.userID != "currUser"){
+        if (args.userID != "currUser") {
             firestoreViewModel.fetchUserFromFirestore(args.userID)
             userLiveData = firestoreViewModel.myUser
         }
@@ -70,22 +72,23 @@ class ItemDetailsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        coordinator = view.findViewById(R.id.coordinator_layout)
+
         firestoreViewModel.firestoreRepository.getItemNotification(args.documentName)
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)
 
-        if(args.userID == "currUser"){
+        if (args.userID == "currUser") {
             ownerlabel.visibility = View.GONE
             owner.visibility = View.GONE
             ownerline.visibility = View.GONE
-        }
-        else{
+        } else {
 
-            owner.setTextColor(resources.getColor(R.color.colorPrimary))
+            owner.setTextColor(owner.context.getColor(R.color.colorPrimary))
 
-            owner.setOnClickListener{
-                val action2 = ItemDetailsFragmentDirections.goToUserProfile(args.userID)
-                Navigation.findNavController(requireView()).navigate(action2)
+            owner.setOnClickListener {
+                val action = ItemDetailsFragmentDirections.showProfile(args.userID)
+                findNavController().navigate(action)
 
             }
 
@@ -99,32 +102,48 @@ class ItemDetailsFragment: Fragment() {
 
 
 
-        if(args.onSale) {
-            firestoreViewModel.isrequested.observe(viewLifecycleOwner, Observer { requested ->
+        if (args.onSale) {
+            firestoreViewModel.isRequested.observe(viewLifecycleOwner, Observer { requested ->
                 if (requested == true) {
-                    fab.setImageResource(R.drawable.ic_strikethrough_s_black_24dp)
-                    fab.setBackgroundTintList(resources.getColorStateList(R.color.colorPrimaryLight))
+                    var isRotate = true
+                    rotateFab(fab, isRotate)
+                    fab.backgroundTintList = fab.context.getColorStateList(R.color.colorPrimaryLight)
                     fab.setOnClickListener {
-                       firestoreViewModel.firestoreRepository.removeNotifications(args.documentName)
-                        Navigation.findNavController(requireView()).navigate(action1)
+                        isRotate = rotateFab(it, !isRotate)
+
+                        firestoreViewModel.firestoreRepository.removeNotification(args.documentName)
+                        Snackbar.make(
+                            coordinator, "Item removed from Wishlist", Snackbar.LENGTH_SHORT
+                        ).show()
+                        firestoreViewModel.isRequested.value = false
+
+                        // Navigation.findNavController(requireView()).navigate(action1)
                     }
-                }
-                else{
+
+                } else {
+                    var isRotate = false
+                    fab.backgroundTintList = fab.context.getColorStateList(R.color.colorSecondary)
                     fab.setOnClickListener {
+                        isRotate = rotateFab(it, !isRotate)
+
                         val newNot = NotificationModel(
-                            args.documentName,
-                            user!!.uid,
-                            liveData.value!!.ownerId!!
+                            args.documentName, user!!.uid, liveData.value!!.ownerId!!
                         )
                         firestoreViewModel.saveNotificationToFirestore(newNot)
-                        Navigation.findNavController(requireView()).navigate(action1)
+                        Snackbar.make(
+                            coordinator, "Item added to Wishlist", Snackbar.LENGTH_SHORT
+                        ).show()
+                        firestoreViewModel.isRequested.value = true
+
+                        //Navigation.findNavController(requireView()).navigate(action1)
                     }
                 }
-                fab.show()
 
+                fab.show()
 
             })
         }
+
         liveData.observe(viewLifecycleOwner, Observer {
             // Update UI
             title.text = it.title
@@ -135,17 +154,17 @@ class ItemDetailsFragment: Fragment() {
             location.text = it.location
             expire_date.text = it.expireDate
 
-            Glide.with(requireContext())
-                .using(FirebaseImageLoader())
-                .load(storage.child("/itemImages/${it.imgPath}"))
-                .into(detail_image)
+            Glide.with(requireContext()).using(FirebaseImageLoader())
+                .load(storage.child("/itemImages/${it.imgPath}")).into(detail_image)
         })
-
-
-
 
     }
 
+    private fun rotateFab(v: View, rotate: Boolean): Boolean {
+        v.animate().setDuration(200).setListener(object : AnimatorListenerAdapter() {})
+            .rotation(if (rotate) 135f else 0f)
+        return rotate
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -168,9 +187,6 @@ class ItemDetailsFragment: Fragment() {
             context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
-
-
-
 }
 
 

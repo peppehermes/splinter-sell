@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
+    <ScrollView
         android:id="@+id/detail_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:fillViewport="true">
 
         <LinearLayout
@@ -19,18 +18,23 @@
             android:orientation="vertical"
             android:padding="8dp">
 
-            <ImageView
-                android:id="@+id/detail_image"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginBottom="10dp"
-                android:contentDescription="@string/detail_image"
-                android:clickable="true"
-                android:scaleType="centerCrop"
-                app:srcCompat="@drawable/image_vectorized_lower"
-                tools:srcCompat="@drawable/image_vectorized_lower"
-                android:focusable="true"
-                />
+                android:layout_height="200dp">
+
+                <ImageView
+                    android:id="@+id/detail_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="10dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/detail_image"
+                    android:focusable="true"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/image_vectorized_lower"
+                    tools:srcCompat="@drawable/image_vectorized_lower" />
+
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:id="@+id/title"
@@ -48,10 +52,10 @@
 
 
             <TextView
+                style="@style/InputLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/description"
-                style="@style/InputLabel" />
+                android:text="@string/description" />
 
             <TextView
                 android:id="@+id/description"
@@ -70,10 +74,10 @@
                 android:background="@drawable/round_corners" />
 
             <TextView
+                style="@style/InputLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/price"
-                style="@style/InputLabel" />
+                android:text="@string/price" />
 
             <TextView
                 android:id="@+id/price"
@@ -93,17 +97,17 @@
                 android:background="@drawable/round_corners" />
 
             <TextView
+                style="@style/InputLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/showcategory"
-                style="@style/InputLabel" />
+                android:text="@string/show_category" />
 
             <TextView
                 android:id="@+id/category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="@string/showcategory"
+                android:text="@string/show_category"
                 android:textAppearance="?attr/textAppearanceBody1"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="24sp" />
@@ -115,10 +119,10 @@
                 android:background="@drawable/round_corners" />
 
             <TextView
+                style="@style/InputLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/location"
-                style="@style/InputLabel" />
+                android:text="@string/location" />
 
             <TextView
                 android:id="@+id/location"
@@ -137,10 +141,10 @@
                 android:background="@drawable/round_corners" />
 
             <TextView
+                style="@style/InputLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/expire_date"
-                style="@style/InputLabel" />
+                android:text="@string/expire_date" />
 
             <TextView
                 android:id="@+id/expire_date"
@@ -160,22 +164,22 @@
 
             <TextView
                 android:id="@+id/ownerlabel"
+                style="@style/InputLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/owner"
-                style="@style/InputLabel" />
+                android:text="@string/owner" />
 
             <TextView
                 android:id="@+id/owner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true"
                 android:text="@string/owner"
                 android:textAppearance="?attr/textAppearanceBody1"
                 android:textColor="?android:attr/textColorSecondary"
-                android:textSize="24sp"
-                android:clickable="true"
-                android:focusable="true" />
+                android:textSize="24sp" />
 
 
             <View
@@ -189,20 +193,28 @@
 
     </ScrollView>
 
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_gravity="bottom|right|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:visibility="gone"
-        style="@style/Widget.MyApp.MyFloatingActionButton"
-        app:backgroundTint="@color/colorSecondary"
-        app:srcCompat="@drawable/ic_attach_money_black_24dp"
-        app:borderWidth="0dp"/>
+        android:layout_alignParentBottom="true">
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            style="@style/Widget.MyApp.MyFloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:visibility="gone"
+            app:backgroundTint="@color/colorSecondary"
+            app:borderWidth="0dp"
+            app:srcCompat="@drawable/ic_add"
+            tools:ignore="RtlHardcoded" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 
 </RelativeLayout>

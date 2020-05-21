@@ -13,7 +13,7 @@ import it.polito.mad.splintersell.R
 class ItemModelHolder(v: View) : RecyclerView.ViewHolder(v) {
     val card: MaterialCardView = v.findViewById(R.id.card)
     val image: ImageView = v.findViewById(R.id.card_image)
-    val button : Button = v.findViewById(R.id.card_edit)
+    var button : Button = v.findViewById(R.id.card_edit)
     val title: TextView = v.findViewById(R.id.card_title)
     val description: TextView = v.findViewById(R.id.card_description)
     val price: TextView = v.findViewById(R.id.card_price)

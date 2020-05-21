@@ -1,14 +1,16 @@
 package it.polito.mad.splintersell.ui.on_sale_list
 
+import android.content.res.ColorStateList
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Filter
 import android.widget.Filterable
-import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.ItemModel
@@ -16,9 +18,8 @@ import it.polito.mad.splintersell.data.ItemModelHolder
 import java.util.*
 import kotlin.collections.ArrayList
 
-
-class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>)
-    : RecyclerView.Adapter<ItemModelHolder>(), Filterable {
+class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>) :
+    RecyclerView.Adapter<ItemModelHolder>(), Filterable {
     private var itemFilterList = ArrayList<ItemModel>()
 
     init {
@@ -44,29 +45,24 @@ class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>)
         val item = itemFilterList[position]
         holder.bind(item)
 
-
-
-        if (item.status =="Sold"){
-
+        if (item.status == "Sold") {
             val matrix = ColorMatrix()
             matrix.setSaturation(0f)
 
             val filter = ColorMatrixColorFilter(matrix)
 
-            holder.button.text = "SOLD"
+            holder.button.text = holder.itemView.context.getString(R.string.sold)
             holder.image.colorFilter = filter
-            holder.button.setTextColor(holder.itemView.context.getColor(R.color.colorRed))
-            holder.button.textSize = 18F
+            holder.button.setTextColor(holder.itemView.context.getColor(R.color.white))
+            holder.button.setBackgroundColor(holder.itemView.context.getColor(R.color.colorRed))
             holder.card.isClickable = false
+        } else {
 
-
-        }else {
-
-            holder.button.text = "View user"
+            holder.button.text = holder.itemView.context.getString(R.string.view_user)
 
             // Set the onClick listener
             holder.card.setOnClickListener {
-                navigateToItemDetails(holder.itemView, item.documentName!!,item.ownerId!!)
+                navigateToItemDetails(holder.itemView, item.documentName!!, item.ownerId!!)
             }
 
             holder.button.setOnClickListener {
@@ -86,11 +82,13 @@ class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>)
                     val resultList = ArrayList<ItemModel>()
                     for (row in onSaleItemList) {
                         if (row.title!!.toLowerCase(Locale.ROOT).contains(
-                                charSearch.toLowerCase(Locale.ROOT))
-                            || row.description!!.toLowerCase(Locale.ROOT).contains(
-                                charSearch.toLowerCase(Locale.ROOT))
-                            || row.location!!.toLowerCase(Locale.ROOT).contains(
-                                charSearch.toLowerCase(Locale.ROOT))) {
+                                charSearch.toLowerCase(Locale.ROOT)
+                            ) || row.description!!.toLowerCase(Locale.ROOT).contains(
+                                charSearch.toLowerCase(Locale.ROOT)
+                            ) || row.location!!.toLowerCase(Locale.ROOT).contains(
+                                charSearch.toLowerCase(Locale.ROOT)
+                            )
+                        ) {
 
                             // Add the item if it contains the searched word
                             resultList.add(row)
@@ -113,16 +111,16 @@ class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>)
         }
     }
 
-    private fun navigateToItemDetails(view: View, id: String, ownerid : String) {
-        val action = OnSaleListFragmentDirections.showOnSaleItem(id, true, ownerid)
+    private fun navigateToItemDetails(view: View, id: String, ownerid: String) {
+        val action = OnSaleListFragmentDirections.showItemDetails(id, true, ownerid)
         Log.e("POS", id)
-        Navigation.findNavController(view).navigate(action)
+        findNavController(view).navigate(action)
     }
 
     private fun navigateToUserDetails(view: View, id: String) {
-        val action = OnSaleListFragmentDirections.goToUserProfile(id)
+        val action = OnSaleListFragmentDirections.showProfile(id)
         Log.e("USERID", id)
-        Navigation.findNavController(view).navigate(action)
+        findNavController(view).navigate(action)
     }
 
 }

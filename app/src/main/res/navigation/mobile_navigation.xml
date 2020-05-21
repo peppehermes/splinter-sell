@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
     android:label="Welcome"
-    app:startDestination="@id/nav_signIn"
+    app:startDestination="@id/sign_in"
     tools:ignore="UnusedNavigation">
 
     <fragment
@@ -22,38 +22,27 @@
             android:name="onSale"
             app:argType="boolean" />
         <action
-            android:id="@+id/goToListItem"
-            app:destination="@id/onSaleListFragment" />
-        <action
-            android:id="@+id/goToUserProfile"
-            app:destination="@id/nav_show_profile"
-            app:popUpTo="@id/nav_item_details" />
-        <action
             android:id="@+id/goToInterestedUsers"
             app:destination="@id/userListFragment"
-            app:popUpTo="@id/nav_item_details"/>
+            app:popUpTo="@id/nav_item_details" />
         <argument
             android:name="userID"
-            app:argType="string"
-            android:defaultValue="currUser" />
+            android:defaultValue="currUser"
+            app:argType="string" />
         <argument
             android:name="source"
-            app:argType="string"
-            android:defaultValue="unknown" />
+            android:defaultValue="unknown"
+            app:argType="string" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_item_list"
-        android:name="it.polito.mad.splintersell.ui.item_list.ItemListFragment"
+        android:name="it.polito.mad.splintersell.ui.my_item_list.ItemListFragment"
         android:label="@string/menu_item_list"
-        tools:layout="@layout/fragment_item_list" >
+        tools:layout="@layout/fragment_item_list">
         <action
             android:id="@+id/newItem"
             app:destination="@id/nav_edit_item" />
-        <action
-            android:id="@+id/showItemDetail"
-            app:destination="@id/nav_item_details"
-            app:popUpTo="@id/nav_item_list" />
         <action
             android:id="@+id/editListItem"
             app:destination="@id/nav_edit_item" />
@@ -63,24 +52,17 @@
         android:id="@+id/nav_edit_item"
         android:name="it.polito.mad.splintersell.ui.item_details.ItemEditFragment"
         android:label="@string/menu_edit_item"
-        tools:layout="@layout/fragment_edit_item" >
+        tools:layout="@layout/fragment_edit_item">
         <argument
             android:name="documentName"
             app:argType="string" />
-        <action
-            android:id="@+id/goToDetails"
-            app:destination="@id/nav_item_details"
-            app:popUpTo="@id/nav_item_list" />
-        <action
-            android:id="@+id/goToItemList"
-            app:destination="@id/nav_item_list" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_show_profile"
         android:name="it.polito.mad.splintersell.ui.profile_show.ShowProfile"
         android:label="Profile Details"
-        tools:layout="@layout/fragment_show_profile" >
+        tools:layout="@layout/fragment_show_profile">
         <action
             android:id="@+id/edit"
             app:destination="@id/nav_edit_profile"
@@ -90,8 +72,8 @@
             app:popExitAnim="@android:anim/fade_out" />
         <argument
             android:name="userID"
-            app:argType="string"
-            android:defaultValue="currUser" />
+            android:defaultValue="currUser"
+            app:argType="string" />
         <argument
             android:name="source"
             android:defaultValue="unknown" />
@@ -101,68 +83,49 @@
         android:id="@+id/nav_edit_profile"
         android:name="it.polito.mad.splintersell.ui.profile_edit.EditProfile"
         android:label="Edit Profile"
-        tools:layout="@layout/fragment_edit_profile">
-        <action
-        android:id="@+id/editToShow"
-        app:destination="@id/nav_show_profile" >
-        <argument
-            android:name="userID"
-            android:defaultValue="currUser" />
-        </action>
-    </fragment>
-    <fragment
-        android:id="@+id/nav_signIn"
-        android:name="it.polito.mad.splintersell.ui.SignIn"
-        android:label="Welcome"
-        tools:layout="@layout/sign_in_fragment" >
-        <action
-            android:id="@+id/action_nav_signIn_to_onSaleListFragment"
-            app:destination="@id/onSaleListFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_edit_profile" />
 
     <fragment
-        android:id="@+id/nav_signOut"
+        android:id="@+id/nav_sign_out"
         android:name="it.polito.mad.splintersell.ui.SignOut"
         android:label="Sign out" />
     <fragment
-        android:id="@+id/onSaleListFragment"
+        android:id="@+id/nav_on_sale_list"
         android:name="it.polito.mad.splintersell.ui.on_sale_list.OnSaleListFragment"
         android:label="On sale"
-        tools:layout="@layout/fragment_on_sale_list">
-        <action
-            android:id="@+id/showOnSaleItem"
-            app:destination="@id/nav_item_details" />
-        <action
-            android:id="@+id/goToUserProfile"
-            app:destination="@id/nav_show_profile"
-            app:popUpTo="@id/onSaleListFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_on_sale_list" />
     <fragment
         android:id="@+id/nav_wish_list"
         android:name="it.polito.mad.splintersell.ui.wish_list.WishList"
         android:label="Wish List"
-        tools:layout="@layout/fragment_wish_list">
-        <action
-            android:id="@+id/showOnSaleItem"
-            app:destination="@id/nav_item_details" />
-        <action
-            android:id="@+id/goToUserProfile"
-            app:destination="@id/nav_show_profile" />
-    </fragment>
+        tools:layout="@layout/fragment_wish_list" />
     <fragment
         android:id="@+id/userListFragment"
         android:name="it.polito.mad.splintersell.ui.user_list.UserListFragment"
-        android:label="Interested Users" >
-        <action
-            android:id="@+id/goToInterestedUserProfile"
-            app:destination="@id/nav_show_profile" />
+        android:label="Interested Users">
         <argument
             android:name="itemID"
             app:argType="string" />
-        <action
-            android:id="@+id/goToMyItems"
-            app:destination="@id/nav_item_list" />
     </fragment>
+    <action
+        android:id="@+id/showProfile"
+        app:destination="@id/nav_show_profile" />
+    <navigation
+        android:id="@+id/sign_in"
+        app:startDestination="@id/nav_signIn">
+        <fragment
+            android:id="@+id/nav_signIn"
+            android:name="it.polito.mad.splintersell.ui.SignIn"
+            android:label="Sign In"
+            tools:layout="@layout/sign_in_fragment">
+            <action
+                android:id="@+id/goToHome"
+                app:destination="@id/nav_on_sale_list" />
+        </fragment>
+    </navigation>
+    <action
+        android:id="@+id/showItemDetails"
+        app:destination="@id/nav_item_details" />
 
 
 </navigation>

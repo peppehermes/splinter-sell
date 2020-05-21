@@ -2,49 +2,44 @@ package it.polito.mad.splintersell.ui.item_details
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.app.DatePickerDialog
-import android.app.Dialog
-import android.content.Context
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.text.InputFilter
-import android.view.animation.Transformation
 import android.util.Log
 import android.view.*
+import android.view.animation.Transformation
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
-import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
-import com.google.android.gms.tasks.Tasks
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
-import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.storage
 import kotlinx.android.synthetic.main.fragment_edit_item.*
-import kotlinx.android.synthetic.main.fragment_edit_item.description
-import kotlinx.android.synthetic.main.fragment_edit_item.detail_image
-import kotlinx.android.synthetic.main.fragment_edit_item.expire_date
-import kotlinx.android.synthetic.main.fragment_edit_item.location
-import kotlinx.android.synthetic.main.fragment_edit_item.price
-import kotlinx.android.synthetic.main.fragment_edit_item.title
-import java.io.*
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -57,16 +52,16 @@ var photoURI: Uri? = null
 
 class ItemEditFragment : Fragment() {
 
-    val charPool = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-    var path:String = ""
-    var randomString:String = ""
+    private val charPool = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+    private var path: String = ""
+    private var randomString: String = ""
 
     private val firestoreViewModel: FirestoreViewModel by viewModels()
 
     private val args: ItemEditFragmentArgs by navArgs()
     private lateinit var currentPhotoPath: String
     private val user = Firebase.auth.currentUser
-    lateinit var liveData: LiveData<ItemModel>
+    private lateinit var liveData: LiveData<ItemModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,8 +69,7 @@ class ItemEditFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         firestoreViewModel.fetchSingleItemFromFirestore(args.documentName)
         liveData = firestoreViewModel.item
@@ -96,78 +90,106 @@ class ItemEditFragment : Fragment() {
         this.imageButtonMenu()
 
         liveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            title.setText(it.title)
-            description.setText(it.description)
-            price.setText(it.price)
-            location.setText(it.location)
-            expire_date.setText(it.expireDate)
+            til_title.editText!!.setText(it.title)
+            til_description.editText!!.setText(it.description)
+            til_price.editText!!.setText(it.price)
+            til_location.editText!!.setText(it.location)
+            til_expire_date.editText!!.setText(it.expireDate)
 
             path = it.imgPath
             if (path == "")
-                detail_image.setImageDrawable(requireContext().getDrawable(R.drawable.image_vectorized_lower))
-            else{
-
-            Glide.with(requireContext())
-                .using(FirebaseImageLoader())
-                .load(storage.child("/itemImages/$path"))
-                .into(detail_image)
+                image.setImageDrawable(
+                    requireContext().getDrawable(R.drawable.image_vectorized_lower))
+            else {
+                Glide.with(requireContext()).using(FirebaseImageLoader())
+                    .load(storage.child("/itemImages/$path")).into(image)
             }
 
         })
 
+        manageSpinner()
+    }
 
+    private fun manageSpinner() {
         val adapter = ArrayAdapter(
-            activity?.applicationContext!!,R.layout.spinner_text,
-            resources.getStringArray(R.array.macroCategories))
+            this.requireContext(),
+            R.layout.spinner_text,
+            resources.getStringArray(R.array.macroCategories)
+        )
 
-        dropdow_main_category!!.setAdapter(adapter)
-        dropdow_main_category.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            when(position) {
+        dropdown_main_category!!.setAdapter(adapter)
+        dropdown_main_category.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, position, _ ->
+                when (position) {
 
-                0 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
-                    activity?.applicationContext!!, R.layout.spinner_text,
-                    resources.getStringArray(R.array.arts))
-                )
-                1 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
-                    activity?.applicationContext!!, R.layout.spinner_text,
-                    resources.getStringArray(R.array.sports))
-                )
-                2 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
-                    activity?.applicationContext!!, R.layout.spinner_text,
-                    resources.getStringArray(R.array.baby))
-                )
-                3 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
-                    activity?.applicationContext!!, R.layout.spinner_text,
-                    resources.getStringArray(R.array.women))
-                )
-                4 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
-                    activity?.applicationContext!!, R.layout.spinner_text,
-                    resources.getStringArray(R.array.men))
-                )
-                5 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
-                    activity?.applicationContext!!, R.layout.spinner_text,
-                    resources.getStringArray(R.array.electronics))
-                )
-                6 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
-                    activity?.applicationContext!!, R.layout.spinner_text,
-                    resources.getStringArray(R.array.games))
-                )
-                7 -> dropdow_sub_category!!.setAdapter(ArrayAdapter(
-                    activity?.applicationContext!!, R.layout.spinner_text,
-                    resources.getStringArray(R.array.automotive))
-                )
+                    0 -> dropdown_sub_category!!.setAdapter(
+                        ArrayAdapter(
+                            this.requireContext(),
+                            R.layout.spinner_text,
+                            resources.getStringArray(R.array.arts)
+                        )
+                    )
+                    1 -> dropdown_sub_category!!.setAdapter(
+                        ArrayAdapter(
+                            this.requireContext(),
+                            R.layout.spinner_text,
+                            resources.getStringArray(R.array.sports)
+                        )
+                    )
+                    2 -> dropdown_sub_category!!.setAdapter(
+                        ArrayAdapter(
+                            this.requireContext(),
+                            R.layout.spinner_text,
+                            resources.getStringArray(R.array.baby)
+                        )
+                    )
+                    3 -> dropdown_sub_category!!.setAdapter(
+                        ArrayAdapter(
+                            this.requireContext(),
+                            R.layout.spinner_text,
+                            resources.getStringArray(R.array.women)
+                        )
+                    )
+                    4 -> dropdown_sub_category!!.setAdapter(
+                        ArrayAdapter(
+                            this.requireContext(),
+                            R.layout.spinner_text,
+                            resources.getStringArray(R.array.men)
+                        )
+                    )
+                    5 -> dropdown_sub_category!!.setAdapter(
+                        ArrayAdapter(
+                            this.requireContext(),
+                            R.layout.spinner_text,
+                            resources.getStringArray(R.array.electronics)
+                        )
+                    )
+                    6 -> dropdown_sub_category!!.setAdapter(
+                        ArrayAdapter(
+                            this.requireContext(),
+                            R.layout.spinner_text,
+                            resources.getStringArray(R.array.games)
+                        )
+                    )
+                    7 -> dropdown_sub_category!!.setAdapter(
+                        ArrayAdapter(
+                            this.requireContext(),
+                            R.layout.spinner_text,
+                            resources.getStringArray(R.array.automotive)
+                        )
+                    )
 
+                }
             }
-        }
     }
 
 
     //Limits the lenght of the input of the EditText fields
-    private fun setInputLimits(){
+    private fun setInputLimits() {
 
-        title.filters = arrayOf(InputFilter.LengthFilter(30))
-        description.filters = arrayOf(InputFilter.LengthFilter(50))
-        location.filters = arrayOf(InputFilter.LengthFilter(30))
+        til_title.editText!!.filters = arrayOf(InputFilter.LengthFilter(30))
+        til_description.editText!!.filters = arrayOf(InputFilter.LengthFilter(50))
+        til_location.editText!!.filters = arrayOf(InputFilter.LengthFilter(60))
 
     }
 
@@ -186,25 +208,25 @@ class ItemEditFragment : Fragment() {
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
-        var datevalid : Boolean
+        var datevalid: Boolean
 
         expire_date.setOnClickListener {
             DatePickerDialog(
                 requireActivity().window.context,
-                DatePickerDialog.OnDateSetListener { it, years, monthOfYear, dayOfMonth ->
+                DatePickerDialog.OnDateSetListener { _, years, monthOfYear, dayOfMonth ->
                     // Display Selected date in TextView
-                    datevalid= validate_date(years,monthOfYear, dayOfMonth)
-                    if(datevalid) {
+                    datevalid = validate_date(years, monthOfYear, dayOfMonth)
+                    if (datevalid) {
                         var monthConverted = "" + (monthOfYear + 1).toString()
                         var dayConverted = "" + dayOfMonth.toString()
                         if (monthOfYear < 10) monthConverted = "0$monthConverted"
                         if (dayOfMonth < 10) dayConverted = "0$dayConverted"
 
                         val date = "$dayConverted/$monthConverted/$years"
-                        expire_date.setText(date)
-                    }
-                    else
-                        Toast.makeText( requireActivity().window.context,getString(R.string.Wrong_date), Toast.LENGTH_SHORT).show()
+                        til_expire_date.editText!!.setText(date)
+                    } else Snackbar.make(
+                        this.requireView(), getString(R.string.Wrong_date), Snackbar.LENGTH_SHORT
+                    ).show()
                 },
                 year,
                 month,
@@ -214,7 +236,7 @@ class ItemEditFragment : Fragment() {
     }
 
     private fun imageButtonMenu() {
-        // Show menu when tapping on imagebutton
+        // Show show_profile_menu when tapping on imagebutton
 
         select_photo.setOnClickListener {
             val popupMenu = PopupMenu(requireActivity().applicationContext, it)
@@ -238,11 +260,9 @@ class ItemEditFragment : Fragment() {
         val imageIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
             type = "image/*"
         }
-        if (imageIntent.resolveActivity(requireActivity().packageManager) != null)
-            startActivityForResult(
-                imageIntent,
-                GALLERY_REQUEST_CODE
-            )
+        if (imageIntent.resolveActivity(requireActivity().packageManager) != null) startActivityForResult(
+            imageIntent, GALLERY_REQUEST_CODE
+        )
     }
 
     private fun dispatchTakePictureIntent() {
@@ -260,18 +280,14 @@ class ItemEditFragment : Fragment() {
                 // Continue only if the File was successfully created
                 photoFile?.also {
                     photoURI = FileProvider.getUriForFile(
-                        requireContext(),
-                        "it.polito.mad.splintersell",
-                        it
+                        requireContext(), "it.polito.mad.splintersell", it
                     )
                     //currentPhotoUri = photoURI
                     takePictureIntent.putExtra(
-                        MediaStore.EXTRA_OUTPUT,
-                        photoURI
+                        MediaStore.EXTRA_OUTPUT, photoURI
                     )
                     startActivityForResult(
-                        takePictureIntent,
-                        REQUEST_TAKE_PHOTO
+                        takePictureIntent, REQUEST_TAKE_PHOTO
                     )
                 }
             }
@@ -313,19 +329,16 @@ class ItemEditFragment : Fragment() {
 
     private fun manageBitmap() {
         var bitmap = handleSamplingAndRotationBitmap(
-            requireContext(),
-            photoURI
+            requireContext(), photoURI
         )
-        bitmap = CropSquareTransformation()
-            .transform(bitmap!!)
-        detail_image.setImageBitmap(bitmap)
+        bitmap = CropSquareTransformation().transform(bitmap!!)
+        image.setImageBitmap(bitmap)
         rotatedBitmap = bitmap
     }
 
     @Throws(IOException::class)
     fun handleSamplingAndRotationBitmap(
-        context: Context,
-        selectedImage: Uri?
+        context: Context, selectedImage: Uri?
     ): Bitmap? {
         val MAX_HEIGHT = 1024
         val MAX_WIDTH = 1024
@@ -349,8 +362,7 @@ class ItemEditFragment : Fragment() {
     }
 
     private fun calculateInSampleSize(
-        options: BitmapFactory.Options,
-        reqWidth: Int, reqHeight: Int
+        options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int
     ): Int {
         // Raw height and width of image
         val height = options.outHeight
@@ -359,10 +371,8 @@ class ItemEditFragment : Fragment() {
         if (height > reqHeight || width > reqWidth) {
 
             // Calculate ratios of height and width to requested height and width
-            val heightRatio =
-                (height.toFloat() / reqHeight.toFloat()).roundToInt()
-            val widthRatio =
-                (width.toFloat() / reqWidth.toFloat()).roundToInt()
+            val heightRatio = (height.toFloat() / reqHeight.toFloat()).roundToInt()
+            val widthRatio = (width.toFloat() / reqWidth.toFloat()).roundToInt()
 
             // Choose the smallest ratio as inSampleSize value, this will guarantee a final image
             // with both dimensions larger than or equal to the requested height and width.
@@ -386,15 +396,12 @@ class ItemEditFragment : Fragment() {
 
     @Throws(IOException::class)
     private fun rotateImageIfRequired(
-        context: Context,
-        img: Bitmap,
-        selectedImage: Uri
+        context: Context, img: Bitmap, selectedImage: Uri
     ): Bitmap? {
         val input: InputStream = context.contentResolver.openInputStream(selectedImage)!!
         val ei: ExifInterface
-        ei =
-            ExifInterface(input)
-        Log.e("photo_orientation", ei.getAttribute(ExifInterface.TAG_ORIENTATION).toString())
+        ei = ExifInterface(input)
+        //Log.e("photo_orientation", ei.getAttribute(ExifInterface.TAG_ORIENTATION).toString())
         val orientation =
             ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
         Log.e("photo_orientation", "$orientation")
@@ -409,8 +416,7 @@ class ItemEditFragment : Fragment() {
     private fun rotateImage(img: Bitmap, degree: Int): Bitmap? {
         val matrix = Matrix()
         matrix.postRotate(degree.toFloat())
-        val rotatedImg =
-            Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
+        val rotatedImg = Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
         img.recycle()
         return rotatedImg
     }
@@ -448,32 +454,31 @@ class ItemEditFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        // Do something that differs the Activity's menu here
-        inflater.inflate(R.menu.save_menu, menu)
+        // Do something that differs the Activity's show_profile_menu here
+        inflater.inflate(R.menu.edit_item_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     @SuppressLint("WrongThread")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.saveProfile -> {
+            R.id.save -> {
 
 
-                val checkError : Boolean = formValidation()
+                val checkError: Boolean = formValidation()
 
-                if(!checkError){
+                if (!checkError) {
 
                     Log.d("EditItemTAG", "Error in Item Form Validation")
 
 
                     //Save image on Cloud Storage
 
-                    if(rotatedBitmap!=null){
+                    if (rotatedBitmap != null) {
 
-                        randomString = (1..20)
-                            .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
-                            .map(charPool::get)
-                            .joinToString("")
+                        randomString =
+                            (1..20).map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+                                .map(charPool::get).joinToString("")
 
                         randomString = "$randomString.jpg"
 
@@ -482,46 +487,39 @@ class ItemEditFragment : Fragment() {
                         uploadImageOnStorage()
 
 
-                    }else {
+                    } else {
                         randomString = path
 
                         setNewItem()
                         val dialog = AlertDialog.Builder(requireContext())
-                        dialog.setMessage("Done!")
-                            .setCancelable(false)
-                            .setPositiveButton("Great!"){
-                                dialog, _ ->
-                                dialog.dismiss()
+                        dialog.setMessage("Done!").setCancelable(false)
+                            .setPositiveButton("Great!") { dialogBox, _ ->
+                                dialogBox.dismiss()
                                 navigateMyItemDetails()
                             }
                         dialog.show()
 
                     }
-                }
-                else
-                    Log.d("EditItemTAG", "Error in Item Form Validation")
+                } else Log.d("EditItemTAG", "Error in Item Form Validation")
 
 
                 true
             }
-            R.id.deleteItem ->{
+            R.id.delete -> {
 
                 val builder = AlertDialog.Builder(requireContext())
-                builder.setMessage("Are you sure you want to Delete?")
-                    .setCancelable(false)
+                builder.setMessage("Are you sure you want to Delete?").setCancelable(false)
                     .setPositiveButton("Yes") { dialog, _ ->
                         // Delete selected note from database
 
-                        firestoreViewModel.updateStatus("Blocked",args.documentName)
+                        firestoreViewModel.updateStatus("Blocked", args.documentName)
 
                         firestoreViewModel.cancelAllNotifications(args.documentName)
 
                         dialog.dismiss()
 
-                        val action = ItemEditFragmentDirections.goToItemList()
-                        Navigation.findNavController(requireView()).navigate(action)
-                    }
-                    .setNegativeButton("No") { dialog, _ ->
+                        findNavController().navigate(R.id.nav_item_list)
+                    }.setNegativeButton("No") { dialog, _ ->
                         // Dismiss the dialog
                         dialog.dismiss()
                     }
@@ -536,36 +534,35 @@ class ItemEditFragment : Fragment() {
     }
 
 
-    private fun formValidation(): Boolean{
+    private fun formValidation(): Boolean {
 
         var result = false
-
-        if (title.text.isEmpty()){
-            title.error = getString(R.string.please_fill)
+        if (til_title.editText!!.text.isEmpty()) {
+            til_title.editText!!.error = getString(R.string.please_fill)
             result = true
         }
-        if (description.text.isEmpty()){
-            description.error = getString(R.string.please_fill)
+        if (til_description.editText!!.text.isEmpty()) {
+            til_description.editText!!.error = getString(R.string.please_fill)
             result = true
         }
-        if (price.text.isEmpty()){
-            price.error = getString(R.string.please_fill)
+        if (til_price.editText!!.text.isEmpty()) {
+            til_price.editText!!.error = getString(R.string.please_fill)
             result = true
         }
-        if (location.text.isEmpty()){
-            location.error = getString(R.string.please_fill)
+        if (til_location.editText!!.text.isEmpty()) {
+            til_location.editText!!.error = getString(R.string.please_fill)
             result = true
         }
-        if (expire_date.text.isEmpty()){
-            expire_date.error = getString(R.string.please_fill)
+        if (til_expire_date.editText!!.text.isEmpty()) {
+            til_expire_date.editText!!.error = getString(R.string.please_fill)
             result = true
         }
-        if (dropdow_main_category.text.isEmpty()){
-            dropdow_main_category.error = getString(R.string.please_select)
+        if (spinner_1.editText!!.text.isEmpty()) {
+            spinner_1.editText!!.error = getString(R.string.please_select)
             result = true
         }
-        if (dropdow_sub_category.text.isEmpty()){
-            dropdow_sub_category.error = getString(R.string.please_select)
+        if (spinner_2.editText!!.text.isEmpty()) {
+            spinner_2.editText!!.error = getString(R.string.please_select)
             result = true
         }
 
@@ -573,15 +570,13 @@ class ItemEditFragment : Fragment() {
 
     }
 
-    private fun validate_date(years : Int,monthOfYear:Int, dayOfMonth:Int): Boolean{
+    private fun validate_date(years: Int, monthOfYear: Int, dayOfMonth: Int): Boolean {
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
 
-        return !(years<year
-                || ((years==year) && (monthOfYear<month))
-                || ((years==year) && (monthOfYear==month) && dayOfMonth<day))
+        return !(years < year || ((years == year) && (monthOfYear < month)) || ((years == year) && (monthOfYear == month) && dayOfMonth < day))
     }
 
 
@@ -592,7 +587,7 @@ class ItemEditFragment : Fragment() {
         }
     }
 
-    private fun uploadImageOnStorage(){
+    private fun uploadImageOnStorage() {
 
         val dialog1 = AlertDialog.Builder(requireContext()).create()
         val dialog2 = AlertDialog.Builder(requireContext())
@@ -600,16 +595,15 @@ class ItemEditFragment : Fragment() {
         dialog1.setCancelable(false)
         dialog1.show()
 
-        val profileImageRefs= storage.child("itemImages/$randomString")
+        val profileImageRefs = storage.child("itemImages/$randomString")
         Log.d("ItemEditTAG", "Name of the file to be stored: $profileImageRefs")
 
         val baos = ByteArrayOutputStream()
         rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, baos)
         val rotBytes = baos.toByteArray()
-        val uploadTask = profileImageRefs.putBytes(rotBytes).addOnCompleteListener{
+        val uploadTask = profileImageRefs.putBytes(rotBytes).addOnCompleteListener {
             dialog1.cancel()
-            dialog2.setMessage("Done!")
-                .setCancelable(false)
+            dialog2.setMessage("Done!").setCancelable(false)
             dialog2.setPositiveButton("Great!") { dialog, _ ->
                 dialog.dismiss()
                 navigateMyItemDetails()
@@ -625,7 +619,7 @@ class ItemEditFragment : Fragment() {
             Log.d("ItemEditTAG", "Success in saving image to the Cloud Storage")
         }
 
-        if(path != "") {
+        if (path != "") {
             val refToDelete = storage.child("itemImages/$path")
             refToDelete.delete().addOnSuccessListener {
                 Log.d("deleteOfFile", "Delete complete on item $path")
@@ -637,16 +631,16 @@ class ItemEditFragment : Fragment() {
 
     }
 
-    private fun setNewItem(){
+    private fun setNewItem() {
 
         val newItem = ItemModel(
-            title.text.toString(),
-            description.text.toString(),
-            price.text.toString(),
-            dropdow_main_category.text.toString(),
-            dropdow_sub_category.text.toString(),
-            location.text.toString(),
-            expire_date.text.toString(),
+            til_title.editText!!.text.toString(),
+            til_description.editText!!.text.toString(),
+            til_price.editText!!.text.toString(),
+            dropdown_main_category.text.toString(),
+            dropdown_sub_category.text.toString(),
+            til_location.editText!!.text.toString(),
+            til_expire_date.editText!!.text.toString(),
             args.documentName,
             user!!.uid,
             randomString,
@@ -657,12 +651,11 @@ class ItemEditFragment : Fragment() {
 
     }
 
-    private fun navigateMyItemDetails(){
+    private fun navigateMyItemDetails() {
 
-        val action = ItemEditFragmentDirections.goToDetails(args.documentName, false,source="edit")
-        Navigation.findNavController(requireView()).navigate(action)
+        val action =
+            ItemEditFragmentDirections.showItemDetails(args.documentName, false, source = "edit")
+        findNavController().navigate(action)
 
     }
-
-
 }

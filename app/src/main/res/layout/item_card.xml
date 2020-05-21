@@ -4,7 +4,9 @@
     android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_margin="8dp"
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +17,7 @@
         <ImageView
             android:id="@+id/card_image"
             android:layout_width="match_parent"
-            android:layout_height="194dp"
+            android:layout_height="200dp"
             android:contentDescription="@string/detail_image"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/image_vectorized_lower" />
@@ -63,7 +65,6 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/card_edit"
-                style="?attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"

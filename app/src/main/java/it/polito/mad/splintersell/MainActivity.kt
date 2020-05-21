@@ -6,19 +6,19 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
-import com.google.android.material.navigation.NavigationView
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.LiveData
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.data.FirestoreViewModel
@@ -43,12 +43,20 @@ class MainActivity : AppCompatActivity() {
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(setOf(
-            R.id.onSaleListFragment, R.id.nav_item_list, R.id.nav_show_profile, R.id.nav_signOut), drawerLayout)
+        // Passing each show_profile_menu ID as a set of Ids because each
+        // show_profile_menu should be considered as top level destinations.
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.nav_show_profile,
+                R.id.nav_item_list,
+                R.id.nav_on_sale_list,
+                R.id.nav_wish_list,
+                R.id.nav_sign_out
+            ), drawerLayout
+        )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
@@ -60,74 +68,31 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-     private fun retrievePreferencesMain(headerView: View) {
+    private fun retrievePreferencesMain(headerView: View) {
         val textViewNick = headerView.findViewById(R.id.nav_profile_name) as TextView
         val textViewMail = headerView.findViewById(R.id.nav_profile_mail) as TextView
         val imgView = headerView.findViewById(R.id.imageView) as ImageView
 
-         Log.d("Xeros", user?.uid.toString())
+        Log.d("Xeros", user?.uid.toString())
 
-         // Retrieve User data
-         firestoreViewModel.fetchMyUserFromFirestore()
-         firestoreViewModel.myUserNav.observe(this, androidx.lifecycle.Observer {
-             textViewNick.text = it.nickname
-             textViewMail.text = it.email
+        // Retrieve User data
+        firestoreViewModel.fetchMyUserFromFirestore()
+        firestoreViewModel.myUserNav.observe(this, androidx.lifecycle.Observer {
+            textViewNick.text = it.nickname
+            textViewMail.text = it.email
 
-             Log.d("Xeros", "Data have changed")
-
-
-             Glide.with(this)
-                 .using(FirebaseImageLoader())
-                 .load(storage.child("/profileImages/${it.photoName}"))
-                 .into(imgView)
-
-         })
+            Log.d("Xeros", "Data have changed")
 
 
+            Glide.with(this).using(FirebaseImageLoader())
+                .load(storage.child("/profileImages/${it.photoName}")).into(imgView)
 
-
-         /*
-
-
-        textViewMail.text = user!!.email
-        textViewNick.text = user!!.displayName
-
-
-
-
-        db.collection("users")
-            .document(user!!.uid)
-            .get()
-            .addOnSuccessListener {
-
-                    res ->
-                if (res.exists()) {
-                    val userData: UserModel? = res.toObject(
-                        UserModel::class.java
-                    )
-
-                    Glide.with(applicationContext)
-                        .using(FirebaseImageLoader())
-                        .load(storage.child("/profileImages/${userData!!.photoName}"))
-                        .into(imgView)
-
-                }
-
-
-            }
-
-
-          */
+        })
     }
 
-
-    fun refreshDataForDrawer(){
+    fun refreshDataForDrawer() {
         val navView: NavigationView = findViewById(R.id.nav_view)
         val headerView = navView.getHeaderView(0)
         retrievePreferencesMain(headerView)
     }
-
-
-
-
 }
