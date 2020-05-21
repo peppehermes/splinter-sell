@@ -1,6 +1,6 @@
 package it.polito.mad.splintersell.data
 
-class UserModel{
+class UserModel {
 
     var fullname: String? = null
     var nickname: String? = null
@@ -8,11 +8,14 @@ class UserModel{
     var location: String? = null
     var photoName: String = "img_avatar.jpg"
     var userid: String? = null
+    var token: String = ""
 
     constructor() {}
 
-    constructor(fullname: String, nickname: String, email: String,
-                location: String, photoName: String) {
+    constructor(
+        fullname: String, nickname: String, email: String,
+        location: String, photoName: String
+    ) {
         this.fullname = fullname
         this.nickname = nickname
         this.email = email

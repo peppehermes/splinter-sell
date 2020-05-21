@@ -10,12 +10,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -36,9 +39,21 @@ class ItemListFragment : Fragment() {
     lateinit var myItemList: LiveData<List<ItemModel>>
     private var adapter: FirestoreRecyclerAdapter<ItemModel, ItemModelHolder>? = null
     private val user = Firebase.auth.currentUser
+    private val args:ItemListFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Handle the back button event
+                findNavController().navigate(R.id.nav_on_sale_list)
+            }
+        }
+        if (args.source == "edit") requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            callback
+        )
 
         firestoreViewModel.fetchMyItemListFromFirestore()
         myItemList = firestoreViewModel.myItemList

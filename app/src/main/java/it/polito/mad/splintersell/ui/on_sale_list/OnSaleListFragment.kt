@@ -18,7 +18,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.iid.FirebaseInstanceId
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
@@ -98,15 +100,7 @@ class OnSaleListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /*val navController = findNavController()
-        signInViewModel.authenticationState
-            .observe(viewLifecycleOwner, Observer { authenticationState ->
-            when (authenticationState) {
-                SignInViewModel.AuthenticationState.AUTHENTICATED -> Log.d(TAG, "AUTHENTICATED")
-                SignInViewModel.AuthenticationState.UNAUTHENTICATED -> navController.navigate(R.id.sign_in)
-                else -> Log.d(TAG, "Unexpected")
-            }
-        })*/
+        generateToken()
 
         externalLayout = view.findViewById(R.id.external_layout)
 
@@ -276,5 +270,20 @@ class OnSaleListFragment : Fragment() {
 
                 }
             }
+    }
+
+    fun generateToken() {
+
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("IstanceId", "getInstanceId failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                // Get new Instance ID token
+                val token = task.result?.token
+                FirestoreViewModel().updateToken(token.toString())
+            })
     }
 }

@@ -168,6 +168,7 @@
     <string name="continue_with">Continue with:</string>
     <string name="powered_by_breadsticks">Powered by Breadsticks</string>
     <string name="advertisement_1">Fast and Simple</string>
+    <string name="msg_token_fmt" />
 
 
 </resources>

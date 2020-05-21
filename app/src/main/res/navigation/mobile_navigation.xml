@@ -46,6 +46,9 @@
         <action
             android:id="@+id/editListItem"
             app:destination="@id/nav_edit_item" />
+        <argument
+            android:name="source"
+            android:defaultValue="unknown" />
     </fragment>
 
     <fragment
@@ -56,6 +59,9 @@
         <argument
             android:name="documentName"
             app:argType="string" />
+        <action
+            android:id="@+id/goToItemList"
+            app:destination="@id/nav_item_list" />
     </fragment>
 
     <fragment

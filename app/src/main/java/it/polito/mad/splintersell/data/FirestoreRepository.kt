@@ -227,6 +227,10 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
         firestore.collection("items").document(itemId).update("status", status)
     }
 
+    fun updateToken(token: String) {
+        firestore.collection("users").document(user!!.uid).update("token", token)
+    }
+
     interface OnFirestoreTaskComplete {
         fun itemListDataAdded(itemModelList: List<ItemModel>)
         fun fetchNotifications(requested: Boolean)

@@ -54,6 +54,10 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         firestoreRepository.updateStatus(status, item_id)
     }
 
+    fun updateToken(token: String) {
+        firestoreRepository.updateToken(token)
+    }
+
     fun cancelAllNotifications(item_id: String) {
         firestoreRepository.removeAllNotifications(item_id)
     }
@@ -114,19 +118,19 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
 
     fun fetchUserFromFirestore(userID: String) {
         firestoreRepository.getUserDocument(userID).addSnapshotListener(EventListener { value, e ->
-                if (e != null) {
-                    Log.w(TAG, "USER Listen failed.", e)
-                    _myUser.value = null
-                    return@EventListener
-                }
+            if (e != null) {
+                Log.w(TAG, "USER Listen failed.", e)
+                _myUser.value = null
+                return@EventListener
+            }
 
-                if (value != null && value.exists()) {
-                    Log.d(TAG, "USER Current data: ${value.data}")
-                    _myUser.value = value.toObject(UserModel::class.java)
-                } else {
-                    Log.d(TAG, "USER Current data: null")
-                }
-            })
+            if (value != null && value.exists()) {
+                Log.d(TAG, "USER Current data: ${value.data}")
+                _myUser.value = value.toObject(UserModel::class.java)
+            } else {
+                Log.d(TAG, "USER Current data: null")
+            }
+        })
     }
 
     fun fetchMyUserFromFirestore() {
@@ -149,19 +153,19 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
 
     fun fetchAllNotificationsFromFirestore() {
         firestoreRepository.notRef.addSnapshotListener(EventListener { value, e ->
-                if (e != null) {
-                    Log.w(TAG, "Listen failed.", e)
-                    _myNotificationsList.value = null
-                    return@EventListener
-                }
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+                _myNotificationsList.value = null
+                return@EventListener
+            }
 
-                val notificationList: MutableList<NotificationModel> = mutableListOf()
-                for (doc in value!!) {
-                    val notification = doc.toObject(NotificationModel::class.java)
-                    notificationList.add(notification)
-                }
-                _myNotificationsList.value = notificationList
-            })
+            val notificationList: MutableList<NotificationModel> = mutableListOf()
+            for (doc in value!!) {
+                val notification = doc.toObject(NotificationModel::class.java)
+                notificationList.add(notification)
+            }
+            _myNotificationsList.value = notificationList
+        })
     }
 
     fun saveUserToFirestore(myUser: UserModel) {

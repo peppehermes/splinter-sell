@@ -82,5 +82,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-storage:0.6.0'
     implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
     implementation 'com.firebaseui:firebase-ui-auth:6.2.1'
+    implementation 'com.google.firebase:firebase-messaging:20.1.7'
 
 }
+apply plugin: 'com.google.gms.google-services'
