@@ -2,9 +2,8 @@ package it.polito.mad.splintersell.ui.my_item_list
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.ColorMatrix
-import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
+import android.transition.TransitionManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -31,15 +30,16 @@ import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.data.ItemModelHolder
+import it.polito.mad.splintersell.ui.manageStatus
 import kotlinx.android.synthetic.main.fragment_item_list.*
 
 class ItemListFragment : Fragment() {
     private val firestoreViewModel: FirestoreViewModel by viewModels()
-
-    lateinit var myItemList: LiveData<List<ItemModel>>
+    private lateinit var externalLayout: ViewGroup
+    private lateinit var myItemList: LiveData<List<ItemModel>>
     private var adapter: FirestoreRecyclerAdapter<ItemModel, ItemModelHolder>? = null
     private val user = Firebase.auth.currentUser
-    private val args:ItemListFragmentArgs by navArgs()
+    private val args: ItemListFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,8 +60,11 @@ class ItemListFragment : Fragment() {
 
         // Take my items
         val query: Query =
-            FirebaseFirestore.getInstance().collection("items").whereEqualTo("ownerId", user!!.uid)
+            FirebaseFirestore.getInstance()
+                .collection("items")
+                .whereEqualTo("ownerId", user!!.uid)
                 .orderBy("status")
+                .orderBy("documentName", Query.Direction.DESCENDING)
 
         // Configure recycler adapter options:
         //  * query is the Query object defined above.
@@ -77,30 +80,17 @@ class ItemListFragment : Fragment() {
                 // Bind the ItemModel object to the ItemModelHolder
                 holder.bind(model)
 
-                if (model.status != "Available") {
-
-                    val matrix = ColorMatrix()
-                    matrix.setSaturation(0f)
-
-                    val filter = ColorMatrixColorFilter(matrix)
-
-                    holder.button.text = model.status
-                    holder.image.colorFilter = filter
-                    holder.button.setTextColor(holder.itemView.context.getColor(R.color.white))
-                    holder.button.setBackgroundColor(holder.itemView.context.getColor(R.color.colorRed))
-                    holder.card.isClickable = false
+                manageStatus(holder, model.status!!)
 
 
-                } else {
-
-                    // Set the onClick listener
-                    holder.card.setOnClickListener {
-                        navigateToItemDetails(holder.itemView, model.documentName!!)
-                    }
-                    holder.button.setOnClickListener {
-                        navigateToItemEdit(holder.itemView, model.documentName!!)
-                    }
+                // Set the onClick listener
+                holder.card.setOnClickListener {
+                    navigateToItemDetails(holder.itemView, model.documentName!!)
                 }
+                holder.button.setOnClickListener {
+                    navigateToItemEdit(holder.itemView, model.documentName!!)
+                }
+
             }
 
             override fun onCreateViewHolder(group: ViewGroup, i: Int): ItemModelHolder {
@@ -116,6 +106,14 @@ class ItemListFragment : Fragment() {
                 // to hide a loading spinner or check for the "no documents" state and update your UI.
                 // ...
 
+            }
+
+            override fun getItemId(position: Int): Long {
+                return position.toLong()
+            }
+
+            override fun getItemViewType(position: Int): Int {
+                return position
             }
         }
     }
@@ -134,7 +132,7 @@ class ItemListFragment : Fragment() {
         itemRecyclerView.adapter = adapter
 
         myItemList.observe(viewLifecycleOwner, Observer { items ->
-            hideNoItemsHere(items)
+            toggleNoItemsHere(items)
         })
 
         return itemList
@@ -142,6 +140,8 @@ class ItemListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        externalLayout = view.findViewById(R.id.external_layout)
 
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)
@@ -171,11 +171,11 @@ class ItemListFragment : Fragment() {
         Navigation.findNavController(view).navigate(action)
     }
 
-    private fun hideNoItemsHere(list: List<ItemModel>) {
+    private fun toggleNoItemsHere(list: List<ItemModel>) {
+        TransitionManager.beginDelayedTransition(externalLayout)
         if (list.isEmpty()) empty_list.visibility = View.VISIBLE
         else empty_list.visibility = View.GONE
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -188,4 +188,5 @@ class ItemListFragment : Fragment() {
 
         adapter!!.stopListening()
     }
+
 }

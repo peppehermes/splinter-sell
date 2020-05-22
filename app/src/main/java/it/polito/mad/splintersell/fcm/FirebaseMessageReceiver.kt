@@ -1,6 +1,5 @@
 package it.polito.mad.splintersell.fcm
 
-import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -14,14 +13,12 @@ import com.google.firebase.messaging.RemoteMessage
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.ui.my_item_list.ItemListFragment
-import it.polito.mad.splintersell.ui.on_sale_list.OnSaleListFragment
-import it.polito.mad.splintersell.ui.wish_list.WishList
 
 
 class FirebaseMessageReceiver : FirebaseMessagingService() {
 
     override fun onMessageReceived(p0: RemoteMessage) {
-        Log.d("noitification", " ${p0.notification!!.title} ")
+        Log.d("notification", " ${p0.notification!!.title} ")
 
         if (p0.data.isNotEmpty()) {
             showNotification(p0.data["title"], p0.data["message"])
@@ -33,12 +30,12 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
     }
 
 
-    fun showNotification(title: String?, message: String?) {
+    private fun showNotification(title: String?, message: String?) {
 
-        val channel_id = "web_app_channel"
+        val channelId = "web_app_channel"
         val intent = Intent(this, ItemListFragment::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
-        val builder = NotificationCompat.Builder(applicationContext, channel_id)
+        val builder = NotificationCompat.Builder(applicationContext, channelId)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .setContentTitle(title)
@@ -52,7 +49,7 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel =
-                NotificationChannel(channel_id, "web_app", NotificationManager.IMPORTANCE_HIGH)
+                NotificationChannel(channelId, "web_app", NotificationManager.IMPORTANCE_HIGH)
             notMan.createNotificationChannel(notificationChannel)
         }
 

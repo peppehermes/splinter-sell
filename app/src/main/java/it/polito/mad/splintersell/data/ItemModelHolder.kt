@@ -13,7 +13,8 @@ import it.polito.mad.splintersell.R
 class ItemModelHolder(v: View) : RecyclerView.ViewHolder(v) {
     val card: MaterialCardView = v.findViewById(R.id.card)
     val image: ImageView = v.findViewById(R.id.card_image)
-    var button : Button = v.findViewById(R.id.card_edit)
+    var button: Button = v.findViewById(R.id.card_edit)
+    var jolly: Button = v.findViewById(R.id.card_jolly_button)
     val title: TextView = v.findViewById(R.id.card_title)
     val description: TextView = v.findViewById(R.id.card_description)
     val price: TextView = v.findViewById(R.id.card_price)
@@ -23,6 +24,7 @@ class ItemModelHolder(v: View) : RecyclerView.ViewHolder(v) {
     var expireDate: String? = null
     var documentName: String? = null
     var ownerId: String? = null
+    var status: String? = null
 
     fun bind(model: ItemModel) {
         // Bind the ItemModel object to the ItemModelHolder
@@ -35,6 +37,7 @@ class ItemModelHolder(v: View) : RecyclerView.ViewHolder(v) {
         expireDate = model.expireDate
         documentName = model.documentName
         ownerId = model.ownerId
+        status = model.status
 
         //set image into the card
         val sref = storage.child("itemImages/${model.imgPath}")
@@ -43,6 +46,7 @@ class ItemModelHolder(v: View) : RecyclerView.ViewHolder(v) {
             .using(FirebaseImageLoader())
             .load(sref)
             .into(image)
+
 
         /*Glide.with(holder.itemView.context)
             //.using(FirebaseImageLoader())

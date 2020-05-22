@@ -84,9 +84,9 @@ class ShowProfile : Fragment() {
                 nickname.text = it.nickname
                 email.text = it.email
 
-                name.text = getString(R.string.hiddentext)
+                name.text = getString(R.string.hidden_text)
                 name.setTextColor(name.context.getColor(R.color.colorPrimary))
-                location.text = getString(R.string.hiddentext)
+                location.text = getString(R.string.hidden_text)
                 location.setTextColor(location.context.getColor(R.color.colorPrimary))
 
             }

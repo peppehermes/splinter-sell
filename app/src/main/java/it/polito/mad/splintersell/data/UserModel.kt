@@ -10,7 +10,7 @@ class UserModel {
     var userid: String? = null
     var token: String = ""
 
-    constructor() {}
+    constructor()
 
     constructor(
         fullname: String, nickname: String, email: String,
@@ -30,7 +30,7 @@ class UserModel {
         result["nickname"] = nickname!!
         result["email"] = email!!
         result["location"] = location!!
-        result["photoName"] = photoName!!
+        result["photoName"] = photoName
 
         return result
     }

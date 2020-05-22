@@ -1,13 +1,9 @@
 package it.polito.mad.splintersell.ui.on_sale_list
 
-import android.content.res.ColorStateList
-import android.graphics.ColorMatrix
-import android.graphics.ColorMatrixColorFilter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.navigation.Navigation.findNavController
@@ -45,29 +41,17 @@ class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>) :
         val item = itemFilterList[position]
         holder.bind(item)
 
-        if (item.status == "Sold") {
-            val matrix = ColorMatrix()
-            matrix.setSaturation(0f)
+        //manageStatus(holder, item.status!!)
 
-            val filter = ColorMatrixColorFilter(matrix)
+        holder.button.text = holder.itemView.context.getString(R.string.view_user)
 
-            holder.button.text = holder.itemView.context.getString(R.string.sold)
-            holder.image.colorFilter = filter
-            holder.button.setTextColor(holder.itemView.context.getColor(R.color.white))
-            holder.button.setBackgroundColor(holder.itemView.context.getColor(R.color.colorRed))
-            holder.card.isClickable = false
-        } else {
+        // Set the onClick listener
+        holder.card.setOnClickListener {
+            navigateToItemDetails(holder.itemView, item.documentName!!, item.ownerId!!)
+        }
 
-            holder.button.text = holder.itemView.context.getString(R.string.view_user)
-
-            // Set the onClick listener
-            holder.card.setOnClickListener {
-                navigateToItemDetails(holder.itemView, item.documentName!!, item.ownerId!!)
-            }
-
-            holder.button.setOnClickListener {
-                navigateToUserDetails(holder.itemView, item.ownerId!!)
-            }
+        holder.button.setOnClickListener {
+            navigateToUserDetails(holder.itemView, item.ownerId!!)
         }
     }
 
@@ -121,6 +105,14 @@ class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>) :
         val action = OnSaleListFragmentDirections.showProfile(id)
         Log.e("USERID", id)
         findNavController(view).navigate(action)
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
 
 }

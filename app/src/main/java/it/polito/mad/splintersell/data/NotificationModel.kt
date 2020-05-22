@@ -7,7 +7,7 @@ class NotificationModel {
 
     constructor()
 
-    constructor(id_item: String, id_user: String, id_owner: String){
+    constructor(id_item: String, id_user: String, id_owner: String) {
         this.id_user = id_user
         this.id_owner = id_owner
         this.id_item = id_item

@@ -1,7 +1,7 @@
 package it.polito.mad.splintersell.ui.item_details
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
@@ -17,9 +17,11 @@ import android.text.InputFilter
 import android.util.Log
 import android.view.*
 import android.view.animation.Transformation
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.PopupMenu
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -55,7 +57,7 @@ class ItemEditFragment : Fragment() {
     private val charPool = ('a'..'z') + ('A'..'Z') + ('0'..'9')
     private var path: String = ""
     private var randomString: String = ""
-    private var isImage : Boolean = false
+    private var isImage: Boolean = false
 
     private val firestoreViewModel: FirestoreViewModel by viewModels()
 
@@ -83,22 +85,22 @@ class ItemEditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var savedTitle : String? = null
-        var savedDescription : String? = null
-        var savedPrice : String? = null
-        var savedLocation : String? = null
-        var savedDate : String? = null
-        var savedImg : String? = null
+        var savedTitle: String? = null
+        var savedDescription: String? = null
+        var savedPrice: String? = null
+        var savedLocation: String? = null
+        var savedDate: String? = null
+        var savedImg: String? = null
 
         savedInstanceState?.run {
-            savedTitle = savedInstanceState!!.get(getString(R.string.title)).toString()
-            savedDescription = savedInstanceState!!.get(getString(R.string.description)).toString()
-            savedPrice = savedInstanceState!!.get(getString(R.string.price)).toString()
-            savedLocation = savedInstanceState!!.get(getString(R.string.location)).toString()
-            savedDate = savedInstanceState!!.get(getString(R.string.expire_date)).toString()
+            savedTitle = savedInstanceState.get(getString(R.string.title)).toString()
+            savedDescription = savedInstanceState.get(getString(R.string.description)).toString()
+            savedPrice = savedInstanceState.get(getString(R.string.price)).toString()
+            savedLocation = savedInstanceState.get(getString(R.string.location)).toString()
+            savedDate = savedInstanceState.get(getString(R.string.expire_date)).toString()
             // If an image has been taken , retrieve Uri
-            if(savedInstanceState!!.get("imgUri").toString() != "null")
-                savedImg = savedInstanceState!!.get("imgUri").toString()
+            if (savedInstanceState.get("imgUri").toString() != "null")
+                savedImg = savedInstanceState.get("imgUri").toString()
         }
 
         this.setInputLimits()
@@ -107,61 +109,63 @@ class ItemEditFragment : Fragment() {
 
         liveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
 
-            if(savedTitle == null)
+            if (savedTitle == null)
                 til_title.editText!!.setText(it.title)
-
             else
                 til_title.editText!!.setText(savedTitle)
 
-            if(savedDescription == null)
+            if (savedDescription == null)
                 til_description.editText!!.setText(it.description)
-
             else
                 til_description.editText!!.setText(savedDescription)
 
-           if(savedPrice == null)
-               til_price.editText!!.setText(it.price)
-
+            if (savedPrice == null)
+                til_price.editText!!.setText(it.price)
             else
-               til_price.editText!!.setText(savedPrice)
+                til_price.editText!!.setText(savedPrice)
 
-            if(savedLocation == null)
+            if (savedLocation == null)
                 til_location.editText!!.setText(it.location)
-
             else
                 til_location.editText!!.setText(savedLocation)
 
-            if(savedDate == null)
+            if (savedDate == null)
                 til_expire_date.editText!!.setText(it.expireDate)
-
             else
                 til_expire_date.editText!!.setText(savedDate)
 
-            if(savedImg == null) {
+            if (savedImg == null) {
 
                 path = it.imgPath
-                if (path == "") {
+                isImage = if (path == "") {
                     image.setImageDrawable(
                         requireContext().getDrawable(R.drawable.image_vectorized_lower)
                     )
 
                     // Set the check for the successive from validation
-                    isImage = false
-                }
-                else {
+                    false
+                } else {
                     Glide.with(requireContext()).using(FirebaseImageLoader())
                         .load(storage.child("/itemImages/$path")).into(image)
 
+                    // Add on click listener to see full size image
+                    detail_image.isClickable = true
+                    detail_image.isFocusable = true
+                    detail_image.setOnClickListener {
+                        val action = ItemEditFragmentDirections.fullScreenImage(path)
+                        findNavController().navigate(action)
+                    }
+
                     // Set the check for the successive from validation
-                    isImage = true
+                    true
                 }
-            }
-            else {
+            } else {
                 this.restoreImage(savedImg)
             }
         })
 
         manageSpinner()
+
     }
 
     private fun manageSpinner() {
@@ -242,12 +246,12 @@ class ItemEditFragment : Fragment() {
     private fun setInputLimits() {
 
         til_title.editText!!.filters = arrayOf(InputFilter.LengthFilter(30))
-        til_description.editText!!.filters = arrayOf(InputFilter.LengthFilter(50))
+        til_description.editText!!.filters = arrayOf(InputFilter.LengthFilter(100))
         til_location.editText!!.filters = arrayOf(InputFilter.LengthFilter(60))
 
     }
 
-    private fun restoreImage(savedImg : String?) {
+    private fun restoreImage(savedImg: String?) {
 
         photoURI = savedImg?.let { Uri.parse(it) }
         photoURI?.run {
@@ -269,7 +273,7 @@ class ItemEditFragment : Fragment() {
                 requireActivity().window.context,
                 DatePickerDialog.OnDateSetListener { _, years, monthOfYear, dayOfMonth ->
                     // Display Selected date in TextView
-                    datevalid = validate_date(years, monthOfYear, dayOfMonth)
+                    datevalid = validateDate(years, monthOfYear, dayOfMonth)
                     if (datevalid) {
                         var monthConverted = "" + (monthOfYear + 1).toString()
                         var dayConverted = "" + dayOfMonth.toString()
@@ -518,12 +522,13 @@ class ItemEditFragment : Fragment() {
         return when (item.itemId) {
             R.id.save -> {
 
+                hideKeyboardFrom(requireContext(), requireView())
 
                 val checkError: Boolean = formValidation()
 
                 if (!checkError) {  // All fields are declared
 
-                    Log.d("EditItemTAG", "Error in Item Form Validation")
+                    Log.d("EditItemTAG", "No Error in Item Form Validation")
 
                     if (rotatedBitmap != null) {    // An image has been taken
 
@@ -538,9 +543,9 @@ class ItemEditFragment : Fragment() {
                         uploadImageOnStorage()
 
 
-                    }else {     // No image taken
+                    } else {     // No image taken
 
-                        if(isImage){    //There is an Image in the Storage
+                        if (isImage) {    //There is an Image in the Storage
 
                             randomString = path
 
@@ -552,15 +557,21 @@ class ItemEditFragment : Fragment() {
                                     navigateMyItemDetails()
                                 }
                             dialog.show()
-                        }
-                        else{       // Apply Constraint
+                        } else {       // Apply Constraint
                             Snackbar.make(
-                                this.requireView(), "An image must be uploaded", Snackbar.LENGTH_SHORT
+                                this.requireView(),
+                                "An image must be uploaded",
+                                Snackbar.LENGTH_SHORT
                             ).show()
                         }
 
                     }
-                } else Log.d("EditItemTAG", "Error in Item Form Validation")
+                } else {
+                    Log.d("EditItemTAG", "Error in Item Form Validation")
+                    Snackbar
+                        .make(requireView(), "Please fill all the fields", Snackbar.LENGTH_SHORT)
+                        .show()
+                }
 
 
                 true
@@ -572,7 +583,9 @@ class ItemEditFragment : Fragment() {
                     .setPositiveButton("Yes") { dialog, _ ->
                         // Delete selected note from database
 
-                        firestoreViewModel.updateStatus("Blocked", args.documentName)
+                        firestoreViewModel.updateStatus(
+                            requireContext().getString(R.string.blocked), args.documentName
+                        )
 
                         firestoreViewModel.cancelAllNotifications(args.documentName)
 
@@ -632,7 +645,7 @@ class ItemEditFragment : Fragment() {
 
     }
 
-    private fun validate_date(years: Int, monthOfYear: Int, dayOfMonth: Int): Boolean {
+    private fun validateDate(years: Int, monthOfYear: Int, dayOfMonth: Int): Boolean {
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
@@ -651,11 +664,17 @@ class ItemEditFragment : Fragment() {
                 outState.putString("imgUri", this.toString())
             }
 
-        outState.putString(getString(R.string.title),til_title.editText!!.text.toString())
-        outState.putString(getString(R.string.description),til_description.editText!!.text.toString())
-        outState.putString(getString(R.string.price),til_price.editText!!.text.toString())
-        outState.putString(getString(R.string.location),til_location.editText!!.text.toString())
-        outState.putString(getString(R.string.expire_date),til_expire_date.editText!!.text.toString())
+        outState.putString(getString(R.string.title), til_title.editText!!.text.toString())
+        outState.putString(
+            getString(R.string.description),
+            til_description.editText!!.text.toString()
+        )
+        outState.putString(getString(R.string.price), til_price.editText!!.text.toString())
+        outState.putString(getString(R.string.location), til_location.editText!!.text.toString())
+        outState.putString(
+            getString(R.string.expire_date),
+            til_expire_date.editText!!.text.toString()
+        )
     }
 
     private fun uploadImageOnStorage() {
@@ -722,7 +741,14 @@ class ItemEditFragment : Fragment() {
 
     }
 
+    private fun hideKeyboardFrom(context: Context, view: View) {
+        val imm: InputMethodManager =
+            context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
     private fun navigateMyItemDetails() {
+        //findNavController().navigateUp()
 
         val action =
             ItemEditFragmentDirections.showItemDetails(args.documentName, false, source = "edit")

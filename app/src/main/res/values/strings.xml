@@ -37,7 +37,10 @@
     <string name="show_users">Show Interested Users</string>
     <string name="empty_list">No items here</string>
     <string name="empty_list_users">No users interested</string>
-    <string name="sold">Sold</string>
+    <string name="remove">Remove</string>
+    <string name="sold">sold</string>
+    <string name="available">available</string>
+    <string name="blocked">blocked</string>
 
     //SHOW PROFILE
     <string name="full_name">Full Name</string>
@@ -53,7 +56,7 @@
     <string name="search">Search</string>
     <string name="accept">Accept</string>
     <string name="filter">Filter</string>
-    <string name="hiddentext">Hidden</string>
+    <string name="hidden_text">Hidden</string>
     <string name="please_fill">Please, fill this field!</string>
     <string name="please_select">Please, select an option</string>
     <string name="Wrong_date">Please, select a date not yet elapsed</string>
@@ -168,6 +171,11 @@
     <string name="continue_with">Continue with:</string>
     <string name="powered_by_breadsticks">Powered by Breadsticks</string>
     <string name="advertisement_1">Fast and Simple</string>
+    <string name="full_size_image">Fullsize image</string>
+    <string name="image_button">image_button</string>
+    <string name="fullscreen_image">fullscreen_image</string>
+    <string name="select">select</string>
+    <string name="reset">Reset</string>
     <string name="msg_token_fmt" />
 
 

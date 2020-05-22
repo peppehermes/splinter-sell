@@ -5,9 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.EventListener
+import java.util.*
 
 class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskComplete {
     val TAG = "FIRESTORE_VIEW_MODEL"
+    val AVAILABLE = "available"
+    val BLOCKED = "blocked"
     var firestoreRepository = FirestoreRepository(this)
     var user = FirebaseAuth.getInstance().currentUser
 
@@ -19,8 +22,13 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     private var _item: MutableLiveData<ItemModel> = MutableLiveData()
     private var _onSaleItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _myItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
+    private var _availableItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _allItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _interestedUserList: MutableLiveData<List<UserModel>> = MutableLiveData()
+
+    init {
+        this.fetchAllItemListFromFirestore()
+    }
 
     override fun itemListDataAdded(itemModelList: List<ItemModel>) {
         _onSaleItemList.value = itemModelList
@@ -99,20 +107,56 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     fun fetchAllItemListFromFirestore() {
-        firestoreRepository.itemRef.whereEqualTo("status", "Available")
+        firestoreRepository.itemRef
             .addSnapshotListener(EventListener { value, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
-                    _myItemList.value = null
+                    _allItemList.value = null
                     return@EventListener
                 }
 
                 val allItemList: MutableList<ItemModel> = mutableListOf()
                 for (doc in value!!) {
                     val item = doc.toObject(ItemModel::class.java)
+                    val date = item.expireDate!!.split("/")
+                    if (!validateDate(date))
+                        updateStatus(BLOCKED, item.documentName!!)
                     allItemList.add(item)
                 }
                 _allItemList.value = allItemList
+                this.fetchAvailableItemListFromFirestore()
+            })
+    }
+
+    private fun validateDate(date: List<String>): Boolean {
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH) + 1
+        val day = c.get(Calendar.DAY_OF_MONTH)
+        val years = date[2].toInt()
+        val monthOfYear = date[1].toInt()
+        val dayOfMonth = date[0].toInt()
+        return !(years < year ||
+                ((years == year) && (monthOfYear < month)) ||
+                ((years == year) && (monthOfYear == month) &&
+                        dayOfMonth < day))
+    }
+
+    fun fetchAvailableItemListFromFirestore() {
+        firestoreRepository.itemRef.whereEqualTo("status", AVAILABLE)
+            .addSnapshotListener(EventListener { value, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    _availableItemList.value = null
+                    return@EventListener
+                }
+
+                val availableItemList: MutableList<ItemModel> = mutableListOf()
+                for (doc in value!!) {
+                    val item = doc.toObject(ItemModel::class.java)
+                    availableItemList.add(item)
+                }
+                _availableItemList.value = availableItemList
             })
     }
 
@@ -237,6 +281,14 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         }
         set(value) {
             _myItemList = value
+        }
+
+    internal var availableItemList: MutableLiveData<List<ItemModel>>
+        get() {
+            return _availableItemList
+        }
+        set(value) {
+            _availableItemList = value
         }
 
     internal var allItemList: MutableLiveData<List<ItemModel>>

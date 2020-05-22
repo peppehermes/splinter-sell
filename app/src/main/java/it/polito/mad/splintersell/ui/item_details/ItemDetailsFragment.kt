@@ -12,24 +12,24 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.messaging.FirebaseMessaging
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.*
 import kotlinx.android.synthetic.main.fragment_item_details.*
 
 class ItemDetailsFragment : Fragment() {
     private val firestoreViewModel: FirestoreViewModel by viewModels()
-    lateinit var liveData: LiveData<ItemModel>
-    lateinit var userLiveData: LiveData<UserModel>
-    var user = FirebaseAuth.getInstance().currentUser
+    private lateinit var liveData: LiveData<ItemModel>
+    private lateinit var userLiveData: LiveData<UserModel>
+    private var user = FirebaseAuth.getInstance().currentUser
     private lateinit var coordinator: CoordinatorLayout
+    private var isRotate: Boolean = false
+    private lateinit var imgPath: String
 
     private val args: ItemDetailsFragmentArgs by navArgs()
 
@@ -65,7 +65,6 @@ class ItemDetailsFragment : Fragment() {
             userLiveData = firestoreViewModel.myUser
         }
 
-
         return inflater.inflate(R.layout.fragment_item_details, container, false)
     }
 
@@ -93,55 +92,25 @@ class ItemDetailsFragment : Fragment() {
 
             }
 
-
             userLiveData.observe(viewLifecycleOwner, Observer {
                 owner.text = it.nickname
             })
-
-
         }
-
-
 
         if (args.onSale) {
             firestoreViewModel.isRequested.observe(viewLifecycleOwner, Observer { requested ->
-                if (requested == true) {
-                    var isRotate = true
+                isRotate = requested
+
+                if (requested) {
                     rotateFab(fab, isRotate)
                     fab.backgroundTintList =
                         fab.context.getColorStateList(R.color.colorPrimaryLight)
-                    fab.setOnClickListener {
-                        isRotate = rotateFab(it, !isRotate)
-
-                        firestoreViewModel.firestoreRepository.removeNotification(args.documentName)
-                        Snackbar.make(
-                            coordinator, "Item removed from Wishlist", Snackbar.LENGTH_SHORT
-                        ).show()
-                        firestoreViewModel.isRequested.value = false
-
-                        FirebaseMessaging.getInstance().unsubscribeFromTopic(args.documentName)
-
-
-                    }
-
                 } else {
-                    var isRotate = false
                     fab.backgroundTintList = fab.context.getColorStateList(R.color.colorSecondary)
-                    fab.setOnClickListener {
-                        isRotate = rotateFab(it, !isRotate)
+                }
 
-                        val newNot = NotificationModel(
-                            args.documentName, user!!.uid, liveData.value!!.ownerId!!
-                        )
-                        firestoreViewModel.saveNotificationToFirestore(newNot)
-                        Snackbar.make(
-                            coordinator, "Item added to Wishlist", Snackbar.LENGTH_SHORT
-                        ).show()
-                        firestoreViewModel.isRequested.value = true
-
-                        FirebaseMessaging.getInstance().subscribeToTopic(args.documentName)
-
-                    }
+                fab.setOnClickListener { floatingButton ->
+                    toggleItem(isRotate, floatingButton, requested)
                 }
 
                 fab.show()
@@ -158,11 +127,38 @@ class ItemDetailsFragment : Fragment() {
             category.text = cat
             location.text = it.location
             expire_date.text = it.expireDate
+            imgPath = it.imgPath
 
             Glide.with(requireContext()).using(FirebaseImageLoader())
                 .load(storage.child("/itemImages/${it.imgPath}")).into(detail_image)
         })
 
+        detail_image.setOnClickListener {
+            val action = ItemDetailsFragmentDirections.fullScreenImage(imgPath)
+            findNavController().navigate(action)
+        }
+
+    }
+
+    private fun toggleItem(isRotated: Boolean, fab: View, isRequested: Boolean) {
+        isRotate = rotateFab(fab, !isRotated)
+
+        if (isRequested) {
+            firestoreViewModel.firestoreRepository.removeNotification(args.documentName)
+            Snackbar.make(
+                coordinator, "Item removed from Wishlist", Snackbar.LENGTH_SHORT
+            ).show()
+            firestoreViewModel.isRequested.value = false
+        } else {
+            val newNot = NotificationModel(
+                args.documentName, user!!.uid, liveData.value!!.ownerId!!
+            )
+            firestoreViewModel.saveNotificationToFirestore(newNot)
+            Snackbar.make(
+                coordinator, "Item added to Wishlist", Snackbar.LENGTH_SHORT
+            ).show()
+            firestoreViewModel.isRequested.value = true
+        }
     }
 
     private fun rotateFab(v: View, rotate: Boolean): Boolean {
@@ -175,12 +171,12 @@ class ItemDetailsFragment : Fragment() {
         return when (item.itemId) {
             R.id.edit -> {
                 val action = ItemDetailsFragmentDirections.editItem(args.documentName)
-                Navigation.findNavController(requireView()).navigate(action)
+                findNavController().navigate(action)
                 true
             }
             R.id.show -> {
                 val action = ItemDetailsFragmentDirections.goToInterestedUsers(args.documentName)
-                Navigation.findNavController(requireView()).navigate(action)
+                findNavController().navigate(action)
                 true
             }
             else -> super.onOptionsItemSelected(item)

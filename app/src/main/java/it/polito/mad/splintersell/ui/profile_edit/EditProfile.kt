@@ -85,53 +85,48 @@ class EditProfile : Fragment() {
 
         this.imageButtonMenu()
 
-        var savedName : String? = null
-        var savedNickname : String? = null
-        var savedLocation : String? = null
-        var savedImg : String? = null
+        var savedName: String? = null
+        var savedNickname: String? = null
+        var savedLocation: String? = null
+        var savedImg: String? = null
 
         savedInstanceState?.run {
-            savedName = savedInstanceState!!.get(getString(R.string.full_name)).toString()
-            savedNickname = savedInstanceState!!.get(getString(R.string.nick)).toString()
-            savedLocation = savedInstanceState!!.get(getString(R.string.location)).toString()
+            savedName = savedInstanceState.get(getString(R.string.full_name)).toString()
+            savedNickname = savedInstanceState.get(getString(R.string.nick)).toString()
+            savedLocation = savedInstanceState.get(getString(R.string.location)).toString()
             // If an image has been taken , retrieve Uri
-            if(savedInstanceState!!.get("imgUri").toString() != "null")
-                savedImg = savedInstanceState!!.get("imgUri").toString()
+            if (savedInstanceState.get("imgUri").toString() != "null")
+                savedImg = savedInstanceState.get("imgUri").toString()
         }
 
         liveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if(savedName == null)
+            if (savedName == null)
                 name.setText(it.fullname)
-
             else
                 name.setText(savedName)
 
-            if(savedNickname == null)
+            if (savedNickname == null)
                 nickname.setText(it.nickname)
-
             else
                 nickname.setText(savedNickname)
 
-            if(savedLocation == null)
+            if (savedLocation == null)
                 location.setText(it.location)
-
             else
                 location.setText(savedLocation)
 
             email.setText(it.email)
 
-            if(savedImg == null) {
+            if (savedImg == null) {
 
                 path = it.photoName
                 if (path == "") profile_photo.setImageDrawable(requireContext().getDrawable(R.drawable.image_vectorized_lower))
-
                 else {
 
                     Glide.with(requireContext()).using(FirebaseImageLoader())
                         .load(storage.child("/profileImages/$path")).into(profile_photo)
                 }
-            }
-            else
+            } else
                 this.restoreImage(savedImg)
         })
     }
@@ -192,7 +187,7 @@ class EditProfile : Fragment() {
         }
     }
 
-    private fun restoreImage(savedImg : String?) {
+    private fun restoreImage(savedImg: String?) {
 
         photoURI = savedImg?.let { Uri.parse(it) }
         photoURI?.run {
@@ -444,12 +439,12 @@ class EditProfile : Fragment() {
         if (rotatedBitmap != null)
 
             photoURI?.run {
-            outState.putString("imgUri", this.toString())
-        }
+                outState.putString("imgUri", this.toString())
+            }
 
-        outState.putString(getString(R.string.full_name),name.text.toString())
-        outState.putString(getString(R.string.nick),nickname.text.toString())
-        outState.putString(getString(R.string.location),location.text.toString())
+        outState.putString(getString(R.string.full_name), name.text.toString())
+        outState.putString(getString(R.string.nick), nickname.text.toString())
+        outState.putString(getString(R.string.location), location.text.toString())
     }
 
     private fun uploadImageOnStorage() {

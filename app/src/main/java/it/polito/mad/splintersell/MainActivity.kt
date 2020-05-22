@@ -9,7 +9,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.LiveData
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -22,7 +21,6 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.data.FirestoreViewModel
-import it.polito.mad.splintersell.data.UserModel
 import it.polito.mad.splintersell.data.storage
 
 class MainActivity : AppCompatActivity() {
@@ -30,8 +28,6 @@ class MainActivity : AppCompatActivity() {
     private val user = Firebase.auth.currentUser
 
     private val firestoreViewModel: FirestoreViewModel by viewModels()
-    lateinit var userLiveData: LiveData<UserModel>
-
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -53,13 +49,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_show_profile,
                 R.id.nav_item_list,
                 R.id.nav_on_sale_list,
-                R.id.nav_wish_list,
+                R.id.nav_items_of_interest_list,
                 R.id.nav_sign_out
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
 
     }
 

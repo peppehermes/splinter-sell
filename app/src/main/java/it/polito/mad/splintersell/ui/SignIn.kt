@@ -28,7 +28,7 @@ const val RC_SIGN_IN = 2013
 
 class SignIn : Fragment() {
 
-    private lateinit var auth:FirebaseAuth
+    private lateinit var auth: FirebaseAuth
 
 
     companion object {
@@ -47,7 +47,7 @@ class SignIn : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val navigationView:DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
+        val navigationView: DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
         navigationView.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
         val gso =
@@ -75,18 +75,17 @@ class SignIn : Fragment() {
     }
 
 
-    private fun checkUser(account: FirebaseUser?){
+    private fun checkUser(account: FirebaseUser?) {
 
-        if(account != null){
+        if (account != null) {
 
             (activity as MainActivity?)?.refreshDataForDrawer()
 
-            val navigationView:DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
+            val navigationView: DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
             navigationView.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             findNavController().navigate(SignInDirections.goToHome())
 
-        }
-        else Log.d("SignInTAG", "User not logged in")
+        } else Log.d("SignInTAG", "User not logged in")
 
 
     }
@@ -100,7 +99,10 @@ class SignIn : Fragment() {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)!!
-                Log.d("SignInTAG", "firebaseAuthWithGoogle:" + account.id + " " + account.idToken + " " + account.email)
+                Log.d(
+                    "SignInTAG",
+                    "firebaseAuthWithGoogle:" + account.id + " " + account.idToken + " " + account.email
+                )
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
@@ -135,7 +137,7 @@ class SignIn : Fragment() {
     }
 
 
-    private fun checkDBCredentials(){
+    private fun checkDBCredentials() {
 
         val db = FirebaseFirestore.getInstance()
         val user = Firebase.auth.currentUser
@@ -146,44 +148,42 @@ class SignIn : Fragment() {
         Log.d("SignInTAG", user.uid)
 
 
-            docRef.get()
+        docRef.get()
             .addOnSuccessListener {
 
-                res ->
-                if(!res.exists()){
+                    res ->
+                if (!res.exists()) {
 
-                        val newUser = UserModel(
-                            user.displayName!!,
-                            "",
-                            user.email!!,
-                            "",
-                            "img_avatar.jpg"
-                        )
+                    val newUser = UserModel(
+                        user.displayName!!,
+                        "",
+                        user.email!!,
+                        "",
+                        "img_avatar.jpg"
+                    )
 
-                        db.collection("users")
-                            .document(user.uid)
-                            .set(newUser)
-                            .addOnSuccessListener {
-                                Log.d("SignInTAG", "Instance succesfully created!")
-                            }
-                            .addOnFailureListener{
-                                Log.d("SignInTAG", "Error in creating new instance")
-                            }
+                    db.collection("users")
+                        .document(user.uid)
+                        .set(newUser)
+                        .addOnSuccessListener {
+                            Log.d("SignInTAG", "Instance succesfully created!")
+                        }
+                        .addOnFailureListener {
+                            Log.d("SignInTAG", "Error in creating new instance")
+                        }
 
-                }
-                else {
+                } else {
                     Log.d("SignInTAG", res.toString())
                     Log.d("SignInTAG", "Instance already created!")
                 }
 
             }
-            .addOnFailureListener{
+            .addOnFailureListener {
                 Log.d("SignInTAG", "Error in reading the DB")
             }
 
 
     }
-
 
 
 }

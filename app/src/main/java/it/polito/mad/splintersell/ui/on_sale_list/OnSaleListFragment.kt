@@ -43,7 +43,7 @@ class OnSaleListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        firestoreViewModel.fetchAllItemListFromFirestore()
+        firestoreViewModel.fetchAvailableItemListFromFirestore()
     }
 
     override fun onCreateView(
@@ -81,8 +81,7 @@ class OnSaleListFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        var visible: Boolean
-        visible = filterLayout.visibility == View.VISIBLE
+        var visible: Boolean = filterLayout.visibility == View.VISIBLE
 
         return when (item.itemId) {
             R.id.filter -> {
@@ -122,8 +121,13 @@ class OnSaleListFragment : Fragment() {
 
         // Set click listener for FILTER button
         val filterButton = view.findViewById<Button>(R.id.filter_button)
-        filterButton.setOnClickListener {
-            filterAction(it)
+        filterButton.setOnClickListener { button ->
+            filterAction(button)
+        }
+
+        val resetButton = view.findViewById<Button>(R.id.reset_button)
+        resetButton.setOnClickListener { button ->
+            resetAction(button)
         }
 
     }
@@ -135,12 +139,13 @@ class OnSaleListFragment : Fragment() {
     }
 
     private fun toggleNoItemsHere(list: List<ItemModel>) {
+        TransitionManager.beginDelayedTransition(externalLayout)
         if (list.isEmpty()) empty_list.visibility = View.VISIBLE
         else empty_list.visibility = View.GONE
     }
 
     private fun updateUI() {
-        firestoreViewModel.allItemList.observe(viewLifecycleOwner, Observer {
+        firestoreViewModel.availableItemList.observe(viewLifecycleOwner, Observer {
 
             // Update UI
             firestoreViewModel.firestoreRepository.getItemData()
@@ -155,6 +160,17 @@ class OnSaleListFragment : Fragment() {
                 })
 
         })
+    }
+
+    private fun resetAction(view: View) {
+        updateUI()
+
+        // Close the soft Keyboard, if open
+        hideKeyboardFrom(requireContext(), view)
+
+        // Close the filter drawer
+        TransitionManager.beginDelayedTransition(externalLayout)
+        filterLayout.visibility = View.GONE
     }
 
     private fun filterAction(view: View) {
@@ -197,6 +213,11 @@ class OnSaleListFragment : Fragment() {
         toggleNoItemsHere(filteredList)
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)
+
+        // Close the filter drawer
+        TransitionManager.beginDelayedTransition(externalLayout)
+        filterLayout.visibility = View.GONE
+
     }
 
     private fun manageSpinner() {

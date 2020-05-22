@@ -13,8 +13,7 @@
         android:label="@string/menu_item_details">
         <action
             android:id="@+id/editItem"
-            app:destination="@id/nav_edit_item"
-            app:popUpTo="@id/nav_item_details" />
+            app:destination="@id/nav_edit_item" />
         <argument
             android:name="documentName"
             app:argType="string" />
@@ -33,6 +32,9 @@
             android:name="source"
             android:defaultValue="unknown"
             app:argType="string" />
+        <action
+            android:id="@+id/fullScreenImage"
+            app:destination="@id/imageViewFragment" />
     </fragment>
 
     <fragment
@@ -62,6 +64,9 @@
         <action
             android:id="@+id/goToItemList"
             app:destination="@id/nav_item_list" />
+        <action
+            android:id="@+id/fullScreenImage"
+            app:destination="@id/imageViewFragment" />
     </fragment>
 
     <fragment
@@ -71,11 +76,7 @@
         tools:layout="@layout/fragment_show_profile">
         <action
             android:id="@+id/edit"
-            app:destination="@id/nav_edit_profile"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:destination="@id/nav_edit_profile" />
         <argument
             android:name="userID"
             android:defaultValue="currUser"
@@ -101,8 +102,8 @@
         android:label="On sale"
         tools:layout="@layout/fragment_on_sale_list" />
     <fragment
-        android:id="@+id/nav_wish_list"
-        android:name="it.polito.mad.splintersell.ui.wish_list.WishList"
+        android:id="@+id/nav_items_of_interest_list"
+        android:name="it.polito.mad.splintersell.ui.items_of_interest.ItemsOfInterestListFragment"
         android:label="Wish List"
         tools:layout="@layout/fragment_wish_list" />
     <fragment
@@ -132,6 +133,15 @@
     <action
         android:id="@+id/showItemDetails"
         app:destination="@id/nav_item_details" />
+    <fragment
+        android:id="@+id/imageViewFragment"
+        android:label="Item image"
+        android:name="it.polito.mad.splintersell.ui.item_details.ImageViewFragment"
+        tools:layout="@layout/fragment_image_view">
+        <argument
+            android:name="imgPath"
+            app:argType="string" />
+    </fragment>
 
 
 </navigation>

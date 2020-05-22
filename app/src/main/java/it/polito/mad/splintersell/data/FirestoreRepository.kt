@@ -4,18 +4,16 @@ import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldPath
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import java.util.*
-import kotlin.collections.ArrayList
 
 val storage: StorageReference = FirebaseStorage.getInstance().reference
 
 class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskComplete) {
+    val AVAILABLE = "available"
+    val BLOCKED = "blocked"
+    val SOLD = "sold"
     val TAG = "FIREBASE_REPOSITORY"
     var firestore = FirebaseFirestore.getInstance()
     val itemRef = firestore.collection("items")
@@ -56,24 +54,24 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
         if (mainCategory == null) {
             firstTask = firestore.collection("items")
                 .whereLessThan("ownerId", user!!.uid)
-                .whereEqualTo("status", "Available").get()
+                .whereEqualTo("status", AVAILABLE).get()
 
             secondTask = firestore.collection("items")
                 .whereGreaterThan("ownerId", user!!.uid)
-                .whereEqualTo("status", "Available").get()
+                .whereEqualTo("status", AVAILABLE).get()
         } else {
             firstTask = firestore.collection("items")
                 .whereLessThan("ownerId", user!!.uid)
                 .whereEqualTo("mainCategory", mainCategory)
                 .whereEqualTo("secondCategory", secondCategory)
-                .whereEqualTo("status", "Available")
+                .whereEqualTo("status", AVAILABLE)
                 .get()
 
             secondTask = firestore.collection("items")
                 .whereGreaterThan("ownerId", user!!.uid)
                 .whereEqualTo("mainCategory", mainCategory)
                 .whereEqualTo("secondCategory", secondCategory)
-                .whereEqualTo("status", "Available")
+                .whereEqualTo("status", AVAILABLE)
                 .get()
         }
 
@@ -83,28 +81,13 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
             .addOnSuccessListener { querySnaps ->
                 for (docSnap in querySnaps) for (document in docSnap) {
                     val item = document.toObject(ItemModel::class.java)
-                    val date = item.expireDate!!.split("/")
 
-                    if (item.price!!.toInt() in minPrice..maxPrice && validateDate(date))
+                    if (item.price!!.toInt() in minPrice..maxPrice)
                         list.add(item)
                 }
 
                 onFirestoreTaskComplete.itemListDataAdded(list)
             }
-    }
-
-    private fun validateDate(date: List<String>): Boolean {
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH) + 1
-        val day = c.get(Calendar.DAY_OF_MONTH)
-        val years = date[2].toInt()
-        val monthOfYear = date[1].toInt()
-        val dayOfMonth = date[0].toInt()
-        return !(years < year ||
-                ((years == year) && (monthOfYear < month)) ||
-                ((years == year) && (monthOfYear == month) &&
-                        dayOfMonth < day))
     }
 
     fun saveItem(item: ItemModel): Task<Void> {
@@ -207,7 +190,9 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
 
                 if (likedItems.isNotEmpty()) {
                     firestore.collection("items")
-                        .whereIn(FieldPath.documentId(), likedItems).get()
+                        .orderBy("status", Query.Direction.ASCENDING)
+                        .whereIn("documentName", likedItems)
+                        .get()
                         .addOnSuccessListener { documents ->
                             for (document in documents) {
                                 Log.d("documento", document.toString())

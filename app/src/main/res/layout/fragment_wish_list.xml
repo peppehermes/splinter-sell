@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.wish_list.WishList">
+    android:id="@+id/external_layout"
+    tools:context=".ui.items_of_interest.ItemsOfInterestListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/wish_list"

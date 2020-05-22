@@ -3,6 +3,7 @@ package it.polito.mad.splintersell.ui.user_list
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.transition.TransitionManager
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -27,7 +28,7 @@ class UserListFragment : Fragment() {
     private lateinit var adapter: UserListAdapter
     private lateinit var listView: RecyclerView
     private var list = arrayListOf<UserModel>()
-
+    private lateinit var externalLayout: ViewGroup
     private val args: UserListFragmentArgs by navArgs()
 
     private val TAG = "USER_LIST_FRAGMENT"
@@ -73,6 +74,8 @@ class UserListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        externalLayout = view.findViewById(R.id.external_layout)
+
         listView = view.findViewById(R.id.user_list)
         adapter = UserListAdapter(list, args.itemID)
 
@@ -91,7 +94,7 @@ class UserListFragment : Fragment() {
                     adapter.setUsersList(UsersList as ArrayList<UserModel>)
                     adapter.notifyDataSetChanged()
                     Log.e(TAG, UsersList.isEmpty().toString())
-                    hideNoUsersHere(UsersList)
+                    toggleNoUsersHere(UsersList)
                 })
         })
         // Close the soft Keyboard, if open
@@ -104,7 +107,8 @@ class UserListFragment : Fragment() {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private fun hideNoUsersHere(list: List<UserModel>) {
+    private fun toggleNoUsersHere(list: List<UserModel>) {
+        TransitionManager.beginDelayedTransition(externalLayout)
         if (list.isEmpty()) {
             empty_list_users.visibility = View.VISIBLE
         } else empty_list_users.visibility = View.GONE

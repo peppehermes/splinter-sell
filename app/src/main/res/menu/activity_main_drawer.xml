@@ -19,7 +19,7 @@
             android:title="@string/menu_on_sale" />
 
         <item
-            android:id="@+id/nav_wish_list"
+            android:id="@+id/nav_items_of_interest_list"
             android:icon="@drawable/ic_favorite_black_24dp"
             android:title="@string/menu_follow_list" />
 

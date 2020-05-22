@@ -1,13 +1,13 @@
 package it.polito.mad.splintersell.ui.user_list
 
 import UserModelHolder
-import android.app.AlertDialog
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.splintersell.R
@@ -20,7 +20,7 @@ class UserListAdapter(private var UserList: ArrayList<UserModel>, itemID: String
     RecyclerView.Adapter<UserModelHolder>(), Filterable {
     private var userFilterList = ArrayList<UserModel>()
 
-    var id_item = itemID
+    private var idItem = itemID
 
     init {
         userFilterList = UserList
@@ -51,14 +51,16 @@ class UserListAdapter(private var UserList: ArrayList<UserModel>, itemID: String
 
             val builder = AlertDialog.Builder(it.context)
             builder.setMessage("Are you sure you want to accept?").setCancelable(false)
-                .setPositiveButton("Yes") { dialog, id ->
+                .setPositiveButton("Yes") { _, _ ->
                     // Delete selected note from database
 
-                    FirestoreViewModel().updateStatus("Sold", id_item)
+                    FirestoreViewModel().updateStatus(
+                        holder.itemView.context.getString(R.string.sold), idItem
+                    )
 
                     navigateToMyItemList(holder.itemView)
 
-                }.setNegativeButton("No") { dialog, id ->
+                }.setNegativeButton("No") { dialog, _ ->
                     // Dismiss the dialog
                     dialog.dismiss()
                 }
@@ -122,6 +124,14 @@ class UserListAdapter(private var UserList: ArrayList<UserModel>, itemID: String
     private fun navigateToMyItemList(view: View) {
         findNavController(view).navigate(R.id.nav_item_list)
 
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
 
 }
