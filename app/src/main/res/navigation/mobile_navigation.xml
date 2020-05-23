@@ -13,7 +13,11 @@
         android:label="@string/menu_item_details">
         <action
             android:id="@+id/editItem"
-            app:destination="@id/nav_edit_item" />
+            app:destination="@id/nav_edit_item"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <argument
             android:name="documentName"
             app:argType="string" />
@@ -27,10 +31,6 @@
         <argument
             android:name="userID"
             android:defaultValue="currUser"
-            app:argType="string" />
-        <argument
-            android:name="source"
-            android:defaultValue="unknown"
             app:argType="string" />
         <action
             android:id="@+id/fullScreenImage"
@@ -47,7 +47,8 @@
             app:destination="@id/nav_edit_item" />
         <action
             android:id="@+id/editListItem"
-            app:destination="@id/nav_edit_item" />
+            app:destination="@id/nav_edit_item"
+            app:popUpTo="@id/nav_item_list" />
         <argument
             android:name="source"
             android:defaultValue="unknown" />
@@ -67,6 +68,12 @@
         <action
             android:id="@+id/fullScreenImage"
             app:destination="@id/imageViewFragment" />
+        <action
+            android:id="@+id/returnToItemDetails"
+            app:destination="@id/nav_item_details"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/nav_item_list" />
     </fragment>
 
     <fragment
@@ -76,21 +83,29 @@
         tools:layout="@layout/fragment_show_profile">
         <action
             android:id="@+id/edit"
-            app:destination="@id/nav_edit_profile" />
+            app:destination="@id/nav_edit_profile"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popUpToInclusive="false" />
         <argument
             android:name="userID"
             android:defaultValue="currUser"
             app:argType="string" />
-        <argument
-            android:name="source"
-            android:defaultValue="unknown" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_edit_profile"
         android:name="it.polito.mad.splintersell.ui.profile_edit.EditProfile"
         android:label="Edit Profile"
-        tools:layout="@layout/fragment_edit_profile" />
+        tools:layout="@layout/fragment_edit_profile">
+        <action
+            android:id="@+id/returnToUserProfile"
+            app:destination="@id/nav_show_profile"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/nav_on_sale_list"
+            app:popUpToInclusive="false" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_sign_out"
@@ -127,7 +142,9 @@
             tools:layout="@layout/sign_in_fragment">
             <action
                 android:id="@+id/goToHome"
-                app:destination="@id/nav_on_sale_list" />
+                app:destination="@id/nav_on_sale_list"
+                app:popUpTo="@id/sign_in"
+                app:popUpToInclusive="true" />
         </fragment>
     </navigation>
     <action

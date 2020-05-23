@@ -1,7 +1,6 @@
 package it.polito.mad.splintersell.ui.profile_edit
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -17,7 +16,9 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageButton
 import android.widget.PopupMenu
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
@@ -67,6 +68,15 @@ class EditProfile : Fragment() {
 
         firestoreViewModel.fetchUserFromFirestore(user!!.uid)
         liveData = firestoreViewModel.myUser
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Handle the back button event
+                navigateMyProfile()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
 
     }
 
@@ -182,6 +192,10 @@ class EditProfile : Fragment() {
 
 
                 true
+            }
+            android.R.id.home -> {
+                navigateMyProfile()
+                return true
             }
             else -> super.onOptionsItemSelected(item)
         }
@@ -505,7 +519,7 @@ class EditProfile : Fragment() {
     }
 
     private fun navigateMyProfile() {
-        val action = EditProfileDirections.showProfile(source = "edit")
+        val action = EditProfileDirections.returnToUserProfile()
         findNavController().navigate(action)
     }
 

@@ -6,7 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -44,11 +44,15 @@ class SignIn : Fragment() {
         return inflater.inflate(R.layout.sign_in_fragment, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        (activity as AppCompatActivity).supportActionBar?.hide()
+
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        val navigationView: DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
-        navigationView.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
         val gso =
             GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -79,10 +83,6 @@ class SignIn : Fragment() {
 
         if (account != null) {
 
-            (activity as MainActivity?)?.refreshDataForDrawer()
-
-            val navigationView: DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
-            navigationView.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             findNavController().navigate(SignInDirections.goToHome())
 
         } else Log.d("SignInTAG", "User not logged in")

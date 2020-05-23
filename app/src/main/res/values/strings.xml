@@ -168,7 +168,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="min">Min</string>
     <string name="max">Max</string>
-    <string name="continue_with">Continue with:</string>
+    <string name="continue_with">Continue with</string>
     <string name="powered_by_breadsticks">Powered by Breadsticks</string>
     <string name="advertisement_1">Fast and Simple</string>
     <string name="full_size_image">Fullsize image</string>
@@ -177,6 +177,12 @@
     <string name="select">select</string>
     <string name="reset">Reset</string>
     <string name="msg_token_fmt" />
+    <string name="splinter_sell">SPLINTER SELL</string>
+    <string name="all_you_re_looking_for">ALL YOU\'RE LOOKING FOR</string>
 
+    <string name="transition_image">transition_image</string>
+    <string name="transition_title">transition_title</string>
+    <string name="transition_description">transition_description</string>
+    <string name="transition_price">transition_price</string>
 
 </resources>

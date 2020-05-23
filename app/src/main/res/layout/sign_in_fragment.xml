@@ -2,33 +2,31 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_width="match_parent"
     tools:context=".MainActivity">
 
-
-
-
     <TextView
+        style="@style/TextAppearance.MdcTypographyStyles.Caption"
         android:id="@+id/breadsticksText"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"
         android:text="@string/powered_by_breadsticks"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/continueWithText"
         app:layout_constraintStart_toStartOf="@+id/continueWithText" />
 
     <TextView
+        style="@style/TextAppearance.MdcTypographyStyles.Headline1"
+        android:fontFamily="@font/montserrat"
         android:id="@+id/continueWithText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_below="@+id/logo_photo"
-        android:layout_marginStart="80dp"
-        android:layout_marginEnd="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
         android:text="@string/continue_with"
         android:textAlignment="center"
-        android:textAppearance="?attr/textAppearanceBody1"
         android:textColor="?android:attr/textColorSecondary"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,36 +35,69 @@
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_begin="0dp"
-        app:layout_constraintGuide_percent="0.3"
+        app:layout_constraintGuide_percent="0.55"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/logo_photo"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
         android:contentDescription="@string/logo"
+        android:id="@+id/logo_photo"
+        android:layout_height="0dp"
+        android:layout_marginBottom="128dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_width="0dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo" />
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:srcCompat="@drawable/logo_final" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/continueWithText" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <TextView
+        android:fontFamily="@font/josefin_sans_bold"
+        android:id="@+id/app_name"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:layout_width="wrap_content"
+        android:text="@string/splinter_sell"
+        android:textColor="#6200EA"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo_photo" />
+
+    <TextView
+        android:fontFamily="@font/montserrat"
+        android:id="@+id/motto"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_width="wrap_content"
+        android:text="@string/all_you_re_looking_for"
+        android:textColor="#D700EA"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,192 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
     android:id="@+id/container"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
 
     <ScrollView
+        android:fillViewport="true"
         android:id="@+id/detail_view"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_width="match_parent">
 
         <LinearLayout
             android:id="@+id/detail_linear_layout"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:orientation="vertical"
             android:padding="8dp">
 
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="200dp">
+                android:layout_height="280dp"
+                android:layout_marginBottom="16dp"
+                android:layout_width="match_parent">
 
                 <ImageView
                     android:id="@+id/detail_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginBottom="10dp"
                     android:clickable="true"
                     android:contentDescription="@string/detail_image"
                     android:focusable="true"
+                    android:layout_height="280dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:transitionName="@string/transition_image"
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/image_vectorized_lower" />
 
             </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
+            <LinearLayout
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
-                android:padding="10dp"
-                android:text="@string/title"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textAppearance="?attr/textAppearanceHeadline5"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:layout_width="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="8dp">
 
+                <TextView
+                    style="@style/titleLabel"
+                    android:id="@+id/title"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_width="match_parent"
+                    android:text="@string/title"
+                    android:transitionName="@string/transition_title" />
 
-            <TextView
-                style="@style/InputLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/description" />
+                <TextView
+                    style="@style/InputLabel"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/description" />
 
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="@string/description"
-                android:textAppearance="?attr/textAppearanceBody1"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="24sp" />
+                <TextView
+                    style="@style/InputBody"
+                    android:id="@+id/description"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:text="@string/description"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:transitionName="@string/transition_description" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1.5dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/round_corners" />
+                <View style="@style/separator" />
 
-            <TextView
-                style="@style/InputLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/price" />
+                <TextView
+                    style="@style/InputLabel"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/price" />
 
-            <TextView
-                android:id="@+id/price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="@string/price"
-                android:textAppearance="?attr/textAppearanceBody1"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                <TextView
+                    style="@style/InputBody"
+                    android:id="@+id/price"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:text="@string/price"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:transitionName="@string/transition_price" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1.5dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/round_corners" />
+                <View style="@style/separator" />
 
-            <TextView
-                style="@style/InputLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/show_category" />
+                <TextView
+                    style="@style/InputLabel"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/show_category" />
 
-            <TextView
-                android:id="@+id/category"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="@string/show_category"
-                android:textAppearance="?attr/textAppearanceBody1"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="24sp" />
+                <TextView
+                    style="@style/InputBody"
+                    android:id="@+id/category"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:text="@string/show_category"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textColor="?android:attr/textColorSecondary" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1.5dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/round_corners" />
+                <View style="@style/separator" />
 
-            <TextView
-                style="@style/InputLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/location" />
+                <TextView
+                    style="@style/InputLabel"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/location" />
 
-            <TextView
-                android:id="@+id/location"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="@string/location"
-                android:textAppearance="?attr/textAppearanceBody1"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="24sp" />
+                <TextView
+                    style="@style/InputBody"
+                    android:id="@+id/location"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:text="@string/location"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textColor="?android:attr/textColorSecondary" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1.5dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/round_corners" />
+                <View style="@style/separator" />
 
-            <TextView
-                style="@style/InputLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/expire_date" />
+                <TextView
+                    style="@style/InputLabel"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/expire_date" />
 
-            <TextView
-                android:id="@+id/expire_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="@string/expire_date"
-                android:textAppearance="?attr/textAppearanceBody1"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="24sp" />
+                <TextView
+                    style="@style/InputBody"
+                    android:id="@+id/expire_date"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:text="@string/expire_date"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textColor="?android:attr/textColorSecondary" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1.5dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/round_corners" />
+                <View style="@style/separator" />
 
-            <TextView
-                android:id="@+id/ownerlabel"
-                style="@style/InputLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/owner" />
+                <TextView
+                    style="@style/InputLabel"
+                    android:id="@+id/owner_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/owner" />
 
-            <TextView
-                android:id="@+id/owner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="@string/owner"
-                android:textAppearance="?attr/textAppearanceBody1"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="24sp" />
+                <TextView
+                    style="@style/InputBody"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:id="@+id/owner"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:text="@string/owner"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textColor="?android:attr/textColorSecondary" />
 
-
-            <View
-                android:id="@+id/ownerline"
-                android:layout_width="match_parent"
-                android:layout_height="1.5dp"
-                android:background="@drawable/round_corners" />
-
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -194,19 +170,19 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true">
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
             style="@style/Widget.MyApp.MyFloatingActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/fab"
             android:layout_gravity="bottom|end"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
+            android:layout_width="wrap_content"
             android:visibility="gone"
             app:backgroundTint="@color/colorSecondary"
             app:borderWidth="0dp"

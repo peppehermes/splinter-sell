@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.splintersell.R
@@ -47,6 +48,8 @@ class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>) :
 
         // Set the onClick listener
         holder.card.setOnClickListener {
+            //val options = ActivityOptionsCompat.makeSceneTransitionAnimation()
+
             navigateToItemDetails(holder.itemView, item.documentName!!, item.ownerId!!)
         }
 

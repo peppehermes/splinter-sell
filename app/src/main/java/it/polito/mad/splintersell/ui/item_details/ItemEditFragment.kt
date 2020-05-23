@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.PopupMenu
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -53,7 +54,7 @@ var photoFile: File? = null
 var photoURI: Uri? = null
 
 class ItemEditFragment : Fragment() {
-
+    private val TAG = "ITEM_EDIT"
     private val charPool = ('a'..'z') + ('A'..'Z') + ('0'..'9')
     private var path: String = ""
     private var randomString: String = ""
@@ -69,6 +70,15 @@ class ItemEditFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Handle the back button event
+                navigateMyItemDetails()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun onCreateView(
@@ -84,7 +94,6 @@ class ItemEditFragment : Fragment() {
     @SuppressLint("ResourceType")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         var savedTitle: String? = null
         var savedDescription: String? = null
         var savedPrice: String? = null
@@ -734,7 +743,7 @@ class ItemEditFragment : Fragment() {
             args.documentName,
             user!!.uid,
             randomString,
-            "available"
+            requireContext().getString(R.string.available)
         )
 
         firestoreViewModel.saveItemToFirestore(newItem)
@@ -751,7 +760,7 @@ class ItemEditFragment : Fragment() {
         //findNavController().navigateUp()
 
         val action =
-            ItemEditFragmentDirections.showItemDetails(args.documentName, false, source = "edit")
+            ItemEditFragmentDirections.returnToItemDetails(args.documentName, false)
         findNavController().navigate(action)
 
     }

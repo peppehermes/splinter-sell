@@ -49,7 +49,7 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
             .setSound(uri)
             .setContentTitle(title)
             .setContentText(message)
-            .setSmallIcon(R.drawable.icon)
+            .setSmallIcon(R.drawable.logo_final)
             .setColor(resources.getColor(R.color.colorAccent))
 
 
@@ -68,7 +68,8 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
     }
 
     override fun onNewToken(token: String) {
-        FirestoreViewModel().updateToken(token)
+        if (FirestoreViewModel().user != null)
+            FirestoreViewModel().updateToken(token)
     }
 
 }

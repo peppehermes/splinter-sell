@@ -50,7 +50,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_item_list,
                 R.id.nav_on_sale_list,
                 R.id.nav_items_of_interest_list,
-                R.id.nav_sign_out
+                R.id.nav_sign_out,
+                R.id.nav_signIn
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

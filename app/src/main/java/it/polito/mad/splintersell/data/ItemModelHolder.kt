@@ -30,7 +30,8 @@ class ItemModelHolder(v: View) : RecyclerView.ViewHolder(v) {
         // Bind the ItemModel object to the ItemModelHolder
         description.text = model.description
         title.text = model.title
-        price.text = model.price
+        val priceText = "${model.price} $"
+        price.text = priceText
         mainCategory = model.mainCategory
         secondCategory = model.secondCategory
         location = model.location

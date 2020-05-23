@@ -6,7 +6,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.OnBackPressedCallback
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -37,16 +36,6 @@ class ItemDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // Handle the back button event
-                findNavController().navigate(R.id.nav_item_list)
-            }
-        }
-        if (args.source == "edit") requireActivity().onBackPressedDispatcher.addCallback(
-            this,
-            callback
-        )
     }
 
     // Inflate the edit show_profile_menu
@@ -80,9 +69,8 @@ class ItemDetailsFragment : Fragment() {
         hideKeyboardFrom(requireContext(), view)
 
         if (args.userID == "currUser") {
-            ownerlabel.visibility = View.GONE
+            owner_label.visibility = View.GONE
             owner.visibility = View.GONE
-            ownerline.visibility = View.GONE
         } else {
 
             owner.setTextColor(owner.context.getColor(R.color.colorPrimary))
@@ -123,7 +111,8 @@ class ItemDetailsFragment : Fragment() {
             // Update UI
             title.text = it.title
             description.text = it.description
-            price.text = it.price
+            val priceText = "${it.price} $"
+            price.text = priceText
             val cat = "${it.mainCategory} : ${it.secondCategory}"
             category.text = cat
             location.text = it.location

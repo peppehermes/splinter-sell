@@ -46,17 +46,6 @@ class ShowProfile : Fragment() {
             firestoreViewModel.fetchUserFromFirestore(args.userID)
             firestoreViewModel.myUser
         }
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // Handle the back button event
-                findNavController().navigate(R.id.nav_on_sale_list)
-            }
-        }
-        if (args.source == "edit") requireActivity().onBackPressedDispatcher.addCallback(
-            this,
-            callback
-        )
     }
 
     override fun onCreateView(
