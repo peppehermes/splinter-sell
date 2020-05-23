@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuthMultiFactorException
+import com.google.firebase.messaging.FirebaseMessaging
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
@@ -40,6 +42,7 @@ class ItemsOfInterestListAdapter(private var interestedItemsList: ArrayList<Item
             holder.jolly.text = holder.itemView.context.getString(R.string.remove)
             holder.jolly.setOnClickListener {
                 FirestoreViewModel().firestoreRepository.removeNotification(item.documentName!!)
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(item.documentName!!)
             }
         } else
             holder.button.text = holder.itemView.context.getString(R.string.view_user)

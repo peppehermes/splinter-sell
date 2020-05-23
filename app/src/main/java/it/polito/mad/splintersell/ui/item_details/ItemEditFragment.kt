@@ -734,7 +734,7 @@ class ItemEditFragment : Fragment() {
             args.documentName,
             user!!.uid,
             randomString,
-            "Available"
+            "available"
         )
 
         firestoreViewModel.saveItemToFirestore(newItem)

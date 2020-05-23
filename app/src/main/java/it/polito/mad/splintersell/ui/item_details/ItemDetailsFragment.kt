@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.*
 import kotlinx.android.synthetic.main.fragment_item_details.*
@@ -145,6 +146,7 @@ class ItemDetailsFragment : Fragment() {
 
         if (isRequested) {
             firestoreViewModel.firestoreRepository.removeNotification(args.documentName)
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(args.documentName)
             Snackbar.make(
                 coordinator, "Item removed from Wishlist", Snackbar.LENGTH_SHORT
             ).show()
@@ -154,6 +156,7 @@ class ItemDetailsFragment : Fragment() {
                 args.documentName, user!!.uid, liveData.value!!.ownerId!!
             )
             firestoreViewModel.saveNotificationToFirestore(newNot)
+            FirebaseMessaging.getInstance().subscribeToTopic(args.documentName)
             Snackbar.make(
                 coordinator, "Item added to Wishlist", Snackbar.LENGTH_SHORT
             ).show()
