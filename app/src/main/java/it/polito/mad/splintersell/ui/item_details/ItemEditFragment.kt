@@ -116,6 +116,11 @@ class ItemEditFragment : Fragment() {
         this.showDate()
         this.imageButtonMenu()
 
+        if(liveData.value == null){
+            if (savedImg != null)
+                this.restoreImage(savedImg)
+        }
+
         liveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
 
             if (savedTitle == null)
