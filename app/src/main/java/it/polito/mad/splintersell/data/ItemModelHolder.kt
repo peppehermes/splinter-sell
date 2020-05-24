@@ -43,6 +43,7 @@ class ItemModelHolder(v: View) : RecyclerView.ViewHolder(v) {
         //set image into the card
         val sref = storage.child("itemImages/${model.imgPath}")
 
+        image.transitionName = model.imgPath
         Glide.with(image.context)
             .using(FirebaseImageLoader())
             .load(sref)

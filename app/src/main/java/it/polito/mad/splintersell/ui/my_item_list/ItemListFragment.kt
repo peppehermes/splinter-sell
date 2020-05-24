@@ -40,7 +40,7 @@ class ItemListFragment : Fragment() {
     private lateinit var myItemList: LiveData<List<ItemModel>>
     private var adapter: FirestoreRecyclerAdapter<ItemModel, ItemModelHolder>? = null
     private val user = Firebase.auth.currentUser
-    private val args: ItemListFragmentArgs by navArgs()
+    //private val args: ItemListFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +51,7 @@ class ItemListFragment : Fragment() {
                 findNavController().navigate(R.id.nav_on_sale_list)
             }
         }
-        if (args.source == "edit") requireActivity().onBackPressedDispatcher.addCallback(
+        requireActivity().onBackPressedDispatcher.addCallback(
             this,
             callback
         )

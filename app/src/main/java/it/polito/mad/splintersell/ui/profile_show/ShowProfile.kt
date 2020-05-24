@@ -41,6 +41,17 @@ class ShowProfile : Fragment() {
         super.onCreate(savedInstanceState)
 
         liveData = if (args.userID == "currUser") {
+            val callback = object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    // Handle the back button event
+                    findNavController().navigate(R.id.nav_on_sale_list)
+                }
+            }
+            requireActivity().onBackPressedDispatcher.addCallback(
+                this,
+                callback
+            )
+
             firestoreViewModel.fetchUserFromFirestore(user!!.uid)
             firestoreViewModel.myUser
         } else {

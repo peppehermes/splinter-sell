@@ -607,9 +607,7 @@ class ItemEditFragment : Fragment() {
 
                         dialog.dismiss()
 
-                        val action =
-                            ItemEditFragmentDirections.goToItemList("edit")
-                        findNavController().navigate(action)
+                        findNavController().navigate(ItemEditFragmentDirections.goToItemList())
                     }.setNegativeButton("No") { dialog, _ ->
                         // Dismiss the dialog
                         dialog.dismiss()

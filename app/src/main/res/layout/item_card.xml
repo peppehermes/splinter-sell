@@ -21,7 +21,6 @@
             android:cropToPadding="false"
             android:layout_height="250dp"
             android:id="@+id/card_image"
-            android:transitionName="@string/transition_image"
             android:layout_width="match_parent"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/image_vectorized_lower" />
