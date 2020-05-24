@@ -55,6 +55,7 @@
                         android:layout_width="wrap_content"
                         android:padding="10dp"
                         android:text="@string/select"
+                        style="@style/TextAppearance.MdcTypographyStyles.Button"
                         android:textColor="@color/colorOnPrimary" />
 
                 </LinearLayout>
@@ -84,6 +85,10 @@
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/InputBody"
+                android:drawableTint="?attr/colorControlNormal"
+                android:paddingBottom="8dp"
+                android:textSize="20sp"
                 android:autofillHints=""
                 android:drawablePadding="8dp"
                 android:drawableStart="@drawable/ic_title_black_24dp"
@@ -93,8 +98,7 @@
                 android:layout_below="@+id/detail_image"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:textAppearance="?attr/textAppearanceHeadline5"
-                android:textSize="24sp" />
+                android:textAppearance="?attr/textAppearanceHeadline5" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -112,16 +116,18 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:autofillHints=""
+                style="@style/InputBody"
                 android:drawablePadding="8dp"
                 android:drawableStart="@drawable/ic_edit_white_24dp"
-                android:drawableTint="#000000"
                 android:hint="@string/description"
                 android:id="@+id/description"
                 android:inputType="textAutoCorrect|textAutoComplete|textMultiLine"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:textAppearance="?attr/textAppearanceBody1"
-                android:textSize="24sp" />
+                android:drawableTint="?attr/colorControlNormal"
+                android:paddingBottom="8dp"
+                android:textSize="20sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -137,6 +143,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:autofillHints=""
+                style="@style/InputBody"
                 android:drawablePadding="8dp"
                 android:drawableStart="@drawable/ic_attach_money_black_24dp"
                 android:hint="@string/price"
@@ -145,7 +152,9 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:textAppearance="?attr/textAppearanceBody1"
-                android:textSize="24sp" />
+                android:drawableTint="?attr/colorControlNormal"
+                android:paddingBottom="8dp"
+                android:textSize="20sp" />
 
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -161,6 +170,7 @@
             <!-- Google themselves instruct us to use the deprecated editable attribute -->
             <AutoCompleteTextView
                 android:drawablePadding="8dp"
+                style="@style/InputBody"
                 android:drawableStart="@drawable/ic_subject_black_24dp"
                 android:editable="false"
                 android:hint="@string/category"
@@ -168,7 +178,9 @@
                 android:inputType="none"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:textSize="24sp"
+                android:drawableTint="?attr/colorControlNormal"
+                android:paddingBottom="8dp"
+                android:textSize="20sp"
                 tools:ignore="Deprecated" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -184,6 +196,7 @@
             <!-- Google themselves instruct us to use the deprecated editable attribute -->
             <AutoCompleteTextView
                 android:drawablePadding="8dp"
+                style="@style/InputBody"
                 android:drawableStart="@drawable/ic_subdirectory_arrow_right_black_24dp"
                 android:editable="false"
                 android:hint="@string/subcategory"
@@ -191,7 +204,9 @@
                 android:inputType="none"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:textSize="24sp"
+                android:drawableTint="?attr/colorControlNormal"
+                android:paddingBottom="8dp"
+                android:textSize="20sp"
                 tools:ignore="Deprecated" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -209,6 +224,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:autofillHints=""
+                style="@style/InputBody"
                 android:drawablePadding="8dp"
                 android:drawableStart="@drawable/ic_location_on_black_24dp"
                 android:hint="@string/location"
@@ -217,7 +233,9 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:textAppearance="?attr/textAppearanceBody1"
-                android:textSize="24sp" />
+                android:drawableTint="?attr/colorControlNormal"
+                android:paddingBottom="8dp"
+                android:textSize="20sp" />
 
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -234,6 +252,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:autofillHints=""
+                style="@style/InputBody"
                 android:drawablePadding="8dp"
                 android:drawableStart="@drawable/ic_today_black_24dp"
                 android:focusable="false"
@@ -243,7 +262,9 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:textAppearance="?attr/textAppearanceBody1"
-                android:textSize="24sp" />
+                android:drawableTint="?attr/colorControlNormal"
+                android:paddingBottom="8dp"
+                android:textSize="20sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

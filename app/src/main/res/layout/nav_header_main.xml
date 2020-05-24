@@ -28,12 +28,13 @@
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:text="@string/nick"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Subtitle1" />
 
     <TextView
         android:id="@+id/nav_profile_mail"
         android:text="@string/mail"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Caption" />
 
 </LinearLayout>

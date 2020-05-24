@@ -26,6 +26,7 @@
                 <ImageView
                     android:id="@+id/detail_image"
                     android:clickable="true"
+                    app:layout_collapseMode="parallax"
                     android:contentDescription="@string/detail_image"
                     android:focusable="true"
                     android:layout_height="280dp"

@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="@string/empty_list_users"
             android:visibility="invisible"
-            android:textAppearance="?attr/textAppearanceHeadline5"/>
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Headline5" />
     </LinearLayout>
 
 </FrameLayout>

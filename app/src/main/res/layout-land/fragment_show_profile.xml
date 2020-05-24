@@ -2,26 +2,26 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_width="match_parent"
     tools:context=".ui.profile_show.ShowProfile">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_percent="0.3"
+        app:layout_constraintGuide_percent="0.38"
         app:layout_constraintStart_toStartOf="parent" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_photo"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
         android:contentDescription="@string/profile_photo"
+        android:id="@+id/profile_photo"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="64dp"
+        android:layout_width="0dp"
         app:civ_border_color="@color/colorPrimary"
         app:civ_border_width="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -30,172 +30,144 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/label_name"
-        style="@style/InputLabel"
+    <LinearLayout
+        android:id="@+id/name_layout"
+        android:layout_height="0dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="8dp"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:drawableStart="@drawable/ic_person_black_16dp"
-        android:drawablePadding="8dp"
-        android:text="@string/full_name"
-        app:layout_constraintBottom_toTopOf="@+id/name"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/nick_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/guideline_top" />
-
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/full_name"
-        android:textSize="24sp"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toTopOf="@+id/nickname"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/guideline_top"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Full Name" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <View
+        <TextView
+            style="@style/InputLabel"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_person_black_16dp"
+            android:drawableTint="?attr/colorControlNormal"
+            android:id="@+id/label_name"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/full_name"
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Subtitle1" />
+
+        <TextView
+            style="@style/InputBody"
+            android:id="@+id/name"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/full_name"
+            app:autoSizeTextType="uniform"
+            tools:text="Full Name" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/nick_layout"
+        android:layout_height="0dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginStart="56dp"
         android:layout_width="0dp"
-        android:layout_height="1.5dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/round_corners"
-        app:layout_constraintBottom_toTopOf="@+id/label_nickname"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/email_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/guideline_top"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
-
-
-    <TextView
-        android:id="@+id/label_nickname"
-        style="@style/InputLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:drawableStart="@drawable/ic_account_circle_black_16dp"
-        android:drawablePadding="8dp"
-        android:text="@string/nick"
-        app:layout_constraintBottom_toTopOf="@+id/nickname"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/guideline_top" />
-
-    <TextView
-        android:id="@+id/nickname"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/nick"
-        android:textSize="24sp"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toTopOf="@+id/email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/guideline_top"
-        app:layout_constraintTop_toBottomOf="@id/name"
-        tools:text="Nickname" />
+        app:layout_constraintTop_toBottomOf="@+id/name_layout">
 
-    <View
+        <TextView
+            style="@style/InputLabel"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_account_circle_black_16dp"
+            android:drawableTint="?attr/colorControlNormal"
+            android:id="@+id/label_nickname"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/nick" />
+
+        <TextView
+            style="@style/InputBody"
+            android:id="@+id/nickname"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/nick"
+            app:autoSizeTextType="uniform"
+            tools:text="Nickname" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/email_layout"
+        android:layout_height="0dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginStart="56dp"
         android:layout_width="0dp"
-        android:layout_height="1.5dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/round_corners"
-        app:layout_constraintBottom_toTopOf="@+id/label_email"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/location_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/guideline_top"
-        app:layout_constraintTop_toBottomOf="@+id/nickname" />
-
-
-    <TextView
-        android:id="@+id/label_email"
-        style="@style/InputLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:drawableStart="@drawable/ic_email_black_16dp"
-        android:drawablePadding="8dp"
-        android:text="@string/mail"
-        app:layout_constraintBottom_toTopOf="@+id/email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/guideline_top" />
-
-    <TextView
-        android:id="@+id/email"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/mail"
-        android:textSize="24sp"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toTopOf="@+id/location"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/guideline_top"
-        app:layout_constraintTop_toBottomOf="@id/nickname"
-        tools:text="Email" />
+        app:layout_constraintTop_toBottomOf="@+id/nick_layout">
+
+        <TextView
+            style="@style/InputLabel"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_email_black_16dp"
+            android:drawableTint="?attr/colorControlNormal"
+            android:id="@+id/label_email"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/mail" />
+
+        <TextView
+            style="@style/InputBody"
+            android:id="@+id/email"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/mail"
+            app:autoSizeTextType="uniform"
+            tools:text="Email" />
 
 
-    <View
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/location_layout"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginStart="56dp"
         android:layout_width="0dp"
-        android:layout_height="1.5dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/round_corners"
-        app:layout_constraintBottom_toTopOf="@+id/label_location"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/guideline_top"
-        app:layout_constraintTop_toBottomOf="@+id/email" />
-
-    <TextView
-        android:id="@+id/label_location"
-        style="@style/InputLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:drawableStart="@drawable/ic_location_on_black_16dp"
-        android:drawablePadding="8dp"
-        android:text="@string/location_show_profile"
-        app:layout_constraintBottom_toTopOf="@+id/location"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/guideline_top" />
-
-    <TextView
-        android:id="@+id/location"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/location_show_profile"
-        android:textSize="24sp"
-        app:autoSizeTextType="uniform"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/guideline_top"
-        app:layout_constraintTop_toBottomOf="@id/email"
-        tools:text="Location" />
+        app:layout_constraintTop_toBottomOf="@+id/email_layout">
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1.5dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/round_corners"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/guideline_top"
-        app:layout_constraintTop_toBottomOf="@+id/location" />
+        <TextView
+            style="@style/InputLabel"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_location_on_black_16dp"
+            android:drawableTint="?attr/colorControlNormal"
+            android:id="@+id/label_location"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/location_show_profile" />
+
+        <TextView
+            style="@style/InputBody"
+            android:id="@+id/location"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/location_show_profile"
+            app:autoSizeTextType="uniform"
+            tools:text="Location" />
+
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

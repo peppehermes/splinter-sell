@@ -49,9 +49,7 @@ import kotlin.math.roundToInt
 
 const val REQUEST_TAKE_PHOTO = 2
 const val GALLERY_REQUEST_CODE = 3
-var rotatedBitmap: Bitmap? = null
-var photoFile: File? = null
-var photoURI: Uri? = null
+
 
 class ItemEditFragment : Fragment() {
     private val TAG = "ITEM_EDIT"
@@ -60,6 +58,9 @@ class ItemEditFragment : Fragment() {
     private var oldPath: String = ""
     private var randomString: String = ""
     private var isImage: Boolean = false
+    private var rotatedBitmap: Bitmap? = null
+    private var photoFile: File? = null
+    private var photoURI: Uri? = null
 
     private val firestoreViewModel: FirestoreViewModel by viewModels()
 
@@ -72,14 +73,14 @@ class ItemEditFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        val callback = object : OnBackPressedCallback(true) {
+        /*val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 // Handle the back button event
                 navigateMyItemDetails()
             }
         }
 
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)*/
     }
 
     override fun onCreateView(
@@ -584,7 +585,7 @@ class ItemEditFragment : Fragment() {
                 } else {
                     Log.d("EditItemTAG", "Error in Item Form Validation")
                     Snackbar
-                        .make(requireView(), "Please fill all the fields", Snackbar.LENGTH_SHORT)
+                        .make(requireView(), R.string.please_fill_all, Snackbar.LENGTH_SHORT)
                         .show()
                 }
 

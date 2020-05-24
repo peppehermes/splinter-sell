@@ -39,6 +39,7 @@
                     <AutoCompleteTextView
                         android:drawablePadding="8dp"
                         android:drawableStart="@drawable/ic_subject_black_24dp"
+                        style="@style/InputBody"
                         android:editable="false"
                         android:hint="@string/category"
                         android:id="@+id/dropdown_main_category"
@@ -46,7 +47,9 @@
                         android:layout_height="match_parent"
                         android:layout_width="match_parent"
                         android:text=""
-                        android:textSize="24sp"
+                        android:drawableTint="?attr/colorControlNormal"
+                        android:paddingBottom="8dp"
+                        android:textSize="20sp"
                         tools:ignore="Deprecated" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -62,6 +65,7 @@
                     android:layout_width="match_parent">
                     <!-- Google themselves instruct us to use the deprecated editable attribute -->
                     <AutoCompleteTextView
+                        style="@style/InputBody"
                         android:drawablePadding="8dp"
                         android:drawableStart="@drawable/ic_subdirectory_arrow_right_black_24dp"
                         android:editable="false"
@@ -71,7 +75,9 @@
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:text=""
-                        android:textSize="24sp"
+                        android:drawableTint="?attr/colorControlNormal"
+                        android:paddingBottom="8dp"
+                        android:textSize="20sp"
                         tools:ignore="Deprecated" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,6 +101,7 @@
                     android:layout_width="0dp">
 
                     <EditText
+                        style="@style/InputBody"
                         android:autofillHints=""
                         android:drawablePadding="8dp"
                         android:drawableStart="@drawable/ic_attach_money_black_24dp"
@@ -104,7 +111,9 @@
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:textAppearance="?attr/textAppearanceBody1"
-                        android:textSize="24sp" />
+                        android:drawableTint="?attr/colorControlNormal"
+                        android:paddingBottom="8dp"
+                        android:textSize="20sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -118,6 +127,7 @@
                     android:layout_width="0dp">
 
                     <EditText
+                        style="@style/InputBody"
                         android:autofillHints=""
                         android:drawablePadding="8dp"
                         android:drawableStart="@drawable/ic_attach_money_black_24dp"
@@ -127,7 +137,9 @@
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:textAppearance="?attr/textAppearanceBody1"
-                        android:textSize="24sp" />
+                        android:drawableTint="?attr/colorControlNormal"
+                        android:paddingBottom="8dp"
+                        android:textSize="20sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -142,20 +154,22 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                     android:id="@+id/filter_button"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Button"
                     android:text="@string/filter" />
 
                 <com.google.android.material.button.MaterialButton
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                     android:id="@+id/reset_button"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_width="wrap_content"
                     android:text="@string/reset"
-                    android:textColor="@color/colorError" />
+                    android:backgroundTint="@color/colorError"
+                    android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Button" />
 
             </LinearLayout>
 
@@ -187,7 +201,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/empty_list"
-            android:textAppearance="?attr/textAppearanceHeadline5"
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Headline5"
             android:visibility="invisible" />
     </LinearLayout>
 

@@ -1,6 +1,7 @@
 package it.polito.mad.splintersell.ui.profile_edit
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -14,6 +15,7 @@ import android.provider.MediaStore
 import android.text.InputFilter
 import android.util.Log
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.PopupMenu
 import androidx.activity.OnBackPressedCallback
@@ -27,6 +29,7 @@ import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.R
@@ -146,18 +149,25 @@ class EditProfile : Fragment() {
         return inflater.inflate(R.menu.edit_profile_menu, menu)
     }
 
+    private fun hideKeyboardFrom(context: Context, view: View) {
+        val imm: InputMethodManager =
+            context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
     @SuppressLint("WrongThread")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.save -> {
 
                 //Form validation
+                hideKeyboardFrom(requireContext(), requireView())
 
                 val checkError = formValidation()
 
                 if (!checkError) {
 
-                    Log.d("EditItemTAG", "Error in Item Form Validation")
+                    Log.d("EditItemTAG", "No error in Item Form Validation")
 
 
                     //Save image on Cloud Storage
@@ -189,7 +199,11 @@ class EditProfile : Fragment() {
                     }
 
 
-                } else Log.d("EditProfileTAG", "Error in Form Validation")
+                } else {
+                    Log.d("EditProfileTAG", "Error in Form Validation")
+                    Snackbar.make(requireView(), R.string.please_fill_all, Snackbar.LENGTH_SHORT)
+                        .show()
+                }
 
 
                 true

@@ -3,6 +3,7 @@ package it.polito.mad.splintersell.ui.on_sale_list
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.transition.TransitionManager
 import android.util.Log
 import android.view.*

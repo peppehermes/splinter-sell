@@ -1,19 +1,21 @@
 package it.polito.mad.splintersell.ui.on_sale_list
 
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
-import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.data.ItemModelHolder
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlinx.android.synthetic.main.item_card.view.*
 
 class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>) :
     RecyclerView.Adapter<ItemModelHolder>(), Filterable {
@@ -46,10 +48,9 @@ class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>) :
 
         holder.button.text = holder.itemView.context.getString(R.string.view_user)
 
+
         // Set the onClick listener
         holder.card.setOnClickListener {
-            //val options = ActivityOptionsCompat.makeSceneTransitionAnimation()
-
             navigateToItemDetails(holder.itemView, item.documentName!!, item.ownerId!!)
         }
 
@@ -98,8 +99,8 @@ class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>) :
         }
     }
 
-    private fun navigateToItemDetails(view: View, id: String, ownerid: String) {
-        val action = OnSaleListFragmentDirections.showItemDetails(id, true, ownerid)
+    private fun navigateToItemDetails(view: View, id: String, ownerId: String) {
+        val action = OnSaleListFragmentDirections.showItemDetails(id, true, ownerId)
         Log.e("POS", id)
         findNavController(view).navigate(action)
     }

@@ -31,9 +31,10 @@
         style="@style/InputLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:drawableTint="?attr/colorControlNormal"
         android:drawableStart="@drawable/ic_person_black_16dp"
         android:drawablePadding="8dp"
+        android:layout_marginHorizontal="16dp"
         android:text="@string/full_name"
         app:layout_constraintBottom_toTopOf="@+id/name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,13 +42,13 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
+        style="@style/InputBody"
         android:id="@+id/name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/full_name"
-        android:textSize="24sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/nickname"
         app:layout_constraintEnd_toEndOf="parent"
@@ -56,16 +57,6 @@
         app:layout_constraintTop_toTopOf="@+id/guideline_top"
         tools:text="Full Name" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1.5dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/round_corners"
-        app:layout_constraintBottom_toTopOf="@+id/nickname"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_name" />
 
 
     <TextView
@@ -73,9 +64,10 @@
         style="@style/InputLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:drawableTint="?attr/colorControlNormal"
         android:drawableStart="@drawable/ic_account_circle_black_16dp"
         android:drawablePadding="8dp"
+        android:layout_marginHorizontal="16dp"
         android:text="@string/nick"
         app:layout_constraintBottom_toTopOf="@+id/nickname"
         app:layout_constraintEnd_toEndOf="parent"
@@ -83,13 +75,13 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
+        style="@style/InputBody"
         android:id="@+id/nickname"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/nick"
-        android:textSize="24sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/email"
         app:layout_constraintEnd_toEndOf="parent"
@@ -98,25 +90,16 @@
         app:layout_constraintTop_toBottomOf="@+id/name"
         tools:text="Nickname" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1.5dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/round_corners"
-        app:layout_constraintBottom_toTopOf="@+id/email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_nickname" />
 
     <TextView
         android:id="@+id/label_email"
         style="@style/InputLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:drawableTint="?attr/colorControlNormal"
         android:drawableStart="@drawable/ic_email_black_16dp"
         android:drawablePadding="8dp"
+        android:layout_marginHorizontal="16dp"
         android:text="@string/mail"
         app:layout_constraintBottom_toTopOf="@+id/email"
         app:layout_constraintEnd_toEndOf="parent"
@@ -124,13 +107,13 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
+        style="@style/InputBody"
         android:id="@+id/email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/nick"
-        android:textSize="24sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/location"
         app:layout_constraintEnd_toEndOf="parent"
@@ -139,25 +122,16 @@
         app:layout_constraintTop_toBottomOf="@+id/nickname"
         tools:text="Email" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1.5dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/round_corners"
-        app:layout_constraintBottom_toTopOf="@+id/email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_location" />
 
     <TextView
         android:id="@+id/label_location"
         style="@style/InputLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:drawableTint="?attr/colorControlNormal"
         android:drawableStart="@drawable/ic_location_on_black_16dp"
         android:drawablePadding="8dp"
+        android:layout_marginHorizontal="16dp"
         android:text="@string/location_show_profile"
         app:layout_constraintBottom_toTopOf="@+id/location"
         app:layout_constraintEnd_toEndOf="parent"
@@ -165,13 +139,13 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
+        style="@style/InputBody"
         android:id="@+id/location"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/location_show_profile"
-        android:textSize="24sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@id/guideline_bot"
         app:layout_constraintEnd_toEndOf="parent"
@@ -180,24 +154,14 @@
         app:layout_constraintTop_toBottomOf="@+id/email"
         tools:text="Location" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1.5dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/round_corners"
-        app:layout_constraintBottom_toTopOf="@+id/location"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guideline_bot" />
-
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_photo"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
         android:contentDescription="@string/profile_photo"
+        android:id="@+id/profile_photo"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_width="0dp"
         app:civ_border_color="@color/colorPrimary"
         app:civ_border_width="2dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline_top"

@@ -34,7 +34,6 @@
 
             <!-- Title, secondary and supporting text -->
 
-
             <RelativeLayout
                 android:id="@+id/title_and_liked"
                 android:layout_height="wrap_content"
@@ -45,20 +44,22 @@
                     android:id="@+id/card_title"
                     android:layout_alignParentStart="true"
                     android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
+                    android:layout_toStartOf="@id/liked"
                     android:text="@string/title"
+                    android:layout_width="match_parent"
                     android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Headline6"
                     android:transitionName="@string/transition_title" />
 
-                <androidx.appcompat.widget.AppCompatImageButton
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/liked"
                     android:layout_alignParentEnd="true"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:src="@drawable/ic_favorite_border_black_24dp">
+                    android:button="@drawable/favourite"
+                    android:buttonTint="@color/colorOnBackground"
+                    android:visibility="gone">
 
-                </androidx.appcompat.widget.AppCompatImageButton>
+                </com.google.android.material.checkbox.MaterialCheckBox>
 
             </RelativeLayout>
 
@@ -101,6 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:text="@string/edit"
+                style="@style/TextAppearance.MdcTypographyStyles.Button"
                 android:textColor="@color/colorOnPrimary" />
 
             <com.google.android.material.button.MaterialButton
@@ -110,6 +112,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_width="wrap_content"
                 android:text="@string/remove"
+                style="@style/TextAppearance.MdcTypographyStyles.Button"
                 android:textColor="@color/colorOnPrimary"
                 android:visibility="gone" />
         </LinearLayout>
