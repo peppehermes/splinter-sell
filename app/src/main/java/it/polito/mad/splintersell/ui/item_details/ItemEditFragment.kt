@@ -57,6 +57,7 @@ class ItemEditFragment : Fragment() {
     private val TAG = "ITEM_EDIT"
     private val charPool = ('a'..'z') + ('A'..'Z') + ('0'..'9')
     private var path: String = ""
+    private var oldPath: String = ""
     private var randomString: String = ""
     private var isImage: Boolean = false
 
@@ -705,39 +706,38 @@ class ItemEditFragment : Fragment() {
         val baos = ByteArrayOutputStream()
         rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, baos)
         val rotBytes = baos.toByteArray()
-        val uploadTask = profileImageRefs.putBytes(rotBytes).addOnCompleteListener {
+        profileImageRefs.putBytes(rotBytes).addOnCompleteListener {
             dialog1.cancel()
             dialog2.setMessage("Done!").setCancelable(false)
             dialog2.setPositiveButton("Great!") { dialog, _ ->
-                dialog.dismiss()
                 rotatedBitmap = null
+                if (oldPath != "") {
+                    val refToDelete = storage.child("itemImages/$oldPath")
+                    refToDelete.delete().addOnSuccessListener {
+                        Log.d("deleteOfFile", "Delete complete on item $oldPath")
+                    }.addOnFailureListener {
+                        Log.d("deleteOfFile", "Delete failed")
+                    }
+                }
+                dialog.dismiss()
                 navigateMyItemDetails()
             }
             dialog2.show()
 
 
-        }
-
-        uploadTask.addOnFailureListener {
+        }.addOnFailureListener {
             Log.d("ItemEditTAG", "Error in saving image to the Cloud Storage")
         }.addOnSuccessListener {
             Log.d("ItemEditTAG", "Success in saving image to the Cloud Storage")
         }
 
-        if (path != "") {
-            val refToDelete = storage.child("itemImages/$path")
-            refToDelete.delete().addOnSuccessListener {
-                Log.d("deleteOfFile", "Delete complete on item $path")
-            }.addOnFailureListener {
-                Log.d("deleteOfFile", "Delete failed")
-            }
-        }
 
 
     }
 
     private fun setNewItem() {
 
+        oldPath = path
         val newItem = ItemModel(
             til_title.editText!!.text.toString(),
             til_description.editText!!.text.toString(),

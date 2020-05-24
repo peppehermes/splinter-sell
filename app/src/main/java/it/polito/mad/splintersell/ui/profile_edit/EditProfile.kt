@@ -55,6 +55,7 @@ class EditProfile : Fragment() {
 
     lateinit var currentPhotoPath: String
     lateinit var path: String
+    lateinit var oldPath: String
     var randomString: String = ""
 
 
@@ -479,6 +480,14 @@ class EditProfile : Fragment() {
             dialog1.cancel()
             dialog2.setMessage("Done!").setCancelable(false)
             dialog2.setPositiveButton("Great!") { dialog, _ ->
+                if (oldPath != "img_avatar.jpg") {
+                    val refToDelete = storage.child("profileImages/$oldPath")
+                    refToDelete.delete().addOnSuccessListener {
+                        Log.d("deleteOfFile", "Delete complete on item $oldPath")
+                    }.addOnFailureListener {
+                        Log.d("deleteOfFile", "Delete failed $oldPath")
+                    }
+                }
                 dialog.dismiss()
                 navigateMyProfile()
             }
@@ -493,19 +502,12 @@ class EditProfile : Fragment() {
             Log.d("ItemEditTAG", "Success in saving image to the Cloud Storage")
         }
 
-        if (path != "img_avatar.jpg") {
-            val refToDelete = storage.child("itemImages/$path")
-            refToDelete.delete().addOnSuccessListener {
-                Log.d("deleteOfFile", "Delete complete on item $path")
-            }.addOnFailureListener {
-                Log.d("deleteOfFile", "Delete failed")
-            }
-        }
-
 
     }
 
     private fun setNewUser() {
+
+        oldPath = path
 
         val newUser = UserModel(
             name.text.toString(),
