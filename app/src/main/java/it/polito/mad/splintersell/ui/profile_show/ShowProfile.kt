@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.UserModel
@@ -60,6 +61,7 @@ class ShowProfile : Fragment() {
 
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)
+        (activity as MainActivity?)?.refreshDataForDrawer()
 
         liveData.observe(viewLifecycleOwner, Observer {
             // Update UI

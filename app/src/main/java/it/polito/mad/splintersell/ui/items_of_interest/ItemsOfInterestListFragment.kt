@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
@@ -41,6 +42,7 @@ class ItemsOfInterestListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         externalLayout = view.findViewById(R.id.external_layout)
+        (activity as MainActivity?)?.refreshDataForDrawer()
 
         val itemRecyclerView = view.findViewById<View>(R.id.wish_list) as RecyclerView
 

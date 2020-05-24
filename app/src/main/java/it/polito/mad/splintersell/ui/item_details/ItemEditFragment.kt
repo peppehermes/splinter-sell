@@ -710,6 +710,7 @@ class ItemEditFragment : Fragment() {
             dialog2.setMessage("Done!").setCancelable(false)
             dialog2.setPositiveButton("Great!") { dialog, _ ->
                 dialog.dismiss()
+                rotatedBitmap = null
                 navigateMyItemDetails()
             }
             dialog2.show()
