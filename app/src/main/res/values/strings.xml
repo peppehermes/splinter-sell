@@ -15,6 +15,7 @@
     <string name="sign_out">Sign Out</string>
     <string name="menu_on_sale">On sale</string>
     <string name="menu_follow_list">Wish List</string>
+    <string name="menu_bought_list">Bought List</string>
     <string name="menu_edit_item">Edit Item</string>
     <string name="menu_show_profile">My Profile</string>
     <string name="logo">Logo</string>

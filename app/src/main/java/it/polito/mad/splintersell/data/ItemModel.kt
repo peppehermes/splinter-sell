@@ -12,6 +12,7 @@ class ItemModel {
     var ownerId: String? = null
     var imgPath: String = ""
     var status: String? = null
+    var soldTo: String = ""
 
     constructor()
 

@@ -20,7 +20,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.UserModel
-import it.polito.mad.splintersell.ui.SignInDirections
 import kotlinx.android.synthetic.main.sign_in_fragment.*
 
 const val RC_SIGN_IN = 2013

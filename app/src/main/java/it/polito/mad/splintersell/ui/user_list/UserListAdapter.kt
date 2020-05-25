@@ -58,6 +58,8 @@ class UserListAdapter(private var UserList: ArrayList<UserModel>, itemID: String
                         holder.itemView.context.getString(R.string.sold), idItem
                     )
 
+                    FirestoreViewModel().setSoldTo(item.userid!!,idItem)
+
                     navigateToMyItemList(holder.itemView)
 
                 }.setNegativeButton("No") { dialog, _ ->

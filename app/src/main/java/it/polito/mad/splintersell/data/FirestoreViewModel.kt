@@ -11,6 +11,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     val TAG = "FIRESTORE_VIEW_MODEL"
     val AVAILABLE = "available"
     val BLOCKED = "blocked"
+    val SOLD = "sold"
     var firestoreRepository = FirestoreRepository(this)
     var user = FirebaseAuth.getInstance().currentUser
 
@@ -25,6 +26,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     private var _availableItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _allItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _interestedUserList: MutableLiveData<List<UserModel>> = MutableLiveData()
+    private var _soldItemsList: MutableLiveData<List<ItemModel>> = MutableLiveData()
 
     init {
         this.fetchAllItemListFromFirestore()
@@ -60,6 +62,10 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
 
     fun updateStatus(status: String, item_id: String) {
         firestoreRepository.updateStatus(status, item_id)
+    }
+
+    fun setSoldTo(uid:String, itemId:String){
+        firestoreRepository.setSoldTo(uid,itemId)
     }
 
     fun updateToken(token: String) {
@@ -128,6 +134,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
             })
     }
 
+
     private fun validateDate(date: List<String>): Boolean {
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
@@ -157,6 +164,26 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
                     availableItemList.add(item)
                 }
                 _availableItemList.value = availableItemList
+            })
+    }
+
+    fun fetchSoldItemListFromFirestore() {
+        firestoreRepository.itemRef
+            .whereEqualTo("status", SOLD)
+            .whereEqualTo("soldTo",user!!.uid)
+            .addSnapshotListener(EventListener { value, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    _soldItemsList.value = null
+                    return@EventListener
+                }
+
+                val soldList: MutableList<ItemModel> = mutableListOf()
+                for (doc in value!!) {
+                    val item = doc.toObject(ItemModel::class.java)
+                    soldList.add(item)
+                }
+                _soldItemsList.value = soldList
             })
     }
 
@@ -305,5 +332,13 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         }
         set(value) {
             _interestedUserList = value
+        }
+
+    internal var soldItemsList: MutableLiveData<List<ItemModel>>
+        get() {
+            return _soldItemsList
+        }
+        set(value) {
+            _soldItemsList = value
         }
 }

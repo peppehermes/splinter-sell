@@ -184,21 +184,17 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
                 for (doc in notifications) {
                     val itemName = doc.get("id_item").toString()
                     likedItems.add(itemName)
-                    Log.d("liked", itemName)
-                    Log.d("likedList", likedItems.toString())
                 }
 
                 if (likedItems.isNotEmpty()) {
                     firestore.collection("items")
-                        .orderBy("status", Query.Direction.ASCENDING)
+                        .whereEqualTo("status","available")
                         .whereIn("documentName", likedItems)
                         .get()
                         .addOnSuccessListener { documents ->
                             for (document in documents) {
-                                Log.d("documento", document.toString())
                                 val item = document.toObject(ItemModel::class.java)
                                 list.add(item)
-                                Log.d("listNot1", list.toString())
                             }
                             onFirestoreTaskComplete.notListDataAdded(list)
                         }
@@ -215,6 +211,12 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
     fun updateToken(token: String) {
         firestore.collection("users").document(user!!.uid).update("token", token)
     }
+
+    fun setSoldTo(uid:String, itemId:String){
+
+        firestore.collection("items").document(itemId).update("soldTo",uid)
+    }
+
 
     interface OnFirestoreTaskComplete {
         fun itemListDataAdded(itemModelList: List<ItemModel>)

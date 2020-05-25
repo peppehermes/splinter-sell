@@ -24,6 +24,11 @@
             android:title="@string/menu_follow_list" />
 
         <item
+            android:id="@+id/nav_bought_items_list"
+            android:icon="@drawable/ic_shopping_basket_black_24dp"
+            android:title="@string/menu_bought_list" />
+
+        <item
             android:id="@+id/nav_sign_out"
             android:icon="@drawable/ic_exit_to_app_black_24dp"
             android:title="@string/sign_out" />

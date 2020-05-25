@@ -29,13 +29,12 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
 
     private fun showNotification(title: String?, message: String?) {
 
-        Log.d("notification", "sto mostrando la notifica")
 
         val channelId = "web_app_channel"
         val pending = NavDeepLinkBuilder(this)
             .setComponentName(MainActivity::class.java)
             .setGraph(R.navigation.mobile_navigation)
-            .setDestination(R.id.nav_items_of_interest_list)
+            .setDestination(R.id.nav_bought_items_list)
             .createPendingIntent()
         val uri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val builder = NotificationCompat.Builder(applicationContext, channelId)

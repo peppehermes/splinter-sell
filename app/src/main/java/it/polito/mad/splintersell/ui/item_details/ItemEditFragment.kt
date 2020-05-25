@@ -72,14 +72,6 @@ class ItemEditFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        /*val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // Handle the back button event
-                navigateMyItemDetails()
-            }
-        }
-
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)*/
     }
 
     override fun onCreateView(
@@ -87,6 +79,7 @@ class ItemEditFragment : Fragment() {
     ): View? {
         firestoreViewModel.fetchSingleItemFromFirestore(args.documentName)
         liveData = firestoreViewModel.item
+
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_item, container, false)
@@ -108,6 +101,8 @@ class ItemEditFragment : Fragment() {
             savedPrice = savedInstanceState.get(getString(R.string.price)).toString()
             savedLocation = savedInstanceState.get(getString(R.string.location)).toString()
             savedDate = savedInstanceState.get(getString(R.string.expire_date)).toString()
+            oldPath = savedInstanceState.get("oldPath").toString()
+            Log.d("onsave",oldPath)
             // If an image has been taken , retrieve Uri
             if (savedInstanceState.get("imgUri").toString() != "null")
                 savedImg = savedInstanceState.get("imgUri").toString()
@@ -347,7 +342,6 @@ class ItemEditFragment : Fragment() {
                     createImageFile()
                 } catch (ex: IOException) {
                     // Error occurred while creating the File
-                    Log.e("photo_error", "ERROR IN CREATING UNIQUE NAME")
                     null
                 }
                 // Continue only if the File was successfully created
@@ -373,27 +367,22 @@ class ItemEditFragment : Fragment() {
         when (requestCode) {
 
             REQUEST_TAKE_PHOTO -> {
-                Log.e("LOG", "$data")
-                Log.e("photo", "path: ${photoFile?.absolutePath}")
 
                 val bmOptions = BitmapFactory.Options()
                 BitmapFactory.decodeFile(
                     photoFile?.absolutePath, bmOptions
                 )?.run {
                     photoURI?.run {
-                        Log.e("photo", "uri: $photoURI")
                         manageBitmap()
                     }
                 }
             }
 
             GALLERY_REQUEST_CODE -> {
-                Log.e("LOG", "$data")
                 //data.data return the content URI for the selected Image
                 photoURI = data?.data
 
                 photoURI?.run {
-                    Log.e("gallery", "$photoURI")
                     manageBitmap()
                 }
             }
@@ -407,6 +396,7 @@ class ItemEditFragment : Fragment() {
         bitmap = CropSquareTransformation().transform(bitmap!!)
         image.setImageBitmap(bitmap)
         rotatedBitmap = bitmap
+        oldPath = path
     }
 
     @Throws(IOException::class)
@@ -477,7 +467,6 @@ class ItemEditFragment : Fragment() {
         //Log.e("photo_orientation", ei.getAttribute(ExifInterface.TAG_ORIENTATION).toString())
         val orientation =
             ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-        Log.e("photo_orientation", "$orientation")
         return when (orientation) {
             ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(img, 90)
             ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(img, 180)
@@ -522,7 +511,6 @@ class ItemEditFragment : Fragment() {
         ).apply {
             // Save a file: path for use with ACTION_VIEW intents
             currentPhotoPath = absolutePath
-            Log.d("MY_TEST", currentPhotoPath)
         }
     }
 
@@ -543,7 +531,6 @@ class ItemEditFragment : Fragment() {
 
                 if (!checkError) {  // All fields are declared
 
-                    Log.d("EditItemTAG", "No Error in Item Form Validation")
 
                     if (rotatedBitmap != null) {    // An image has been taken
 
@@ -582,7 +569,6 @@ class ItemEditFragment : Fragment() {
 
                     }
                 } else {
-                    Log.d("EditItemTAG", "Error in Item Form Validation")
                     Snackbar
                         .make(requireView(), R.string.please_fill_all, Snackbar.LENGTH_SHORT)
                         .show()
@@ -676,7 +662,8 @@ class ItemEditFragment : Fragment() {
             photoURI?.run {
                 outState.putString("imgUri", this.toString())
             }
-
+        Log.d("oldpath",path)
+        outState.putString("oldPath",path)
         outState.putString(getString(R.string.title), til_title.editText!!.text.toString())
         outState.putString(
             getString(R.string.description),
@@ -699,7 +686,6 @@ class ItemEditFragment : Fragment() {
         dialog1.show()
 
         val profileImageRefs = storage.child("itemImages/$randomString")
-        Log.d("ItemEditTAG", "Name of the file to be stored: $profileImageRefs")
 
         val baos = ByteArrayOutputStream()
         rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, baos)
@@ -709,6 +695,8 @@ class ItemEditFragment : Fragment() {
             dialog2.setMessage("Done!").setCancelable(false)
             dialog2.setPositiveButton("Great!") { dialog, _ ->
                 rotatedBitmap = null
+                Log.d("deleteOfFile", "old path:  $oldPath")
+
                 if (oldPath != "") {
                     val refToDelete = storage.child("itemImages/$oldPath")
                     refToDelete.delete().addOnSuccessListener {
@@ -760,8 +748,6 @@ class ItemEditFragment : Fragment() {
     }
 
     private fun navigateMyItemDetails() {
-        //findNavController().navigateUp()
-
         val action =
             ItemEditFragmentDirections.returnToItemDetails(args.documentName, false)
         findNavController().navigate(action)
