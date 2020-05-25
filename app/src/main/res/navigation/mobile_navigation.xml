@@ -135,14 +135,25 @@
         app:startDestination="@id/nav_signIn">
         <fragment
             android:id="@+id/nav_signIn"
-            android:name="it.polito.mad.splintersell.ui.SignIn"
+            android:name="it.polito.mad.splintersell.ui.signin.SignIn"
             android:label="Sign In"
             tools:layout="@layout/sign_in_fragment">
             <action
-                android:id="@+id/goToHome"
-                app:destination="@id/nav_on_sale_list"
-                app:popUpTo="@id/sign_in" />
+                android:id="@+id/insertInformation"
+                app:destination="@id/informationFragment"
+                app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left" />
         </fragment>
+        <fragment
+            android:id="@+id/informationFragment"
+            android:name="it.polito.mad.splintersell.ui.signin.InformationFragment"
+            android:label="fragment_information"
+            tools:layout="@layout/fragment_information" />
+        <action
+            android:id="@+id/goToHome"
+            app:destination="@id/nav_on_sale_list"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left" />
     </navigation>
     <action
         android:id="@+id/showItemDetails"

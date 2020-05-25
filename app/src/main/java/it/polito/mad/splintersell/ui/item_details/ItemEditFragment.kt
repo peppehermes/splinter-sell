@@ -21,7 +21,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.PopupMenu
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -118,7 +117,7 @@ class ItemEditFragment : Fragment() {
         this.showDate()
         this.imageButtonMenu()
 
-        if(liveData.value == null){
+        if (liveData.value == null) {
             if (savedImg != null)
                 this.restoreImage(savedImg)
         }
@@ -299,7 +298,7 @@ class ItemEditFragment : Fragment() {
                         val date = "$dayConverted/$monthConverted/$years"
                         til_expire_date.editText!!.setText(date)
                     } else Snackbar.make(
-                        this.requireView(), getString(R.string.Wrong_date), Snackbar.LENGTH_SHORT
+                        this.requireView(), getString(R.string.wrong_date), Snackbar.LENGTH_SHORT
                     ).show()
                 },
                 year,
@@ -729,7 +728,6 @@ class ItemEditFragment : Fragment() {
         }.addOnSuccessListener {
             Log.d("ItemEditTAG", "Success in saving image to the Cloud Storage")
         }
-
 
 
     }

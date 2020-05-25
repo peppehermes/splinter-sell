@@ -3,7 +3,6 @@ package it.polito.mad.splintersell.ui.on_sale_list
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.transition.TransitionInflater
 import android.transition.TransitionManager
 import android.util.Log
 import android.view.*
@@ -29,7 +28,7 @@ import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
-import it.polito.mad.splintersell.ui.SignInViewModel
+import it.polito.mad.splintersell.ui.signin.SignInViewModel
 import kotlinx.android.synthetic.main.fragment_on_sale_list.*
 
 

@@ -1,4 +1,4 @@
-package it.polito.mad.splintersell.ui
+package it.polito.mad.splintersell.ui.signin
 
 import android.content.Intent
 import android.os.Bundle
@@ -18,9 +18,9 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.UserModel
+import it.polito.mad.splintersell.ui.SignInDirections
 import kotlinx.android.synthetic.main.sign_in_fragment.*
 
 const val RC_SIGN_IN = 2013
@@ -66,7 +66,10 @@ class SignIn : Fragment() {
 
         sign_in_button.setOnClickListener {
             val signInIntent: Intent = mGoogleSignInClient.signInIntent
-            startActivityForResult(signInIntent, RC_SIGN_IN)
+            startActivityForResult(signInIntent,
+                RC_SIGN_IN
+            )
+            findNavController().navigate(SignInDirections.insertInformation())
         }
 
         auth = Firebase.auth
@@ -83,7 +86,7 @@ class SignIn : Fragment() {
 
         if (account != null) {
 
-            findNavController().navigate(SignInDirections.goToHome())
+            findNavController().navigate(SignInDirections.insertInformation())
 
         } else Log.d("SignInTAG", "User not logged in")
 

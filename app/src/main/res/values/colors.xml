@@ -17,7 +17,7 @@
     <color name="backgroundDark">#3A3A3A</color>
     <color name="colorError">#B00020</color>
 
-
+    <color name="actionbarOpacity">#00000000</color>
 
     //SHOW PROFILE
     <color name="white">#FFFFFF</color>

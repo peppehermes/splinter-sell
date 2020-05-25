@@ -2,10 +2,7 @@ package it.polito.mad.splintersell.fcm
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.TaskStackBuilder
 import android.content.Context
-import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
@@ -17,8 +14,6 @@ import com.google.firebase.messaging.RemoteMessage
 import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
-import it.polito.mad.splintersell.ui.items_of_interest.ItemsOfInterestListFragment
-import it.polito.mad.splintersell.ui.my_item_list.ItemListFragment
 
 
 class FirebaseMessageReceiver : FirebaseMessagingService() {
@@ -34,7 +29,7 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
 
     private fun showNotification(title: String?, message: String?) {
 
-        Log.d("notification","sto mostrando la notifica")
+        Log.d("notification", "sto mostrando la notifica")
 
         val channelId = "web_app_channel"
         val pending = NavDeepLinkBuilder(this)
@@ -59,7 +54,7 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel =
                 NotificationChannel(channelId, "web_app", NotificationManager.IMPORTANCE_HIGH)
-            notificationChannel.setSound(uri,null)
+            notificationChannel.setSound(uri, null)
             notMan.createNotificationChannel(notificationChannel)
         }
 

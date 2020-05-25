@@ -1,6 +1,5 @@
 package it.polito.mad.splintersell.ui.on_sale_list
 
-import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,14 +7,12 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.navigation.Navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.data.ItemModelHolder
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlinx.android.synthetic.main.item_card.view.*
 
 class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>) :
     RecyclerView.Adapter<ItemModelHolder>(), Filterable {
