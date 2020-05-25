@@ -71,7 +71,6 @@ class ItemEditFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
     }
 
     override fun onCreateView(
@@ -79,7 +78,6 @@ class ItemEditFragment : Fragment() {
     ): View? {
         firestoreViewModel.fetchSingleItemFromFirestore(args.documentName)
         liveData = firestoreViewModel.item
-
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_item, container, false)

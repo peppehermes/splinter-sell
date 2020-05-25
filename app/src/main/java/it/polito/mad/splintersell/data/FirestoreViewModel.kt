@@ -20,6 +20,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     private var _myNotificationsList: MutableLiveData<List<NotificationModel>> = MutableLiveData()
     private var _wishItemsList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _isRequested: MutableLiveData<Boolean> = MutableLiveData()
+    private var _isUnique: MutableLiveData<Boolean> = MutableLiveData()
     private var _item: MutableLiveData<ItemModel> = MutableLiveData()
     private var _onSaleItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _myItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
@@ -245,6 +246,13 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         }
     }
 
+    fun isNickUnique(nick: String) {
+        firestoreRepository.isUniqueNickname(nick)
+            .addOnSuccessListener {
+                _isUnique.value = it.isEmpty
+                Log.e(TAG, _isUnique.value.toString())
+            }
+    }
 
     internal var myUser: MutableLiveData<UserModel>
         get() {
@@ -260,6 +268,14 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         }
         set(value) {
             _myUserNav = value
+        }
+
+    internal var isUnique: MutableLiveData<Boolean>
+        get() {
+            return _isUnique
+        }
+        set(value) {
+            _isUnique = value
         }
 
     internal var isRequested: MutableLiveData<Boolean>

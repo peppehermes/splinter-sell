@@ -11,8 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/actionbarOpacity"
-        app:theme="@style/TransparentToolbar"
-        app:navigationIcon="@drawable/ic_arrow_back_black_24dp"/>
+        app:theme="@style/TransparentToolbar" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -34,14 +33,15 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:orientation="vertical"
+                android:id="@+id/coordinator_layout"
                 tools:ignore="UselessParent">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="200dp"
-                    android:src="@drawable/img_avatar"
                     android:layout_marginVertical="16dp"
+                    android:id="@+id/profile_photo"
                     android:contentDescription="@string/profile_photo"/>
 
                 <TextView
@@ -63,24 +63,25 @@
                     android:text="@string/choose_a_unique_nick_just_like_you" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_login_nick"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="4dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     app:cardCornerRadius="24dp"
                     app:cardElevation="0dp">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/login_nick"
                         style="@style/InputBody"
-                        android:id="@+id/et_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:background="@android:color/transparent"
                         android:drawableStart="@drawable/ic_account_circle_black_24dp"
-                        android:drawableTint="?attr/colorControlNormal"
                         android:drawablePadding="12dp"
+                        android:drawableTint="?attr/colorControlNormal"
                         android:hint="@string/nick"
                         android:imeOptions="actionDone"
                         android:inputType="textEmailAddress"

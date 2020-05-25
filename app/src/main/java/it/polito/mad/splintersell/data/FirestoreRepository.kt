@@ -4,7 +4,10 @@ import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
@@ -146,6 +149,12 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
         return documentReferenceUser.set(myUser)
             .addOnSuccessListener { Log.d(TAG, "USER Successfully saved") }
             .addOnFailureListener { Log.d(TAG, "USER Error in saving") }
+    }
+
+    fun isUniqueNickname(nick: String): Task<QuerySnapshot> {
+        return firestore.collection("users")
+            .whereEqualTo("nickname", nick)
+            .get()
     }
 
     fun getUsersData(itemID: String) {

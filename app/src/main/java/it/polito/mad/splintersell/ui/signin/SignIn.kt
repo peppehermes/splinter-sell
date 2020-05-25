@@ -36,6 +36,12 @@ class SignIn : Fragment() {
 
     private lateinit var viewModel: SignInViewModel
 
+    override fun onStart() {
+        super.onStart()
+        val account = auth.currentUser
+        checkUser(account)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,16 +74,10 @@ class SignIn : Fragment() {
             startActivityForResult(signInIntent,
                 RC_SIGN_IN
             )
-            findNavController().navigate(SignInDirections.insertInformation())
+            //findNavController().navigate(SignInDirections.insertInformation())
         }
 
         auth = Firebase.auth
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val account = auth.currentUser
-        checkUser(account)
     }
 
 

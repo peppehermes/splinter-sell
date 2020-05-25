@@ -32,6 +32,7 @@
     <string name="location">Location</string>
     <string name="expire_date">Expire date</string>
     <string name="owner">Owner</string>
+    <string name="nick_not_available">"This nickname is not available"</string>
 
     <string name="edit">Edit</string>
     <string name="view_user">View User</string>
