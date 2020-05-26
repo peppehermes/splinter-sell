@@ -19,22 +19,33 @@ import it.polito.mad.splintersell.data.FirestoreViewModel
 class FirebaseMessageReceiver : FirebaseMessagingService() {
 
     override fun onMessageReceived(p0: RemoteMessage) {
-        Log.d("ricezione", " ${p0.notification!!.title} ")
 
         if (p0.notification != null) {
-            showNotification(p0.notification!!.title, p0.notification!!.body)
+            showNotification(p0.notification!!.title, p0.notification!!.body, p0.data["fragment"])
         }
     }
 
 
-    private fun showNotification(title: String?, message: String?) {
+    private fun showNotification(
+        title: String?,
+        message: String?,
+        fragment: String?
+    ) {
 
+        var destination:Int = R.id.nav_on_sale_list
+
+        if(fragment == "bought")
+            destination = R.id.nav_bought_items_list
+        else if (fragment == "onsale")
+            destination = R.id.nav_on_sale_list
+        else if (fragment == "myitems")
+            destination = R.id.nav_item_list
 
         val channelId = "web_app_channel"
         val pending = NavDeepLinkBuilder(this)
             .setComponentName(MainActivity::class.java)
             .setGraph(R.navigation.mobile_navigation)
-            .setDestination(R.id.nav_bought_items_list)
+            .setDestination(destination)
             .createPendingIntent()
         val uri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val builder = NotificationCompat.Builder(applicationContext, channelId)
