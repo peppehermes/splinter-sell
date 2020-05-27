@@ -3,10 +3,10 @@ package it.polito.mad.splintersell.ui.bought_items_list
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.messaging.FirebaseMessaging
 import it.polito.mad.splintersell.R
-import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.data.ItemModelHolder
 import it.polito.mad.splintersell.ui.manageStatus
@@ -32,19 +32,18 @@ class BoughtItemsListAdapter(private var soldList: ArrayList<ItemModel>) :
         // Bind the ItemModel object to the ItemModelHolder
         val item = soldList[position]
         holder.bind(item)
+        manageStatus(holder, item.status!!)
 
-
-            manageStatus(holder, item.status!!)
+        if(!item.isleft) {
             holder.jolly.visibility = View.VISIBLE
-            holder.jolly.text = holder.itemView.context.getString(R.string.remove)
+            holder.jolly.text = holder.itemView.context.getString(R.string.feedback)
+
+
             holder.jolly.setOnClickListener {
-                FirestoreViewModel().firestoreRepository.removeNotification(item.documentName!!)
-                FirebaseMessaging.getInstance().unsubscribeFromTopic(item.documentName!!)
-                //Todo: qui va chiamato il frammento del feedback. cambia il bottone come preferisci(jolly)
+                navigateToItemFeedback(holder.itemView, item.ownerId!!, item.title!!, item.documentName!!)
             }
-
+        }
     }
-
 
     override fun getItemId(position: Int): Long {
         return position.toLong()
@@ -52,5 +51,11 @@ class BoughtItemsListAdapter(private var soldList: ArrayList<ItemModel>) :
 
     override fun getItemViewType(position: Int): Int {
         return position
+    }
+
+    private fun navigateToItemFeedback(view: View, ownerId: String, itemTitle: String, itemId: String) {
+        val action = BoughtItemsListFragmentDirections.leavefeedback(ownerId, itemTitle, itemId)
+        Navigation.findNavController(view).navigate(action)
+
     }
 }

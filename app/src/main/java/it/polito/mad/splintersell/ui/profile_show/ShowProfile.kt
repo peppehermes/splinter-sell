@@ -82,9 +82,11 @@ class ShowProfile : Fragment() {
                 nickname.text = it.nickname
                 email.text = it.email
                 location.text = it.location
+                rating.setRating(it.rating)
             } else {
                 nickname.text = it.nickname
                 email.text = it.email
+                rating.setRating(it.rating)
 
                 name.text = getString(R.string.hidden_text)
                 name.setTextColor(name.context.getColor(R.color.colorPrimary))

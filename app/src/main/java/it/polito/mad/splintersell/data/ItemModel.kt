@@ -13,6 +13,7 @@ class ItemModel {
     var imgPath: String = ""
     var status: String? = null
     var soldTo: String = ""
+    var isleft: Boolean = false
 
     constructor()
 

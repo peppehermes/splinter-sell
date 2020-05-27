@@ -61,8 +61,22 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         }
     }
 
+    fun saveFeedbackToFirestore(feed: FeedbackModel) {
+        firestoreRepository.saveFeedback(feed).addOnFailureListener {
+            Log.e(TAG, "Failed to save Feedback!")
+        }
+    }
+
     fun updateStatus(status: String, item_id: String) {
         firestoreRepository.updateStatus(status, item_id)
+    }
+
+    fun updateStatusFeed(item_id: String) {
+        firestoreRepository.updateStatusFeed(item_id)
+    }
+
+    fun updateRating(ownerid: String, newrate: Float) {
+        firestoreRepository.updateRating(ownerid, newrate)
     }
 
     fun setSoldTo(uid:String, itemId:String){

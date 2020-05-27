@@ -170,7 +170,29 @@
     <fragment
         android:id="@+id/nav_bought_items_list"
         android:label="Bought List"
-        android:name="it.polito.mad.splintersell.ui.bought_items_list.BoughtItemsListFragment" />
+        android:name="it.polito.mad.splintersell.ui.bought_items_list.BoughtItemsListFragment" >
+        <action
+            android:id="@+id/leavefeedback"
+            app:destination="@id/itemFeedbackFragment"
+            app:popUpTo="@id/nav_bought_items_list" />/>
+    </fragment>
+    <fragment
+        android:id="@+id/itemFeedbackFragment"
+        android:name="it.polito.mad.splintersell.ui.item_feedback.ItemFeedbackFragment"
+        android:label="Leave Feedback">
+        <argument
+            android:name="ownerid"
+            app:argType="string" />
+        <argument
+            android:name="itemtitle"
+            app:argType="string" />
+        <argument
+            android:name="itemid"
+            app:argType="string" />
+        <action
+            android:id="@+id/goToBoughtList"
+            app:destination="@id/nav_bought_items_list" />
+    </fragment>
 
 
 </navigation>

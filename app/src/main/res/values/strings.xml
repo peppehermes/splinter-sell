@@ -32,6 +32,10 @@
     <string name="location">Location</string>
     <string name="expire_date">Expire date</string>
     <string name="owner">Owner</string>
+    <string name="comment">Comment</string>
+    <string name="user">User</string>
+    <string name="item">Item</string>
+    <string name="rating">Please, express a rate from 1 to 5</string>
     <string name="nick_not_available">"This nickname is not available"</string>
 
     <string name="edit">Edit</string>
@@ -43,6 +47,7 @@
     <string name="sold">sold</string>
     <string name="available">available</string>
     <string name="blocked">blocked</string>
+    <string name="feedback">Feedback</string>
 
     //SHOW PROFILE
     <string name="full_name">Full Name</string>

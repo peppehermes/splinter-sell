@@ -9,6 +9,8 @@ class UserModel {
     var photoName: String = "img_avatar.jpg"
     var userid: String? = null
     var token: String = ""
+    var rating: Float = 0F
+    var counterfeed: Int = 0
 
     constructor()
 
@@ -31,6 +33,8 @@ class UserModel {
         result["email"] = email!!
         result["location"] = location!!
         result["photoName"] = photoName
+        result["rating"] = rating
+        result["counterfeed"] = counterfeed
 
         return result
     }

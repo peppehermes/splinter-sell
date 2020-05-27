@@ -4,10 +4,7 @@ import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldPath
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
@@ -108,6 +105,16 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
                 .document("${not.id_user}_${not.id_item}")
 
         return documentReferenceUser.set(not)
+            .addOnSuccessListener { Log.d(TAG, "Successfully saved") }
+            .addOnFailureListener { Log.d(TAG, "Error in saving") }
+    }
+
+    fun saveFeedback(feed: FeedbackModel): Task<Void> {
+        val documentReferenceUser =
+            firestore.collection("feedbacks")
+                .document("${feed.id_user}_${feed.id_item}_${feed.id_owner}")
+
+        return documentReferenceUser.set(feed)
             .addOnSuccessListener { Log.d(TAG, "Successfully saved") }
             .addOnFailureListener { Log.d(TAG, "Error in saving") }
     }
@@ -213,8 +220,29 @@ class FirestoreRepository(private val onFirestoreTaskComplete: OnFirestoreTaskCo
             }
     }
 
+    fun updateRating(ownerid: String, newrate: Float) {
+        firestore.collection("users").document(ownerid).update(
+            "counterfeed", FieldValue.increment(1))
+            .addOnSuccessListener() {
+            firestore.collection("users")
+                .document(ownerid)
+                .get()
+                .addOnSuccessListener { users ->
+                    val user = users.toObject(UserModel::class.java)
+                    val counter = user!!.counterfeed
+                    val sum = (user!!.rating) * (counter - 1)
+                    val rating = (sum + newrate)/ counter
+                    firestore.collection("users").document(ownerid).update("rating", rating)
+                }
+            }
+    }
+
     fun updateStatus(status: String, itemId: String) {
         firestore.collection("items").document(itemId).update("status", status)
+    }
+
+    fun updateStatusFeed(itemId: String) {
+        firestore.collection("items").document(itemId).update("isleft", true)
     }
 
     fun updateToken(token: String) {
