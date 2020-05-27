@@ -11,11 +11,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.SearchView
-import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -24,16 +21,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.iid.FirebaseInstanceId
-import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
-import it.polito.mad.splintersell.ui.signin.SignInViewModel
+import it.polito.mad.splintersell.ui.sign_in.SignInViewModel
 import kotlinx.android.synthetic.main.fragment_on_sale_list.*
 
 
 class OnSaleListFragment : Fragment() {
-    private val firestoreViewModel: FirestoreViewModel by viewModels()
+    private val firestoreViewModel: FirestoreViewModel by activityViewModels()
     private val signInViewModel: SignInViewModel by activityViewModels()
 
     private lateinit var adapter: OnSaleListAdapter
@@ -48,17 +44,6 @@ class OnSaleListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         firestoreViewModel.fetchAvailableItemListFromFirestore()
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // Handle the back button event
-                findNavController().navigate(R.id.nav_on_sale_list)
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(
-            this,
-            callback
-        )
     }
 
     override fun onCreateView(
@@ -114,13 +99,23 @@ class OnSaleListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity?)?.refreshDataForDrawer()
-
-        (activity as AppCompatActivity).supportActionBar?.show()
-
-        generateToken()
-
         externalLayout = view.findViewById(R.id.external_layout)
+
+        // Check if the user is authenticated
+        signInViewModel.authenticationState.observe(
+            viewLifecycleOwner,
+            Observer { authenticationState ->
+                when (authenticationState) {
+                    SignInViewModel.AuthenticationState.AUTHENTICATED -> doSomething()
+                    SignInViewModel.AuthenticationState.UNAUTHENTICATED -> {
+                        TransitionManager.beginDelayedTransition(externalLayout)
+                        findNavController().navigate(R.id.sign_in)
+                    }
+                    else -> { /*Do nothing*/
+                    }
+                }
+
+            })
 
         manageSpinner()
 
@@ -131,9 +126,6 @@ class OnSaleListFragment : Fragment() {
         listView.setHasFixedSize(true)
         listView.adapter = adapter
         listView.itemAnimator = DefaultItemAnimator()
-
-        // Check if new items have been added
-        updateUI()
 
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)
@@ -149,6 +141,14 @@ class OnSaleListFragment : Fragment() {
             resetAction(button)
         }
 
+    }
+
+    private fun doSomething() {
+        TransitionManager.beginDelayedTransition(externalLayout)
+
+        generateToken()
+        // Check if new items have been added
+        updateUI()
     }
 
     private fun hideKeyboardFrom(context: Context, view: View) {
@@ -167,7 +167,7 @@ class OnSaleListFragment : Fragment() {
         firestoreViewModel.availableItemList.observe(viewLifecycleOwner, Observer {
 
             // Update UI
-            firestoreViewModel.firestoreRepository.getItemData()
+            firestoreViewModel.getItemData()
             firestoreViewModel.onSaleItemList.observe(
                 viewLifecycleOwner,
                 Observer { onSaleItemList ->
@@ -208,7 +208,7 @@ class OnSaleListFragment : Fragment() {
 
         if (mainCategory.isEmpty()) {
             // Filter only by price tag
-            firestoreViewModel.firestoreRepository.getItemData(minPrice, maxPrice)
+            firestoreViewModel.getItemData(minPrice, maxPrice)
             Snackbar.make(view, "List updated", Snackbar.LENGTH_SHORT).show()
         } else {
             if (secondCategory.isEmpty()) {
@@ -218,7 +218,7 @@ class OnSaleListFragment : Fragment() {
                     .setAction("OKAY") { // Nothing to do here
                     }.show()
             } else {
-                firestoreViewModel.firestoreRepository.getItemData(
+                firestoreViewModel.getItemData(
                     minPrice, maxPrice, mainCategory, secondCategory
                 )
                 Snackbar.make(view, "List updated", Snackbar.LENGTH_SHORT).show()
@@ -312,18 +312,17 @@ class OnSaleListFragment : Fragment() {
             }
     }
 
-    fun generateToken() {
+    private fun generateToken() {
 
         FirebaseInstanceId.getInstance().instanceId
             .addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
-                    Log.w("IstanceId", "getInstanceId failed", task.exception)
                     return@OnCompleteListener
                 }
 
                 // Get new Instance ID token
                 val token = task.result?.token
-                FirestoreViewModel().updateToken(token.toString())
+                firestoreViewModel.updateToken(token.toString())
             })
     }
 }

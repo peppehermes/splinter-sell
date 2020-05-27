@@ -6,7 +6,6 @@ import android.content.Context
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -19,7 +18,6 @@ import it.polito.mad.splintersell.data.FirestoreViewModel
 class FirebaseMessageReceiver : FirebaseMessagingService() {
 
     override fun onMessageReceived(p0: RemoteMessage) {
-
         if (p0.notification != null) {
             showNotification(p0.notification!!.title, p0.notification!!.body, p0.data["fragment"])
         }
@@ -31,7 +29,6 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
         message: String?,
         fragment: String?
     ) {
-
         var destination:Int = R.id.nav_on_sale_list
 
         if(fragment == "bought")
@@ -55,7 +52,7 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
             .setContentTitle(title)
             .setContentText(message)
             .setSmallIcon(R.drawable.logo_final)
-            .setColor(resources.getColor(R.color.colorAccent))
+            .setColor(applicationContext.getColor(R.color.colorAccent))
 
 
         val notMan: NotificationManager =
@@ -73,7 +70,7 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
     }
 
     override fun onNewToken(token: String) {
-        if (FirestoreViewModel().user != null)
+        if (FirestoreViewModel().createdUserLiveData != null)
             FirestoreViewModel().updateToken(token)
     }
 

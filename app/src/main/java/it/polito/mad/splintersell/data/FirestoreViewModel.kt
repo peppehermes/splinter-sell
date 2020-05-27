@@ -1,11 +1,18 @@
 package it.polito.mad.splintersell.data
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.QuerySnapshot
 import java.util.*
+
 
 class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskComplete {
     val TAG = "FIRESTORE_VIEW_MODEL"
@@ -14,13 +21,14 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     val SOLD = "sold"
     var firestoreRepository = FirestoreRepository(this)
     var user = FirebaseAuth.getInstance().currentUser
+    var authenticatedUserLiveData: LiveData<UserModel>? = null
+    var createdUserLiveData: LiveData<UserModel>? = null
 
     private var _myUser: MutableLiveData<UserModel> = MutableLiveData()
     private var _myUserNav: MutableLiveData<UserModel> = MutableLiveData()
     private var _myNotificationsList: MutableLiveData<List<NotificationModel>> = MutableLiveData()
     private var _wishItemsList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _isRequested: MutableLiveData<Boolean> = MutableLiveData()
-    private var _isUnique: MutableLiveData<Boolean> = MutableLiveData()
     private var _item: MutableLiveData<ItemModel> = MutableLiveData()
     private var _onSaleItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _myItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
@@ -31,6 +39,20 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
 
     init {
         this.fetchAllItemListFromFirestore()
+    }
+
+    fun createUser(authenticatedUser: UserModel) {
+        createdUserLiveData =
+            firestoreRepository.createUserInFirestoreIfNotExists(authenticatedUser)
+    }
+
+    fun getCurrentUser() {
+        createdUserLiveData = firestoreRepository.getCurrentUser()
+    }
+
+    fun signInWithGoogle(googleAuthCredential: AuthCredential?) {
+        authenticatedUserLiveData =
+            firestoreRepository.firebaseSignInWithGoogle(googleAuthCredential)
     }
 
     override fun itemListDataAdded(itemModelList: List<ItemModel>) {
@@ -79,12 +101,8 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         firestoreRepository.updateRating(ownerid, newrate)
     }
 
-    fun setSoldTo(uid:String, itemId:String){
-        firestoreRepository.setSoldTo(uid,itemId)
-    }
-
-    fun updateToken(token: String) {
-        firestoreRepository.updateToken(token)
+    fun setSoldTo(uid: String, itemId: String) {
+        firestoreRepository.setSoldTo(uid, itemId)
     }
 
     fun cancelAllNotifications(item_id: String) {
@@ -110,7 +128,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     fun fetchMyItemListFromFirestore() {
-        firestoreRepository.itemRef.whereEqualTo("ownerId", user!!.uid)
+        firestoreRepository.itemRef.whereEqualTo("ownerId", createdUserLiveData!!.value!!.userId)
             .addSnapshotListener(EventListener { value, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
@@ -185,7 +203,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     fun fetchSoldItemListFromFirestore() {
         firestoreRepository.itemRef
             .whereEqualTo("status", SOLD)
-            .whereEqualTo("soldTo",user!!.uid)
+            .whereEqualTo("soldTo", createdUserLiveData!!.value!!.userId)
             .addSnapshotListener(EventListener { value, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
@@ -220,7 +238,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     fun fetchMyUserFromFirestore() {
-        firestoreRepository.getUserDocument(user!!.uid)
+        firestoreRepository.getUserDocument(createdUserLiveData!!.value!!.userId!!)
             .addSnapshotListener(EventListener { value, e ->
                 if (e != null) {
                     Log.w(TAG, "USER Listen failed.", e)
@@ -255,17 +273,160 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     fun saveUserToFirestore(myUser: UserModel) {
-        firestoreRepository.saveUser(myUser).addOnFailureListener {
+        this.saveUser(myUser).addOnFailureListener {
             Log.e(TAG, "USER Failed to save User!")
         }
     }
 
-    fun isNickUnique(nick: String) {
-        firestoreRepository.isUniqueNickname(nick)
-            .addOnSuccessListener {
-                _isUnique.value = it.isEmpty
-                Log.e(TAG, _isUnique.value.toString())
+    fun getItemNotification(itemId: String) {
+        var requested = false
+        val task = firestoreRepository.firestore.collection("notifications")
+            .whereEqualTo("id_item", itemId).get()
+
+        task.addOnSuccessListener { querySnapshot ->
+            for (document in querySnapshot) {
+                val notification = document.toObject(NotificationModel::class.java)
+                if (notification.id_user.toString() == createdUserLiveData!!.value!!.userId!!) {
+                    requested = true
+                }
             }
+            firestoreRepository.onFirestoreTaskComplete.fetchNotifications(requested)
+
+        }
+    }
+
+    fun getItemData(
+        minPrice: Int = 0,
+        maxPrice: Int = Int.MAX_VALUE,
+        mainCategory: String? = null,
+        secondCategory: String? = null
+    ) {
+
+        val firstTask: Task<QuerySnapshot>
+        val secondTask: Task<QuerySnapshot>
+
+        if (mainCategory == null) {
+            firstTask = firestoreRepository.firestore.collection("items")
+                .whereLessThan("ownerId", createdUserLiveData!!.value!!.userId!!)
+                .whereEqualTo("status", AVAILABLE).get()
+
+            secondTask = firestoreRepository.firestore.collection("items")
+                .whereGreaterThan("ownerId", createdUserLiveData!!.value!!.userId!!)
+                .whereEqualTo("status", AVAILABLE).get()
+        } else {
+            firstTask = firestoreRepository.firestore.collection("items")
+                .whereLessThan("ownerId", createdUserLiveData!!.value!!.userId!!)
+                .whereEqualTo("mainCategory", mainCategory)
+                .whereEqualTo("secondCategory", secondCategory)
+                .whereEqualTo("status", AVAILABLE)
+                .get()
+
+            secondTask = firestoreRepository.firestore.collection("items")
+                .whereGreaterThan("ownerId", createdUserLiveData!!.value!!.userId!!)
+                .whereEqualTo("mainCategory", mainCategory)
+                .whereEqualTo("secondCategory", secondCategory)
+                .whereEqualTo("status", AVAILABLE)
+                .get()
+        }
+
+        val list = ArrayList<ItemModel>()
+
+        Tasks.whenAllSuccess<QuerySnapshot>(firstTask, secondTask)
+            .addOnSuccessListener { querySnaps ->
+                for (docSnap in querySnaps) for (document in docSnap) {
+                    val item = document.toObject(ItemModel::class.java)
+
+                    if (item.price!!.toInt() in minPrice..maxPrice)
+                        list.add(item)
+                }
+
+                firestoreRepository.onFirestoreTaskComplete.itemListDataAdded(list)
+            }
+    }
+
+    fun removeNotification(itemId: String) {
+        val docQuery = firestoreRepository.firestore.collection("notifications")
+            .whereEqualTo("id_item", itemId)
+            .whereEqualTo("id_user", createdUserLiveData!!.value!!.userId!!).get()
+
+        docQuery.addOnSuccessListener { documents ->
+            for (document in documents) {
+                document.reference.delete().addOnSuccessListener {
+                    Log.d(TAG, "Successfully removed")
+                }
+            }
+        }.addOnFailureListener { Log.d(TAG, "Error in removing") }
+    }
+
+    private fun saveUser(myUser: UserModel): Task<Void> {
+        val documentReferenceUser = firestoreRepository.firestore.collection("users")
+            .document(createdUserLiveData!!.value!!.userId!!)
+
+        return documentReferenceUser.set(myUser)
+            .addOnSuccessListener { Log.d(TAG, "USER Successfully saved") }
+            .addOnFailureListener { Log.d(TAG, "USER Error in saving") }
+    }
+
+    fun getUsersData(itemID: String) {
+        val interestedUsers = ArrayList<String>()
+        val list = ArrayList<UserModel>()
+        firestoreRepository.firestore.collection("notifications")
+            .whereEqualTo("id_item", itemID)
+            .whereEqualTo("id_owner", createdUserLiveData!!.value!!.userId!!)
+            .get().addOnSuccessListener { notifications ->
+                for (doc in notifications) {
+                    val username = doc.get("id_user").toString()
+                    interestedUsers.add(username)
+                }
+
+                if (interestedUsers.isNotEmpty()) {
+                    firestoreRepository.firestore.collection("users")
+                        .whereIn(FieldPath.documentId(), interestedUsers).get()
+                        .addOnSuccessListener { documents ->
+                            for (document in documents) {
+                                val user = document.toObject(UserModel::class.java)
+                                user.userId = document.id
+                                list.add(user)
+                                firestoreRepository.onFirestoreTaskComplete.userListDataAdded(list)
+                            }
+                        }
+                } else firestoreRepository.onFirestoreTaskComplete.userListDataAdded(list)
+            }
+    }
+
+    fun getNotificationData() {
+        val likedItems = ArrayList<String>()
+        val list = ArrayList<ItemModel>()
+        firestoreRepository.firestore.collection("notifications")
+            .whereEqualTo("id_user", createdUserLiveData!!.value!!.userId!!).get()
+            .addOnSuccessListener { notifications ->
+                for (doc in notifications) {
+                    val itemName = doc.get("id_item").toString()
+                    likedItems.add(itemName)
+                }
+
+                if (likedItems.isNotEmpty()) {
+                    firestoreRepository.firestore.collection("items")
+                        .whereEqualTo("status", "available")
+                        .whereIn("documentName", likedItems)
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            for (document in documents) {
+                                val item = document.toObject(ItemModel::class.java)
+                                list.add(item)
+                            }
+                            firestoreRepository.onFirestoreTaskComplete.notListDataAdded(list)
+                        }
+                } else {
+                    firestoreRepository.onFirestoreTaskComplete.notListDataAdded(list)
+                }
+            }
+    }
+
+    fun updateToken(token: String) {
+        firestoreRepository.firestore.collection("users")
+            .document(createdUserLiveData!!.value!!.userId!!)
+            .update("token", token)
     }
 
     internal var myUser: MutableLiveData<UserModel>
@@ -282,14 +443,6 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         }
         set(value) {
             _myUserNav = value
-        }
-
-    internal var isUnique: MutableLiveData<Boolean>
-        get() {
-            return _isUnique
-        }
-        set(value) {
-            _isUnique = value
         }
 
     internal var isRequested: MutableLiveData<Boolean>

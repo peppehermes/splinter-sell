@@ -8,7 +8,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -23,7 +23,7 @@ import it.polito.mad.splintersell.data.*
 import kotlinx.android.synthetic.main.fragment_item_details.*
 
 class ItemDetailsFragment : Fragment() {
-    private val firestoreViewModel: FirestoreViewModel by viewModels()
+    private val firestoreViewModel: FirestoreViewModel by activityViewModels()
     private lateinit var liveData: LiveData<ItemModel>
     private lateinit var userLiveData: LiveData<UserModel>
     private var user = FirebaseAuth.getInstance().currentUser
@@ -62,11 +62,9 @@ class ItemDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
         coordinator = view.findViewById(R.id.coordinator_layout)
 
-        firestoreViewModel.firestoreRepository.getItemNotification(args.documentName)
+        firestoreViewModel.getItemNotification(args.documentName)
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)
 
@@ -136,7 +134,7 @@ class ItemDetailsFragment : Fragment() {
         isRotate = rotateFab(fab, !isRotated)
 
         if (isRequested) {
-            firestoreViewModel.firestoreRepository.removeNotification(args.documentName)
+            firestoreViewModel.removeNotification(args.documentName)
             FirebaseMessaging.getInstance().unsubscribeFromTopic(args.documentName)
             Snackbar.make(
                 coordinator, "Item removed from Wishlist", Snackbar.LENGTH_SHORT

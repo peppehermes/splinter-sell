@@ -192,7 +192,10 @@
     <string name="transition_title">transition_title</string>
     <string name="transition_description">transition_description</string>
     <string name="transition_price">transition_price</string>
-    <string name="select_photo_and_nickname">Select photo and nickname</string>
+    <string name="select_photo_and_nickname">It\'s time for a nickname</string>
     <string name="choose_a_unique_nick_just_like_you">Choose a unique nick, just like you</string>
+    <string name="welcome">Welcome!</string>
+    <string name="you_re_almost_there">You\'re almost there</string>
+    <string name="here_we_are">Here we are</string>
 
 </resources>

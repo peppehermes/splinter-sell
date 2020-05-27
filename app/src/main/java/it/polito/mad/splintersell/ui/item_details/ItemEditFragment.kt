@@ -24,7 +24,7 @@ import android.widget.PopupMenu
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -61,7 +61,7 @@ class ItemEditFragment : Fragment() {
     private var photoFile: File? = null
     private var photoURI: Uri? = null
 
-    private val firestoreViewModel: FirestoreViewModel by viewModels()
+    private val firestoreViewModel: FirestoreViewModel by activityViewModels()
 
     private val args: ItemEditFragmentArgs by navArgs()
     private lateinit var currentPhotoPath: String
@@ -533,7 +533,7 @@ class ItemEditFragment : Fragment() {
                     if (rotatedBitmap != null) {    // An image has been taken
 
                         randomString =
-                            (1..20).map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+                            (1..20).map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
                                 .map(charPool::get).joinToString("")
 
                         randomString = "$randomString.jpg"
@@ -590,7 +590,7 @@ class ItemEditFragment : Fragment() {
 
                         dialog.dismiss()
 
-                        findNavController().navigate(ItemEditFragmentDirections.goToItemList())
+                        findNavController().popBackStack(R.id.nav_item_list, false)
                     }.setNegativeButton("No") { dialog, _ ->
                         // Dismiss the dialog
                         dialog.dismiss()

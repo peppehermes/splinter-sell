@@ -1,4 +1,4 @@
-package it.polito.mad.splintersell.ui.signin
+package it.polito.mad.splintersell.ui.sign_in
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,8 +18,16 @@ class SignInViewModel : ViewModel() {
             AuthenticationState.UNAUTHENTICATED
     }
 
-    fun addUserToFirestore() {
+    fun refuseAuthentication() {
+        authenticationState.value = AuthenticationState.UNAUTHENTICATED
+    }
 
+    fun invalidAuthentication() {
+        authenticationState.value = AuthenticationState.INVALID_AUTHENTICATION
+    }
+
+    fun authenticate() {
+        authenticationState.value = AuthenticationState.AUTHENTICATED
     }
 
 

@@ -4,52 +4,40 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.transition.TransitionManager
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import it.polito.mad.splintersell.MainActivity
-
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
+import it.polito.mad.splintersell.ui.sign_in.SignInViewModel
 import kotlinx.android.synthetic.main.fragment_bought_items_list.*
 
 
 class BoughtItemsListFragment : Fragment() {
 
-    private val firestoreViewModel: FirestoreViewModel by viewModels()
+    private val firestoreViewModel: FirestoreViewModel by activityViewModels()
+    private val signInViewModel: SignInViewModel by activityViewModels()
     private lateinit var externalLayout: ViewGroup
     private var list = arrayListOf<ItemModel>()
     private lateinit var adapter: BoughtItemsListAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // Handle the back button event
-                findNavController().navigate(R.id.nav_on_sale_list)
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(
-            this,
-            callback
-        )
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        firestoreViewModel.fetchSoldItemListFromFirestore()
+        firestoreViewModel.createdUserLiveData!!.observe(viewLifecycleOwner, Observer {
+            signInViewModel.authenticate()
+            firestoreViewModel.fetchSoldItemListFromFirestore()
+        })
 
+        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_bought_items_list, container, false)
     }
 
@@ -57,7 +45,6 @@ class BoughtItemsListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         externalLayout = view.findViewById(R.id.external_layout)
-        (activity as MainActivity?)?.refreshDataForDrawer()
 
         val itemRecyclerView = view.findViewById<View>(R.id.bought_list) as RecyclerView
 
@@ -92,10 +79,10 @@ class BoughtItemsListFragment : Fragment() {
     private fun updateUI() {
 
         firestoreViewModel.soldItemsList.observe(viewLifecycleOwner, androidx.lifecycle.Observer { soldList ->
+            Log.e("HELLO", "UPDATE")
             adapter.setSoldList(soldList as ArrayList<ItemModel>)
             adapter.notifyDataSetChanged()
             toggleNoItemsHere(soldList)
-
         })
 
     }

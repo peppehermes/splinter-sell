@@ -9,14 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
@@ -25,25 +22,10 @@ import kotlinx.android.synthetic.main.fragment_wish_list.*
 class ItemsOfInterestListFragment : Fragment() {
     private val TAG = "WISHLIST"
 
-    private val firestoreViewModel: FirestoreViewModel by viewModels()
+    private val firestoreViewModel: FirestoreViewModel by activityViewModels()
     private lateinit var externalLayout: ViewGroup
     private var list = arrayListOf<ItemModel>()
     private lateinit var adapter: ItemsOfInterestListAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // Handle the back button event
-                findNavController().navigate(R.id.nav_on_sale_list)
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(
-            this,
-            callback
-        )
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -59,7 +41,6 @@ class ItemsOfInterestListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         externalLayout = view.findViewById(R.id.external_layout)
-        (activity as MainActivity?)?.refreshDataForDrawer()
 
         val itemRecyclerView = view.findViewById<View>(R.id.wish_list) as RecyclerView
 
@@ -94,7 +75,7 @@ class ItemsOfInterestListFragment : Fragment() {
     private fun updateUI() {
         firestoreViewModel.myNotificationsList.observe(viewLifecycleOwner, Observer {
             Log.e(TAG, "NOTIFICATIONS UPDATED")
-            firestoreViewModel.firestoreRepository.getNotificationData()
+            firestoreViewModel.getNotificationData()
             firestoreViewModel.wishItemsList.observe(viewLifecycleOwner, Observer { wishItemList ->
                 Log.e(TAG, "WISH LIST UPDATED")
                 for (elem in wishItemList) Log.e(TAG, elem.toString())
@@ -107,7 +88,7 @@ class ItemsOfInterestListFragment : Fragment() {
 
         firestoreViewModel.allItemList.observe(viewLifecycleOwner, Observer {
             Log.e(TAG, "ITEM LIST UPDATED")
-            firestoreViewModel.firestoreRepository.getNotificationData()
+            firestoreViewModel.getNotificationData()
             firestoreViewModel.wishItemsList.observe(viewLifecycleOwner, Observer { wishItemList ->
                 Log.e(TAG, "WISH LIST UPDATED")
                 for (elem in wishItemList) Log.e(TAG, elem.toString())

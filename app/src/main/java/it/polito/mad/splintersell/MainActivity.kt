@@ -1,7 +1,6 @@
 package it.polito.mad.splintersell
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -18,18 +17,15 @@ import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.storage
 
-class MainActivity : AppCompatActivity() {
-
-    private val user = Firebase.auth.currentUser
+class MainActivity : AppCompatActivity(), DrawerLayout.DrawerListener {
 
     private val firestoreViewModel: FirestoreViewModel by viewModels()
-
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var drawerLayout: DrawerLayout
+    private val TAG = "MAIN_ACTIVITY"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +33,8 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        drawerLayout = findViewById(R.id.drawer_layout)
+        drawerLayout.addDrawerListener(this)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -51,13 +48,11 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_on_sale_list,
                 R.id.nav_items_of_interest_list,
                 R.id.nav_bought_items_list,
-                R.id.nav_sign_out,
-                R.id.nav_signIn
+                R.id.nav_sign_out
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -65,31 +60,32 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    private fun retrievePreferencesMain(headerView: View) {
+    private fun manageNavigationHeader() {
+        val navView: NavigationView = findViewById(R.id.nav_view)
+        val headerView = navView.getHeaderView(0)
         val textViewNick = headerView.findViewById(R.id.nav_profile_name) as TextView
         val textViewMail = headerView.findViewById(R.id.nav_profile_mail) as TextView
         val imgView = headerView.findViewById(R.id.imageView) as ImageView
 
-        Log.d("Xeros", user?.uid.toString())
-
         // Retrieve User data
-        firestoreViewModel.fetchMyUserFromFirestore()
-        firestoreViewModel.myUserNav.observe(this, androidx.lifecycle.Observer {
-            textViewNick.text = it.nickname
-            textViewMail.text = it.email
+        val myUser = firestoreViewModel.createdUserLiveData!!.value
+        textViewNick.text = myUser!!.nickname
+        textViewMail.text = myUser.email
 
-            Log.d("Xeros", "Data have changed")
-
-
-            Glide.with(this).using(FirebaseImageLoader())
-                .load(storage.child("/profileImages/${it.photoName}")).into(imgView)
-
-        })
+        Glide.with(this).using(FirebaseImageLoader())
+            .load(storage.child("/profileImages/${myUser.photoName}")).into(imgView)
     }
 
-    fun refreshDataForDrawer() {
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        val headerView = navView.getHeaderView(0)
-        retrievePreferencesMain(headerView)
+    override fun onDrawerStateChanged(newState: Int) {
+        this.manageNavigationHeader()
+    }
+
+    override fun onDrawerSlide(drawerView: View, slideOffset: Float) { /* do nothing */
+    }
+
+    override fun onDrawerClosed(drawerView: View) { /* do nothing */
+    }
+
+    override fun onDrawerOpened(drawerView: View) { /* do nothing */
     }
 }

@@ -24,8 +24,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
@@ -53,19 +54,19 @@ val charPool = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 class EditProfile : Fragment() {
 
     val user = Firebase.auth.currentUser
-    private val firestoreViewModel: FirestoreViewModel by viewModels()
+    private val firestoreViewModel: FirestoreViewModel by activityViewModels()
     lateinit var liveData: LiveData<UserModel>
 
     lateinit var currentPhotoPath: String
     lateinit var path: String
     lateinit var oldPath: String
+    var counterFeedback: Int = 0
+    var rating: Float = 0F
     var randomString: String = ""
-
 
     var rotatedBitmap: Bitmap? = null
     var photoFile: File? = null
     var photoURI: Uri? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,28 +114,30 @@ class EditProfile : Fragment() {
                 savedImg = savedInstanceState.get("imgUri").toString()
         }
 
-        liveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        liveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer { currentUser ->
             if (savedName == null)
-                name.setText(it.fullname)
+                name.setText(currentUser.fullname)
             else
                 name.setText(savedName)
 
             if (savedNickname == null)
-                nickname.setText(it.nickname)
+                nickname.setText(currentUser.nickname)
             else
                 nickname.setText(savedNickname)
 
             if (savedLocation == null)
-                location.setText(it.location)
+                location.setText(currentUser.location)
             else
                 location.setText(savedLocation)
 
-            email.setText(it.email)
+            email.setText(currentUser.email)
 
             if (savedImg == null) {
-
-                path = it.photoName
-                if (path == "") profile_photo.setImageDrawable(requireContext().getDrawable(R.drawable.image_vectorized_lower))
+                path = currentUser.photoName
+                if (path == "") profile_photo.setImageDrawable(
+                    requireContext()
+                        .getDrawable(R.drawable.image_vectorized_lower)
+                )
                 else {
 
                     Glide.with(requireContext()).using(FirebaseImageLoader())
@@ -142,6 +145,10 @@ class EditProfile : Fragment() {
                 }
             } else
                 this.restoreImage(savedImg)
+
+            // Store counterFeedback and rating for next updates
+            counterFeedback = currentUser.counterfeed
+            rating = currentUser.rating
         })
     }
 
@@ -167,7 +174,7 @@ class EditProfile : Fragment() {
 
                 if (!checkError) {
 
-                    Log.d("EditItemTAG", "No error in Item Form Validation")
+                    Log.d("EditItemTAG", "No error in Form Validation")
 
 
                     //Save image on Cloud Storage
@@ -175,7 +182,7 @@ class EditProfile : Fragment() {
                     if (rotatedBitmap != null) {
 
                         randomString =
-                            (1..20).map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+                            (1..20).map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
                                 .map(charPool::get).joinToString("")
 
                         randomString = "$randomString.jpg"
@@ -207,10 +214,6 @@ class EditProfile : Fragment() {
 
 
                 true
-            }
-            android.R.id.home -> {
-                navigateMyProfile()
-                return true
             }
             else -> super.onOptionsItemSelected(item)
         }
@@ -250,7 +253,7 @@ class EditProfile : Fragment() {
     }
 
 
-    //Limits the lenght of the input of the EditText fields
+    //Limits the length of the input of the EditText fields
     private fun setInputLimits() {
 
         name.filters = arrayOf(InputFilter.LengthFilter(20))
@@ -506,8 +509,6 @@ class EditProfile : Fragment() {
                 navigateMyProfile()
             }
             dialog2.show()
-
-
         }
 
         uploadTask.addOnFailureListener {
@@ -515,28 +516,32 @@ class EditProfile : Fragment() {
         }.addOnSuccessListener {
             Log.d("ItemEditTAG", "Success in saving image to the Cloud Storage")
         }
-
-
     }
 
     private fun setNewUser() {
-
         oldPath = path
+        val userId = firestoreViewModel.createdUserLiveData!!.value!!.userId!!
+        val token = firestoreViewModel.createdUserLiveData!!.value!!.token
 
         val newUser = UserModel(
             name.text.toString(),
             nickname.text.toString(),
             email.text.toString(),
             location.text.toString(),
-            randomString
+            randomString,
+            userId,
+            token,
+            counterFeedback,
+            rating
         )
         firestoreViewModel.saveUserToFirestore(newUser)
-
+        val user: MutableLiveData<UserModel> = MutableLiveData(newUser)
+        firestoreViewModel.createdUserLiveData = user
     }
 
     private fun navigateMyProfile() {
-        val action = EditProfileDirections.returnToUserProfile()
-        findNavController().navigate(action)
+        // Return back to profile page
+        findNavController().popBackStack()
     }
 
 

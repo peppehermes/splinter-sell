@@ -40,7 +40,7 @@ class ItemsOfInterestListAdapter(private var interestedItemsList: ArrayList<Item
             holder.jolly.visibility = View.VISIBLE
             holder.jolly.text = holder.itemView.context.getString(R.string.remove)
             holder.jolly.setOnClickListener {
-                FirestoreViewModel().firestoreRepository.removeNotification(item.documentName!!)
+                FirestoreViewModel().removeNotification(item.documentName!!)
                 FirebaseMessaging.getInstance().unsubscribeFromTopic(item.documentName!!)
             }
         } else

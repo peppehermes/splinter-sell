@@ -3,9 +3,8 @@ package it.polito.mad.splintersell.ui.bought_items_list
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.messaging.FirebaseMessaging
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.data.ItemModelHolder
@@ -37,7 +36,7 @@ class BoughtItemsListAdapter(private var soldList: ArrayList<ItemModel>) :
         if(!item.isleft) {
             holder.jolly.visibility = View.VISIBLE
             holder.jolly.text = holder.itemView.context.getString(R.string.feedback)
-
+            holder.jolly.setBackgroundColor(holder.itemView.context.getColor(R.color.colorSecondaryVariant))
 
             holder.jolly.setOnClickListener {
                 navigateToItemFeedback(holder.itemView, item.ownerId!!, item.title!!, item.documentName!!)
@@ -54,8 +53,7 @@ class BoughtItemsListAdapter(private var soldList: ArrayList<ItemModel>) :
     }
 
     private fun navigateToItemFeedback(view: View, ownerId: String, itemTitle: String, itemId: String) {
-        val action = BoughtItemsListFragmentDirections.leavefeedback(ownerId, itemTitle, itemId)
-        Navigation.findNavController(view).navigate(action)
-
+        val action = BoughtItemsListFragmentDirections.leaveFeedback(ownerId, itemTitle, itemId)
+        findNavController(view).navigate(action)
     }
 }

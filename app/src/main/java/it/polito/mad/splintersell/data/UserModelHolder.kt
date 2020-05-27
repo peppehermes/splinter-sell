@@ -29,7 +29,7 @@ class UserModelHolder(v: View) : RecyclerView.ViewHolder(v) {
         fullname = model.fullname
         email = model.email
         location = model.location
-        userid = model.userid
+        userid = model.userId
         description.visibility = View.GONE
         price.visibility = View.GONE
 

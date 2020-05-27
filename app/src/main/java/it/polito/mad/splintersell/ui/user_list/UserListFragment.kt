@@ -9,7 +9,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_user_list.*
 
 class UserListFragment : Fragment() {
 
-    private val firestoreViewModel: FirestoreViewModel by viewModels()
+    private val firestoreViewModel: FirestoreViewModel by activityViewModels()
 
     private lateinit var adapter: UserListAdapter
     private lateinit var listView: RecyclerView
@@ -86,7 +86,7 @@ class UserListFragment : Fragment() {
 
         firestoreViewModel.myNotificationsList.observe(viewLifecycleOwner, Observer {
             //Update UI
-            firestoreViewModel.firestoreRepository.getUsersData(args.itemID)
+            firestoreViewModel.getUsersData(args.itemID)
             firestoreViewModel.interestedUserList.observe(
                 viewLifecycleOwner,
                 Observer { UsersList ->

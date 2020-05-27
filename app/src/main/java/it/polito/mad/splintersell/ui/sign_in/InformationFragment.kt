@@ -1,44 +1,30 @@
-package it.polito.mad.splintersell.ui.signin
+package it.polito.mad.splintersell.ui.sign_in
 
 import android.os.Bundle
-import android.transition.AutoTransition
-import android.transition.TransitionManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
+import android.view.animation.AnimationUtils
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
+import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.UserModel
 import it.polito.mad.splintersell.data.storage
+import it.polito.mad.splintersell.ui.showSystemUI
 import kotlinx.android.synthetic.main.fragment_information.*
 
 class InformationFragment : Fragment() {
-    private val firestoreViewModel: FirestoreViewModel by viewModels()
+    private val firestoreViewModel: FirestoreViewModel by activityViewModels()
     private val TAG = "INFORMATION_FRAGMENT"
     private var user: UserModel? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // Handle the back button event
-                requireActivity().finish()
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(
-            this,
-            callback
-        )
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,6 +39,10 @@ class InformationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().popBackStack(R.id.nav_sign_in, false)
+        }
+
         // Get user information
         firestoreViewModel.myUserNav.observe(viewLifecycleOwner, Observer {
             user = it
@@ -66,8 +56,9 @@ class InformationFragment : Fragment() {
                 Glide.with(requireContext()).using(FirebaseImageLoader())
                     .load(storage.child("/profileImages/${user!!.photoName}")).into(profile_photo)
             } else {
-                TransitionManager.beginDelayedTransition(coordinator_layout, AutoTransition())
+                val fadeIn = AnimationUtils.loadAnimation(context, R.anim.fade_in)
                 profile_photo.setImageResource(R.drawable.img_avatar)
+                profile_photo.startAnimation(fadeIn)
             }
 
             if (!user!!.nickname.isNullOrEmpty()) {
@@ -99,22 +90,16 @@ class InformationFragment : Fragment() {
                         } else {
                             // Set user nickname
                             user!!.nickname = nick
-
-                            // Save user into Firestore Cloud
-                            firestoreViewModel.saveUserToFirestore(user!!)
-
-                            // Navigate to home fragment
-                            findNavController().navigate(InformationFragmentDirections.goToHome())
                         }
                     }
-            } else {
-                // Save user into Firestore Cloud
-                firestoreViewModel.saveUserToFirestore(user!!)
-
-                // Navigate to home fragment
-                findNavController().navigate(InformationFragmentDirections.goToHome())
             }
+
+            // Save user into Firestore Cloud
+            firestoreViewModel.saveUserToFirestore(user!!)
+
+            // Pop back to home fragment
+            showSystemUI(activity as MainActivity)
+            findNavController().popBackStack(R.id.nav_on_sale_list, false)
         }
     }
-
 }

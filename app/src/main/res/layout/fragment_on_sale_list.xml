@@ -100,7 +100,7 @@
                     android:layout_weight="1"
                     android:layout_width="0dp">
 
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         style="@style/InputBody"
                         android:autofillHints=""
                         android:drawablePadding="8dp"
@@ -126,7 +126,7 @@
                     android:layout_weight="1"
                     android:layout_width="0dp">
 
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         style="@style/InputBody"
                         android:autofillHints=""
                         android:drawablePadding="8dp"

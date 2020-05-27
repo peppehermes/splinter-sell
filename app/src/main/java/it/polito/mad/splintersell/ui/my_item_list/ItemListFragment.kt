@@ -9,14 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -25,7 +23,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
-import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
@@ -34,26 +31,14 @@ import it.polito.mad.splintersell.ui.manageStatus
 import kotlinx.android.synthetic.main.fragment_item_list.*
 
 class ItemListFragment : Fragment() {
-    private val firestoreViewModel: FirestoreViewModel by viewModels()
+    private val firestoreViewModel: FirestoreViewModel by activityViewModels()
     private lateinit var externalLayout: ViewGroup
     private lateinit var myItemList: LiveData<List<ItemModel>>
     private var adapter: FirestoreRecyclerAdapter<ItemModel, ItemModelHolder>? = null
     private val user = Firebase.auth.currentUser
-    //private val args: ItemListFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // Handle the back button event
-                findNavController().navigate(R.id.nav_on_sale_list)
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(
-            this,
-            callback
-        )
 
         firestoreViewModel.fetchMyItemListFromFirestore()
         myItemList = firestoreViewModel.myItemList
@@ -141,7 +126,6 @@ class ItemListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity?)?.refreshDataForDrawer()
         externalLayout = view.findViewById(R.id.external_layout)
 
         // Close the soft Keyboard, if open

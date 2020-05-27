@@ -5,19 +5,16 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.UserModel
@@ -29,7 +26,7 @@ class ShowProfile : Fragment() {
 
     // GLOBAL ATTRIBUTES
 
-    private val firestoreViewModel: FirestoreViewModel by viewModels()
+    private val firestoreViewModel: FirestoreViewModel by activityViewModels()
     val user = Firebase.auth.currentUser
     lateinit var liveData: LiveData<UserModel>
 
@@ -41,17 +38,6 @@ class ShowProfile : Fragment() {
         super.onCreate(savedInstanceState)
 
         liveData = if (args.userID == "currUser") {
-            val callback = object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    // Handle the back button event
-                    findNavController().navigate(R.id.nav_on_sale_list)
-                }
-            }
-            requireActivity().onBackPressedDispatcher.addCallback(
-                this,
-                callback
-            )
-
             firestoreViewModel.fetchUserFromFirestore(user!!.uid)
             firestoreViewModel.myUser
         } else {
@@ -72,7 +58,6 @@ class ShowProfile : Fragment() {
 
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)
-        (activity as MainActivity?)?.refreshDataForDrawer()
 
         liveData.observe(viewLifecycleOwner, Observer {
             // Update UI
@@ -82,11 +67,11 @@ class ShowProfile : Fragment() {
                 nickname.text = it.nickname
                 email.text = it.email
                 location.text = it.location
-                rating.setRating(it.rating)
+                rating.rating = it.rating
             } else {
                 nickname.text = it.nickname
                 email.text = it.email
-                rating.setRating(it.rating)
+                rating.rating = it.rating
 
                 name.text = getString(R.string.hidden_text)
                 name.setTextColor(name.context.getColor(R.color.colorPrimary))

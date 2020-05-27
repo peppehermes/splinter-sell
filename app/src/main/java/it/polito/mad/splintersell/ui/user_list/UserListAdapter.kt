@@ -54,11 +54,11 @@ class UserListAdapter(private var UserList: ArrayList<UserModel>, itemID: String
                 .setPositiveButton("Yes") { _, _ ->
                     // Delete selected note from database
 
+                    FirestoreViewModel().setSoldTo(item.userId!!, idItem)
+
                     FirestoreViewModel().updateStatus(
                         holder.itemView.context.getString(R.string.sold), idItem
                     )
-
-                    FirestoreViewModel().setSoldTo(item.userid!!,idItem)
 
                     navigateToMyItemList(holder.itemView)
 
@@ -73,7 +73,7 @@ class UserListAdapter(private var UserList: ArrayList<UserModel>, itemID: String
         }
 
         holder.card.setOnClickListener {
-            navigateToUserProfile(holder.itemView, item.userid!!)
+            navigateToUserProfile(holder.itemView, item.userId!!)
         }
     }
 

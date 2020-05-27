@@ -1,110 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.signin.InformationFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/container"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.sign_in.InformationFragment">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/actionbarOpacity"
-        app:theme="@style/TransparentToolbar" />
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:fillViewport="true"
-        android:fitsSystemWindows="true"
-        android:orientation="vertical">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.53"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_photo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        app:civ_border_color="@color/colorPrimary"
+        app:civ_border_width="2dp"
+        android:contentDescription="@string/profile_photo"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+    <TextView
+        android:id="@+id/textView4"
+        style="@style/TextAppearance.MdcTypographyStyles.Headline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/select_photo_and_nickname"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_photo" />
+
+    <TextView
+        android:id="@+id/textView3"
+        style="@style/TextAppearance.MdcTypographyStyles.Subtitle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:text="@string/choose_a_unique_nick_just_like_you"
+        app:layout_constraintBottom_toTopOf="@+id/til_login_nick"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_login_nick"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="4dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_send"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/login_nick"
+            style="@style/InputBody"
+            android:layout_marginBottom="16dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:scrollbarThumbHorizontal="@null"
-            android:scrollbarThumbVertical="@null">
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/ic_account_circle_black_24dp"
+            android:drawablePadding="12dp"
+            android:drawableTint="?attr/colorControlNormal"
+            android:hint="@string/nick"
+            android:imeOptions="actionDone"
+            android:inputType="textEmailAddress"
+            android:minWidth="320dp"
+            android:minHeight="45dp"
+            android:singleLine="true"
+            tools:layout_editor_absoluteX="22dp"
+            tools:layout_editor_absoluteY="454dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:orientation="vertical"
-                android:id="@+id/coordinator_layout"
-                tools:ignore="UselessParent">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="200dp"
-                    android:layout_marginVertical="16dp"
-                    android:id="@+id/profile_photo"
-                    android:contentDescription="@string/profile_photo"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
-                    style="@style/TextAppearance.MdcTypographyStyles.Headline5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/select_photo_and_nickname"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+    <Button
+        android:id="@+id/button_send"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="342dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/send"
+        android:layout_marginBottom="64dp"
+        android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/til_login_nick" />
 
-                <TextView
-                    style="@style/TextAppearance.MdcTypographyStyles.Subtitle1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="16dp"
-                    android:text="@string/choose_a_unique_nick_just_like_you" />
+    <TextView
+        android:id="@+id/welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/josefin_sans_bold"
+        android:text="@string/splinter_sell"
+        android:textColor="@color/colorPrimary"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_login_nick"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="4dp"
-                    app:cardCornerRadius="24dp"
-                    app:cardElevation="0dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/login_nick"
-                        style="@style/InputBody"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@android:color/transparent"
-                        android:drawableStart="@drawable/ic_account_circle_black_24dp"
-                        android:drawablePadding="12dp"
-                        android:drawableTint="?attr/colorControlNormal"
-                        android:hint="@string/nick"
-                        android:imeOptions="actionDone"
-                        android:inputType="textEmailAddress"
-                        android:minWidth="320dp"
-                        android:minHeight="45dp"
-                        android:singleLine="true" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <Button
-                    android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Button"
-                    android:id="@+id/button_send"
-                    style="@style/Widget.MaterialComponents.Button"
-                    android:layout_width="342dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:text="@string/send" />
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-    </ScrollView>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
