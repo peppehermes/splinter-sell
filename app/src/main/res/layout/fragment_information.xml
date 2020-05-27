@@ -77,7 +77,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="4dp"
-        app:cardCornerRadius="24dp"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toTopOf="@+id/button_send"
         app:layout_constraintEnd_toEndOf="parent"
@@ -88,6 +87,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/login_nick"
             style="@style/InputBody"
+            android:inputType="textNoSuggestions"
             android:layout_marginBottom="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -98,7 +98,6 @@
             android:drawableTint="?attr/colorControlNormal"
             android:hint="@string/nick"
             android:imeOptions="actionDone"
-            android:inputType="textEmailAddress"
             android:minWidth="320dp"
             android:minHeight="45dp"
             android:singleLine="true"

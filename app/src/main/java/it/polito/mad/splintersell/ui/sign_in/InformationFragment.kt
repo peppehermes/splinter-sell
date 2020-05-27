@@ -90,16 +90,26 @@ class InformationFragment : Fragment() {
                         } else {
                             // Set user nickname
                             user!!.nickname = nick
+
+                            // Save user into Firestore Cloud
+                            firestoreViewModel.saveUserToFirestore(user!!)
+                            firestoreViewModel.createdUserLiveData!!.value!!.nickname = nick
+                            firestoreViewModel.createdUserLiveData!!.value!!.photoName =
+                                user!!.photoName
+
+                            // Pop back to home fragment
+                            showSystemUI(activity as MainActivity)
+                            findNavController().popBackStack(R.id.nav_on_sale_list, false)
                         }
                     }
+            } else {
+                firestoreViewModel.createdUserLiveData!!.value!!.nickname = nick
+                firestoreViewModel.createdUserLiveData!!.value!!.photoName = user!!.photoName
+
+                // Pop back to home fragment
+                showSystemUI(activity as MainActivity)
+                findNavController().popBackStack(R.id.nav_on_sale_list, false)
             }
-
-            // Save user into Firestore Cloud
-            firestoreViewModel.saveUserToFirestore(user!!)
-
-            // Pop back to home fragment
-            showSystemUI(activity as MainActivity)
-            findNavController().popBackStack(R.id.nav_on_sale_list, false)
         }
     }
 }
