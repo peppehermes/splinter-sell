@@ -38,11 +38,11 @@ class ShowProfile : Fragment() {
         super.onCreate(savedInstanceState)
 
         liveData = if (args.userID == "currUser") {
-            firestoreViewModel.fetchUserFromFirestore(user!!.uid)
+            firestoreViewModel.fetchMyUserFromFirestore()
             firestoreViewModel.myUser
         } else {
             firestoreViewModel.fetchUserFromFirestore(args.userID)
-            firestoreViewModel.myUser
+            firestoreViewModel.user
         }
     }
 

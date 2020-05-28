@@ -52,7 +52,7 @@ class ItemDetailsFragment : Fragment() {
 
         if (args.userID != "currUser") {
             firestoreViewModel.fetchUserFromFirestore(args.userID)
-            userLiveData = firestoreViewModel.myUser
+            userLiveData = firestoreViewModel.user
         }
 
         return inflater.inflate(R.layout.fragment_item_details, container, false)

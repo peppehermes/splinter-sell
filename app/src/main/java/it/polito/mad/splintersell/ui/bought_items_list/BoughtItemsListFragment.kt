@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import it.polito.mad.splintersell.R
@@ -32,10 +31,8 @@ class BoughtItemsListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        firestoreViewModel.createdUserLiveData!!.observe(viewLifecycleOwner, Observer {
-            signInViewModel.authenticate()
-            firestoreViewModel.fetchSoldItemListFromFirestore()
-        })
+        signInViewModel.authenticate()
+        firestoreViewModel.fetchSoldItemListFromFirestore()
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_bought_items_list, container, false)

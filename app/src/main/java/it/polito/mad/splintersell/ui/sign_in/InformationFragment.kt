@@ -44,7 +44,7 @@ class InformationFragment : Fragment() {
         }
 
         // Get user information
-        firestoreViewModel.myUserNav.observe(viewLifecycleOwner, Observer {
+        firestoreViewModel.myUser.observe(viewLifecycleOwner, Observer {
             user = it
             if (user == null) {
                 Log.e(TAG, "Error retrieving current user")

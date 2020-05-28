@@ -28,10 +28,12 @@ import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.ItemModel
 import it.polito.mad.splintersell.data.ItemModelHolder
 import it.polito.mad.splintersell.ui.manageStatus
+import it.polito.mad.splintersell.ui.sign_in.SignInViewModel
 import kotlinx.android.synthetic.main.fragment_item_list.*
 
 class ItemListFragment : Fragment() {
     private val firestoreViewModel: FirestoreViewModel by activityViewModels()
+    private val signInViewModel: SignInViewModel by activityViewModels()
     private lateinit var externalLayout: ViewGroup
     private lateinit var myItemList: LiveData<List<ItemModel>>
     private var adapter: FirestoreRecyclerAdapter<ItemModel, ItemModelHolder>? = null
@@ -39,7 +41,7 @@ class ItemListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        signInViewModel.authenticate()
         firestoreViewModel.fetchMyItemListFromFirestore()
         myItemList = firestoreViewModel.myItemList
 

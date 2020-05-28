@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -68,12 +69,16 @@ class MainActivity : AppCompatActivity(), DrawerLayout.DrawerListener {
         val imgView = headerView.findViewById(R.id.imageView) as ImageView
 
         // Retrieve User data
-        val myUser = firestoreViewModel.createdUserLiveData!!.value
-        textViewNick.text = myUser!!.nickname
-        textViewMail.text = myUser.email
+        firestoreViewModel.fetchMyUserFromFirestore()
+        val myUser = firestoreViewModel.myUser
 
-        Glide.with(this).using(FirebaseImageLoader())
-            .load(storage.child("/profileImages/${myUser.photoName}")).into(imgView)
+        myUser.observe(this, Observer { currentUser ->
+            textViewNick.text = currentUser.nickname
+            textViewMail.text = currentUser.email
+
+            Glide.with(this).using(FirebaseImageLoader())
+                .load(storage.child("/profileImages/${currentUser.photoName}")).into(imgView)
+        })
     }
 
     override fun onDrawerStateChanged(newState: Int) {

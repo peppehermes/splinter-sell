@@ -20,12 +20,12 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     val BLOCKED = "blocked"
     val SOLD = "sold"
     var firestoreRepository = FirestoreRepository(this)
-    var user = FirebaseAuth.getInstance().currentUser
+    lateinit var userId: String
     var authenticatedUserLiveData: LiveData<UserModel>? = null
     var createdUserLiveData: LiveData<UserModel>? = null
 
+    private var _user: MutableLiveData<UserModel> = MutableLiveData()
     private var _myUser: MutableLiveData<UserModel> = MutableLiveData()
-    private var _myUserNav: MutableLiveData<UserModel> = MutableLiveData()
     private var _myNotificationsList: MutableLiveData<List<NotificationModel>> = MutableLiveData()
     private var _wishItemsList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _isRequested: MutableLiveData<Boolean> = MutableLiveData()
@@ -36,6 +36,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     private var _allItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _interestedUserList: MutableLiveData<List<UserModel>> = MutableLiveData()
     private var _soldItemsList: MutableLiveData<List<ItemModel>> = MutableLiveData()
+    private var _myToken: MutableLiveData<String> = MutableLiveData()
 
     init {
         this.fetchAllItemListFromFirestore()
@@ -128,7 +129,9 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     fun fetchMyItemListFromFirestore() {
-        firestoreRepository.itemRef.whereEqualTo("ownerId", createdUserLiveData!!.value!!.userId)
+        userId = FirebaseAuth.getInstance().currentUser!!.uid
+        // This method is called only when the user is authenticated, so we can use user
+        firestoreRepository.itemRef.whereEqualTo("ownerId", userId)
             .addSnapshotListener(EventListener { value, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
@@ -167,7 +170,6 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
             })
     }
 
-
     private fun validateDate(date: List<String>): Boolean {
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
@@ -201,9 +203,11 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     fun fetchSoldItemListFromFirestore() {
+        userId = FirebaseAuth.getInstance().currentUser!!.uid
+        // This method is called only when the user is authenticated, so we can use user
         firestoreRepository.itemRef
             .whereEqualTo("status", SOLD)
-            .whereEqualTo("soldTo", createdUserLiveData!!.value!!.userId)
+            .whereEqualTo("soldTo", userId)
             .addSnapshotListener(EventListener { value, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
@@ -224,13 +228,13 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         firestoreRepository.getUserDocument(userID).addSnapshotListener(EventListener { value, e ->
             if (e != null) {
                 Log.w(TAG, "USER Listen failed.", e)
-                _myUser.value = null
+                _user.value = null
                 return@EventListener
             }
 
             if (value != null && value.exists()) {
                 Log.d(TAG, "USER Current data: ${value.data}")
-                _myUser.value = value.toObject(UserModel::class.java)
+                _user.value = value.toObject(UserModel::class.java)
             } else {
                 Log.d(TAG, "USER Current data: null")
             }
@@ -238,17 +242,19 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     fun fetchMyUserFromFirestore() {
-        firestoreRepository.getUserDocument(createdUserLiveData!!.value!!.userId!!)
+        userId = FirebaseAuth.getInstance().currentUser!!.uid
+        // This method is called only when the user is authenticated, so we can use user
+        firestoreRepository.getUserDocument(userId)
             .addSnapshotListener(EventListener { value, e ->
                 if (e != null) {
                     Log.w(TAG, "USER Listen failed.", e)
-                    _myUserNav.value = null
+                    _myUser.value = null
                     return@EventListener
                 }
 
                 if (value != null && value.exists()) {
                     Log.d(TAG, "USER Current data: ${value.data}")
-                    _myUserNav.value = value.toObject(UserModel::class.java)
+                    _myUser.value = value.toObject(UserModel::class.java)
                 } else {
                     Log.d(TAG, "USER Current data: null")
                 }
@@ -279,6 +285,8 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     fun getItemNotification(itemId: String) {
+        userId = FirebaseAuth.getInstance().currentUser!!.uid
+        // This method is called only when the user is authenticated, so we can use user
         var requested = false
         val task = firestoreRepository.firestore.collection("notifications")
             .whereEqualTo("id_item", itemId).get()
@@ -286,7 +294,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         task.addOnSuccessListener { querySnapshot ->
             for (document in querySnapshot) {
                 val notification = document.toObject(NotificationModel::class.java)
-                if (notification.id_user.toString() == createdUserLiveData!!.value!!.userId!!) {
+                if (notification.id_user.toString() == userId) {
                     requested = true
                 }
             }
@@ -301,28 +309,29 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         mainCategory: String? = null,
         secondCategory: String? = null
     ) {
-
+        userId = FirebaseAuth.getInstance().currentUser!!.uid
+        // This method is called only when the user is authenticated, so we can use user
         val firstTask: Task<QuerySnapshot>
         val secondTask: Task<QuerySnapshot>
 
         if (mainCategory == null) {
             firstTask = firestoreRepository.firestore.collection("items")
-                .whereLessThan("ownerId", createdUserLiveData!!.value!!.userId!!)
+                .whereLessThan("ownerId", userId)
                 .whereEqualTo("status", AVAILABLE).get()
 
             secondTask = firestoreRepository.firestore.collection("items")
-                .whereGreaterThan("ownerId", createdUserLiveData!!.value!!.userId!!)
+                .whereGreaterThan("ownerId", userId)
                 .whereEqualTo("status", AVAILABLE).get()
         } else {
             firstTask = firestoreRepository.firestore.collection("items")
-                .whereLessThan("ownerId", createdUserLiveData!!.value!!.userId!!)
+                .whereLessThan("ownerId", userId)
                 .whereEqualTo("mainCategory", mainCategory)
                 .whereEqualTo("secondCategory", secondCategory)
                 .whereEqualTo("status", AVAILABLE)
                 .get()
 
             secondTask = firestoreRepository.firestore.collection("items")
-                .whereGreaterThan("ownerId", createdUserLiveData!!.value!!.userId!!)
+                .whereGreaterThan("ownerId", userId)
                 .whereEqualTo("mainCategory", mainCategory)
                 .whereEqualTo("secondCategory", secondCategory)
                 .whereEqualTo("status", AVAILABLE)
@@ -345,9 +354,11 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     fun removeNotification(itemId: String) {
+        userId = FirebaseAuth.getInstance().currentUser!!.uid
+        // This method is called only when the user is authenticated, so we can use user
         val docQuery = firestoreRepository.firestore.collection("notifications")
             .whereEqualTo("id_item", itemId)
-            .whereEqualTo("id_user", createdUserLiveData!!.value!!.userId!!).get()
+            .whereEqualTo("id_user", userId).get()
 
         docQuery.addOnSuccessListener { documents ->
             for (document in documents) {
@@ -359,8 +370,10 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     private fun saveUser(myUser: UserModel): Task<Void> {
+        userId = FirebaseAuth.getInstance().currentUser!!.uid
+        // This method is called only when the user is authenticated, so we can use user
         val documentReferenceUser = firestoreRepository.firestore.collection("users")
-            .document(createdUserLiveData!!.value!!.userId!!)
+            .document(userId)
 
         return documentReferenceUser.set(myUser)
             .addOnSuccessListener { Log.d(TAG, "USER Successfully saved") }
@@ -368,11 +381,13 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     fun getUsersData(itemID: String) {
+        userId = FirebaseAuth.getInstance().currentUser!!.uid
+        // This method is called only when the user is authenticated, so we can use user
         val interestedUsers = ArrayList<String>()
         val list = ArrayList<UserModel>()
         firestoreRepository.firestore.collection("notifications")
             .whereEqualTo("id_item", itemID)
-            .whereEqualTo("id_owner", createdUserLiveData!!.value!!.userId!!)
+            .whereEqualTo("id_owner", userId)
             .get().addOnSuccessListener { notifications ->
                 for (doc in notifications) {
                     val username = doc.get("id_user").toString()
@@ -395,10 +410,12 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     fun getNotificationData() {
+        userId = FirebaseAuth.getInstance().currentUser!!.uid
+        // This method is called only when the user is authenticated, so we can use user
         val likedItems = ArrayList<String>()
         val list = ArrayList<ItemModel>()
         firestoreRepository.firestore.collection("notifications")
-            .whereEqualTo("id_user", createdUserLiveData!!.value!!.userId!!).get()
+            .whereEqualTo("id_user", userId).get()
             .addOnSuccessListener { notifications ->
                 for (doc in notifications) {
                     val itemName = doc.get("id_item").toString()
@@ -423,11 +440,39 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
             }
     }
 
-    fun updateToken(token: String) {
+    fun getToken() {
         firestoreRepository.firestore.collection("users")
-            .document(createdUserLiveData!!.value!!.userId!!)
-            .update("token", token)
+            .document(userId).get()
+            .addOnSuccessListener { document ->
+                if (document != null)
+                    _myToken.value = document.get("string").toString()
+            }
     }
+
+    fun updateToken(token: String) {
+        userId = FirebaseAuth.getInstance().currentUser!!.uid
+        // This method is called only when the user is authenticated, so we can use user
+        firestoreRepository.firestore.collection("users")
+            .document(userId)
+            .update("token", token)
+        _myToken.value = token
+    }
+
+    internal var myToken: MutableLiveData<String>
+        get() {
+            return _myToken
+        }
+        set(value) {
+            _myToken = value
+        }
+
+    internal var user: MutableLiveData<UserModel>
+        get() {
+            return _user
+        }
+        set(value) {
+            _user = value
+        }
 
     internal var myUser: MutableLiveData<UserModel>
         get() {
@@ -435,14 +480,6 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         }
         set(value) {
             _myUser = value
-        }
-
-    internal var myUserNav: MutableLiveData<UserModel>
-        get() {
-            return _myUserNav
-        }
-        set(value) {
-            _myUserNav = value
         }
 
     internal var isRequested: MutableLiveData<Boolean>

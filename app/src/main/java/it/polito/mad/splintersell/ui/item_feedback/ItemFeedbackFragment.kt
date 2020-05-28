@@ -43,7 +43,7 @@ class ItemFeedbackFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         firestoreViewModel.fetchUserFromFirestore(args.ownerid)
-        userLiveData = firestoreViewModel.myUser
+        userLiveData = firestoreViewModel.user
 
         return inflater.inflate(R.layout.fragment_rating, container, false)
     }

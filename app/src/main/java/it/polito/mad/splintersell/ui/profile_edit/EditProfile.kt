@@ -31,6 +31,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.R
@@ -72,7 +73,7 @@ class EditProfile : Fragment() {
         super.onCreate(savedInstanceState)
 
         firestoreViewModel.fetchUserFromFirestore(user!!.uid)
-        liveData = firestoreViewModel.myUser
+        liveData = firestoreViewModel.user
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -520,23 +521,25 @@ class EditProfile : Fragment() {
 
     private fun setNewUser() {
         oldPath = path
-        val userId = firestoreViewModel.createdUserLiveData!!.value!!.userId!!
-        val token = firestoreViewModel.createdUserLiveData!!.value!!.token
-
-        val newUser = UserModel(
-            name.text.toString(),
-            nickname.text.toString(),
-            email.text.toString(),
-            location.text.toString(),
-            randomString,
-            userId,
-            token,
-            counterFeedback,
-            rating
-        )
-        firestoreViewModel.saveUserToFirestore(newUser)
-        val user: MutableLiveData<UserModel> = MutableLiveData(newUser)
-        firestoreViewModel.createdUserLiveData = user
+        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+        firestoreViewModel.myToken.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { token ->
+                val newUser = UserModel(
+                    name.text.toString(),
+                    nickname.text.toString(),
+                    email.text.toString(),
+                    location.text.toString(),
+                    randomString,
+                    userId,
+                    token,
+                    counterFeedback,
+                    rating
+                )
+                firestoreViewModel.saveUserToFirestore(newUser)
+                val user: MutableLiveData<UserModel> = MutableLiveData(newUser)
+                firestoreViewModel.createdUserLiveData = user
+            })
     }
 
     private fun navigateMyProfile() {
