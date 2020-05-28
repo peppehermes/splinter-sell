@@ -8,7 +8,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -23,7 +23,7 @@ import it.polito.mad.splintersell.data.*
 import kotlinx.android.synthetic.main.fragment_item_details.*
 
 class ItemDetailsFragment : Fragment() {
-    private val firestoreViewModel: FirestoreViewModel by activityViewModels()
+    private val firestoreViewModel: FirestoreViewModel by viewModels()
     private lateinit var liveData: LiveData<ItemModel>
     private lateinit var userLiveData: LiveData<UserModel>
     private var user = FirebaseAuth.getInstance().currentUser

@@ -124,8 +124,7 @@ class UserListAdapter(private var UserList: ArrayList<UserModel>, itemID: String
     }
 
     private fun navigateToMyItemList(view: View) {
-        findNavController(view).navigate(R.id.nav_item_list)
-
+        findNavController(view).popBackStack(R.id.nav_item_list, false)
     }
 
     override fun getItemId(position: Int): Long {

@@ -144,6 +144,8 @@ class OnSaleListFragment : Fragment() {
     }
 
     private fun doSomething() {
+        firestoreViewModel.fetchMyUserFromFirestore()
+
         TransitionManager.beginDelayedTransition(externalLayout)
 
         generateToken()

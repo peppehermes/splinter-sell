@@ -123,6 +123,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
                     _item.value = value.toObject(ItemModel::class.java)
                 } else {
                     Log.d(TAG, "Current data: null")
+                    //Log.d(TAG, _item.value?.title)
                 }
             })
     }
@@ -241,7 +242,10 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     fun fetchMyUserFromFirestore() {
-        userId = FirebaseAuth.getInstance().currentUser!!.uid
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            userId = FirebaseAuth.getInstance().currentUser!!.uid
+        }
+
         // This method is called only when the user is authenticated, so we can use user
         firestoreRepository.getUserDocument(userId)
             .addSnapshotListener(EventListener { value, e ->

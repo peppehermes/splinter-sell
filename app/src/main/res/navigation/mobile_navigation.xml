@@ -67,6 +67,8 @@
             app:destination="@id/nav_item_details"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out"
             app:popUpTo="@id/nav_item_list" />
     </fragment>
 

@@ -72,12 +72,12 @@ class MainActivity : AppCompatActivity(), DrawerLayout.DrawerListener {
         firestoreViewModel.fetchMyUserFromFirestore()
         val myUser = firestoreViewModel.myUser
 
-        myUser.observe(this, Observer { currentUser ->
-            textViewNick.text = currentUser.nickname
-            textViewMail.text = currentUser.email
+        myUser.observe(this, Observer {
+            textViewNick.text = myUser.value!!.nickname
+            textViewMail.text = myUser.value!!.email
 
             Glide.with(this).using(FirebaseImageLoader())
-                .load(storage.child("/profileImages/${currentUser.photoName}")).into(imgView)
+                .load(storage.child("/profileImages/${myUser.value!!.photoName}")).into(imgView)
         })
     }
 
@@ -92,5 +92,10 @@ class MainActivity : AppCompatActivity(), DrawerLayout.DrawerListener {
     }
 
     override fun onDrawerOpened(drawerView: View) { /* do nothing */
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        this.manageNavigationHeader()
     }
 }
