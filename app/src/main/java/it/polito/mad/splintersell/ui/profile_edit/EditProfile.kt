@@ -63,6 +63,7 @@ class EditProfile : Fragment() {
     lateinit var oldPath: String
     var counterFeedback: Int = 0
     var rating: Float = 0F
+    var token: String = ""
     var randomString: String = ""
 
     var rotatedBitmap: Bitmap? = null
@@ -147,7 +148,8 @@ class EditProfile : Fragment() {
             } else
                 this.restoreImage(savedImg)
 
-            // Store counterFeedback and rating for next updates
+            // Store token, counterFeedback and rating for next updates
+            token = currentUser.token
             counterFeedback = currentUser.counterfeed
             rating = currentUser.rating
         })
@@ -522,30 +524,25 @@ class EditProfile : Fragment() {
     private fun setNewUser() {
         oldPath = path
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
-        firestoreViewModel.myToken.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { token ->
-                val newUser = UserModel(
-                    name.text.toString(),
-                    nickname.text.toString(),
-                    email.text.toString(),
-                    location.text.toString(),
-                    randomString,
-                    userId,
-                    token,
-                    counterFeedback,
-                    rating
-                )
-                firestoreViewModel.saveUserToFirestore(newUser)
-                val user: MutableLiveData<UserModel> = MutableLiveData(newUser)
-                firestoreViewModel.createdUserLiveData = user
-            })
+        val newUser = UserModel(
+            name.text.toString(),
+            nickname.text.toString(),
+            email.text.toString(),
+            location.text.toString(),
+            randomString,
+            userId,
+            token,
+            counterFeedback,
+            rating
+        )
+        firestoreViewModel.saveUserToFirestore(newUser)
+        val user: MutableLiveData<UserModel> = MutableLiveData(newUser)
+        firestoreViewModel.createdUserLiveData = user
     }
 
     private fun navigateMyProfile() {
         // Return back to profile page
         findNavController().popBackStack()
     }
-
 
 }

@@ -36,7 +36,6 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     private var _allItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _interestedUserList: MutableLiveData<List<UserModel>> = MutableLiveData()
     private var _soldItemsList: MutableLiveData<List<ItemModel>> = MutableLiveData()
-    private var _myToken: MutableLiveData<String> = MutableLiveData()
 
     init {
         this.fetchAllItemListFromFirestore()
@@ -440,31 +439,13 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
             }
     }
 
-    fun getToken() {
-        firestoreRepository.firestore.collection("users")
-            .document(userId).get()
-            .addOnSuccessListener { document ->
-                if (document != null)
-                    _myToken.value = document.get("string").toString()
-            }
-    }
-
     fun updateToken(token: String) {
         userId = FirebaseAuth.getInstance().currentUser!!.uid
         // This method is called only when the user is authenticated, so we can use user
         firestoreRepository.firestore.collection("users")
             .document(userId)
             .update("token", token)
-        _myToken.value = token
     }
-
-    internal var myToken: MutableLiveData<String>
-        get() {
-            return _myToken
-        }
-        set(value) {
-            _myToken = value
-        }
 
     internal var user: MutableLiveData<UserModel>
         get() {
