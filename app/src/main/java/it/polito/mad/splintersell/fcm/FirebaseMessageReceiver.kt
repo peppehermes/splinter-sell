@@ -6,6 +6,8 @@ import android.content.Context
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -19,7 +21,8 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
 
     override fun onMessageReceived(p0: RemoteMessage) {
         if (p0.notification != null) {
-            showNotification(p0.notification!!.title, p0.notification!!.body, p0.data["fragment"])
+            showNotification(p0.notification!!.title, p0.notification!!.body, p0.data["fragment"]
+            )
         }
     }
 
@@ -30,20 +33,24 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
         fragment: String?
     ) {
         var destination:Int = R.id.nav_on_sale_list
+        when (fragment){
+            "bought" -> destination = R.id.nav_bought_items_list
 
-        if(fragment == "bought")
-            destination = R.id.nav_bought_items_list
-        else if (fragment == "onsale")
-            destination = R.id.nav_on_sale_list
-        else if (fragment == "myitems")
-            destination = R.id.nav_item_list
+            "onsale" -> destination = R.id.nav_on_sale_list
+
+            "myitems" ->{
+                destination = R.id.nav_item_list
+            }
+        }
 
         val channelId = "web_app_channel"
+
         val pending = NavDeepLinkBuilder(this)
             .setComponentName(MainActivity::class.java)
             .setGraph(R.navigation.mobile_navigation)
             .setDestination(destination)
             .createPendingIntent()
+
         val uri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val builder = NotificationCompat.Builder(applicationContext, channelId)
             .setAutoCancel(true)

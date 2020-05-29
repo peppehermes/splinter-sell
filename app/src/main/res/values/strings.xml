@@ -13,6 +13,8 @@
     <string name="menu_item_details">Item details</string>
     <string name="menu_item_list">My Items</string>
     <string name="sign_out">Sign Out</string>
+    <string name="map">Map</string>
+
     <string name="menu_on_sale">On sale</string>
     <string name="menu_follow_list">Wish List</string>
     <string name="menu_bought_list">Bought List</string>
