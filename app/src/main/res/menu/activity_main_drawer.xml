@@ -33,11 +33,6 @@
             android:icon="@drawable/ic_exit_to_app_black_24dp"
             android:title="@string/sign_out" />
 
-        <item
-            android:id="@+id/mapFragment"
-            android:icon="@drawable/ic_exit_to_app_black_24dp"
-            android:title="@string/map" />
-
     </group>
 
 </menu>

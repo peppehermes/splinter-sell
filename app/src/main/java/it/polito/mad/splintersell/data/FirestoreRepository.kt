@@ -1,5 +1,6 @@
 package it.polito.mad.splintersell.data
 
+import android.location.Address
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.tasks.Task
@@ -162,6 +163,12 @@ class FirestoreRepository(val onFirestoreTaskComplete: OnFirestoreTaskComplete) 
                 }
             }
     }
+
+    fun updateUserLocation(address: GeoPoint, location: String, ownerId: String){
+        firestore.collection("users").document(ownerId).update("address", address)
+        firestore.collection("users").document(ownerId).update("location", location)
+    }
+
 
     fun updateStatus(status: String, itemId: String) {
         firestore.collection("items").document(itemId).update("status", status)

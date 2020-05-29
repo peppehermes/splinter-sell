@@ -1,5 +1,6 @@
 package it.polito.mad.splintersell.data
 
+import android.location.Address
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +11,7 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.QuerySnapshot
 import java.util.*
 
@@ -87,6 +89,10 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         firestoreRepository.saveFeedback(feed).addOnFailureListener {
             Log.e(TAG, "Failed to save Feedback!")
         }
+    }
+
+    fun updateUserLocation(address: GeoPoint, location: String, ownerId: String){
+        firestoreRepository.updateUserLocation(address, location, ownerId)
     }
 
     fun updateStatus(status: String, item_id: String) {

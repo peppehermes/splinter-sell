@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
@@ -68,6 +69,12 @@ class ShowProfile : Fragment() {
                 email.text = it.email
                 location.text = it.location
                 rating.rating = it.rating
+
+                location.setOnClickListener{
+                    val action = ShowProfileDirections.actionNavShowProfileToNavMapShowprof("currUser")
+                    findNavController().navigate(action)
+                }
+
             } else {
                 nickname.text = it.nickname
                 email.text = it.email

@@ -89,6 +89,13 @@
             android:name="userID"
             android:defaultValue="currUser"
             app:argType="string" />
+        <action
+            android:id="@+id/action_nav_show_profile_to_nav_map_showprof"
+            app:destination="@id/nav_map_showprof" >
+            <argument
+                android:name="userID"
+                android:defaultValue="currUser" />
+        </action>
     </fragment>
 
     <fragment
@@ -188,10 +195,22 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/mapFragment"
+        android:id="@+id/nav_map_showprof"
         android:name="it.polito.mad.splintersell.ui.map.MapFragment"
-        android:label="fragment_map"
-        tools:layout="@layout/fragment_map" />
+        android:label="Update your location"
+        tools:layout="@layout/fragment_map">
+        <argument
+            android:name="userID"
+            android:defaultValue="currUser"
+            app:argType="string" />
+        <action
+            android:id="@+id/fromMaptoProfile"
+            app:destination="@id/nav_show_profile">
+            <argument
+                android:name="userID"
+                android:defaultValue="currUser" />
+        </action>
+    </fragment>
 
 
 </navigation>
