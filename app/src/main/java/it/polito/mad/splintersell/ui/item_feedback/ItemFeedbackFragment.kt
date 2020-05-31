@@ -7,6 +7,8 @@ import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -50,6 +52,11 @@ class ItemFeedbackFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val expandIn: Animation = AnimationUtils.loadAnimation(
+            requireContext(), R.anim.expand_in
+        )
+        fab.startAnimation(expandIn)
 
         hideKeyboardFrom(requireContext(), view)
 

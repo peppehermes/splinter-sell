@@ -7,7 +7,7 @@
     <dimen name="fab_margin">16dp</dimen>
 
     //for the label above Spinner
-    <dimen name="input_label_vertical_spacing">4dp</dimen>
+    <dimen name="input_label_vertical_spacing">6dp</dimen>
     <dimen name="input_label_horizontal_spacing">4dp</dimen>
 
 </resources>

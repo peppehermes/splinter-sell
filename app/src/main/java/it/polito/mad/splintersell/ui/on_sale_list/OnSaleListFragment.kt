@@ -108,7 +108,6 @@ class OnSaleListFragment : Fragment() {
                 when (authenticationState) {
                     SignInViewModel.AuthenticationState.AUTHENTICATED -> doSomething()
                     SignInViewModel.AuthenticationState.UNAUTHENTICATED -> {
-                        TransitionManager.beginDelayedTransition(externalLayout)
                         findNavController().navigate(R.id.sign_in)
                     }
                     else -> { /*Do nothing*/
@@ -176,7 +175,6 @@ class OnSaleListFragment : Fragment() {
                     Log.e(TAG, "UPDATE")
                     adapter.setOnSaleItemList(onSaleItemList as ArrayList<ItemModel>)
                     adapter.notifyDataSetChanged()
-                    //Log.e(TAG, onSaleItemList.isEmpty().toString())
                     toggleNoItemsHere(onSaleItemList)
                 })
 

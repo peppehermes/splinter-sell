@@ -1,8 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout android:layout_height="match_parent"
-    android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.item_feedback.ItemFeedbackFragment">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_begin="0dp"
+        app:layout_constraintGuide_percent="0.9"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_begin="0dp"
+        app:layout_constraintGuide_percent="0.33"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/label_nickname"
+        style="@style/InputLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:drawableStart="@drawable/ic_account_circle_black_16dp"
+        android:drawablePadding="8dp"
+        android:drawableTint="?attr/colorControlNormal"
+        android:text="@string/user"
+        app:layout_constraintBottom_toTopOf="@+id/nickname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/nickname"
+        style="@style/InputBody"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/user"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toTopOf="@+id/itemname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline_top"
+        tools:text="Nickname" />
+
+    <TextView
+        android:id="@+id/label_itemname"
+        style="@style/InputLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:drawableStart="@drawable/ic_shopping_basket_black_16dp"
+        android:drawablePadding="8dp"
+        android:drawableTint="?attr/colorControlNormal"
+        android:text="@string/item"
+        app:layout_constraintBottom_toTopOf="@+id/itemname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/itemname"
+        style="@style/InputBody"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/item"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toTopOf="@+id/til_comment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nickname"
+        tools:text="Title" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_comment"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="10dp"
+        app:counterEnabled="true"
+        app:counterMaxLength="80"
+        app:errorEnabled="true"
+        app:layout_constraintBottom_toTopOf="@id/rating"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/itemname">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/comment"
+            style="@style/InputBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:drawableStart="@drawable/ic_edit_white_24dp"
+            android:drawablePadding="8dp"
+            android:drawableTint="?attr/colorControlNormal"
+            android:hint="@string/comment"
+            android:inputType="textAutoCorrect|textAutoComplete|textMultiLine"
+            android:paddingBottom="8dp"
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:textSize="20sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/label_rating"
+        style="@style/InputLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:drawablePadding="8dp"
+        android:drawableTint="?attr/colorControlNormal"
+        android:text="@string/rating"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/rating"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <RatingBar
+        android:id="@+id/rating"
+        style="?android:attr/ratingBarStyleIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="32dp"
+        android:isIndicator="false"
+        android:numStars="5"
+        android:stepSize="1.0"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_bot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/til_comment" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_photo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/profile_photo"
+        app:civ_border_color="@color/colorPrimary"
+        app:civ_border_width="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_top"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -12,186 +171,13 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="186dp"
         app:backgroundTint="@color/colorSecondary"
         app:borderWidth="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_send_black_24dp" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.item_feedback.ItemFeedbackFragment">
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_bot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintGuide_begin="0dp"
-            app:layout_constraintGuide_percent="0.9"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_top"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintGuide_begin="0dp"
-            app:layout_constraintGuide_percent="0.33"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/label_nickname"
-            style="@style/InputLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableTint="?attr/colorControlNormal"
-            android:drawableStart="@drawable/ic_account_circle_black_16dp"
-            android:drawablePadding="8dp"
-            android:layout_marginHorizontal="16dp"
-            android:text="@string/user"
-            app:layout_constraintBottom_toTopOf="@+id/nickname"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/nickname"
-            style="@style/InputBody"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/user"
-            app:autoSizeTextType="uniform"
-            app:layout_constraintBottom_toTopOf="@+id/itemname"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/guideline_top"
-            tools:text="Nickname" />
-
-        <TextView
-            android:id="@+id/label_itemname"
-            style="@style/InputLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableTint="?attr/colorControlNormal"
-            android:drawableStart="@drawable/ic_shopping_basket_black_16dp"
-            android:drawablePadding="8dp"
-            android:layout_marginHorizontal="16dp"
-            android:text="@string/item"
-            app:layout_constraintBottom_toTopOf="@+id/itemname"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/itemname"
-            style="@style/InputBody"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/item"
-            app:autoSizeTextType="uniform"
-            app:layout_constraintBottom_toTopOf="@+id/til_comment"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nickname"
-            tools:text="Title" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:id="@+id/til_comment"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="80"
-            app:errorEnabled="true"
-            android:layout_marginHorizontal="16dp"
-            app:layout_constraintBottom_toTopOf="@id/rating"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/itemname" >
-
-            <com.google.android.material.textfield.TextInputEditText
-                style="@style/InputBody"
-                android:autofillHints=""
-                android:drawablePadding="8dp"
-                android:drawableStart="@drawable/ic_edit_white_24dp"
-                android:drawableTint="?attr/colorControlNormal"
-                android:hint="@string/comment"
-                android:id="@+id/comment"
-                android:inputType="textAutoCorrect|textAutoComplete|textMultiLine"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:paddingBottom="8dp"
-                android:textAppearance="?attr/textAppearanceBody1"
-                android:textSize="20sp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            style="@style/InputLabel"
-            android:drawablePadding="8dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:id="@+id/label_rating"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_width="match_parent"
-            android:text="@string/rating"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toTopOf="@+id/rating"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.186"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <RatingBar
-            android:id="@+id/rating"
-            style="?android:attr/ratingBarStyleIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="32dp"
-            android:isIndicator="false"
-            android:numStars="5"
-            android:stepSize="1.0"
-            app:layout_constraintBottom_toTopOf="@+id/guideline_bot"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_comment" />
-
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:contentDescription="@string/profile_photo"
-            android:id="@+id/profile_photo"
-            android:layout_height="0dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_width="0dp"
-            app:civ_border_color="@color/colorPrimary"
-            app:civ_border_width="2dp"
-            app:layout_constraintBottom_toTopOf="@+id/guideline_top"
-            app:layout_constraintDimensionRatio="1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</FrameLayout>
-
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

@@ -1,204 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    tools:context=".ui.profile_edit.EditProfile">
+    android:layout_height="match_parent"
+    android:scrollbars="none">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_bot"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_begin="0dp"
-        app:layout_constraintGuide_percent="0.9"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_top"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_begin="0dp"
-        app:layout_constraintGuide_percent="0.33"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:contentDescription="@string/profile_photo"
-        android:id="@+id/profile_photo"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_width="0dp"
-        app:civ_border_color="@color/colorPrimary"
-        app:civ_border_width="2dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_top"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        android:id="@+id/til_name"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+    <LinearLayout
         android:layout_width="match_parent"
-        app:counterEnabled="true"
-        app:counterMaxLength="20"
-        app:errorEnabled="true"
-        app:layout_constraintBottom_toTopOf="@+id/til_nickname"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline_top">
-
-        <com.google.android.material.textfield.TextInputEditText
-            style="@style/InputBody"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_person_black_24dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:hint="@string/full_name"
-            android:id="@+id/name"
-            android:importantForAutofill="no"
-            android:inputType="textPersonName"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:paddingBottom="8dp"
-            android:textAppearance="?attr/textAppearanceBody1"
-            android:textSize="20sp" />
-
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        android:id="@+id/til_nickname"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_width="match_parent"
-        app:counterEnabled="true"
-        app:counterMaxLength="20"
-        app:errorEnabled="true"
-        app:layout_constraintBottom_toTopOf="@+id/til_email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_name">
+        android:orientation="vertical"
+        tools:context=".ui.profile_edit.EditProfile">
 
-
-        <com.google.android.material.textfield.TextInputEditText
-            style="@style/InputBody"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_account_circle_black_24dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:hint="@string/nick"
-            android:id="@+id/nickname"
-            android:importantForAutofill="no"
-            android:inputType="textShortMessage|text"
+        <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_photo"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:contentDescription="@string/profile_photo"
+                app:civ_border_color="@color/colorPrimary"
+                app:civ_border_width="2dp"
+                app:layout_constraintDimensionRatio="1" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/select_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@id/profile_photo"
+                android:layout_alignBottom="@id/profile_photo"
+                android:contentDescription="@string/update_profile_photo"
+                android:src="@drawable/ic_edit_white_24dp" />
+
+        </RelativeLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_name"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
-            android:paddingBottom="8dp"
-            android:textAppearance="?attr/textAppearanceBody1"
-            android:textSize="20sp" />
-
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        android:id="@+id/til_email"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_width="match_parent"
-        android:clickable="false"
-        app:counterEnabled="true"
-        app:counterMaxLength="30"
-        app:errorEnabled="true"
-        app:layout_constraintBottom_toTopOf="@+id/til_location"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_nickname">
-
-
-        <com.google.android.material.textfield.TextInputEditText
-            style="@style/InputBody"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_email_black_24dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:hint="@string/mail"
-            android:id="@+id/email"
-            android:importantForAutofill="no"
-            android:inputType="textEmailAddress"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="20"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/name"
+                style="@style/InputBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_person_black_24dp"
+                android:drawablePadding="8dp"
+                android:drawableTint="?attr/colorControlNormal"
+                android:hint="@string/full_name"
+                android:importantForAutofill="no"
+                android:inputType="textPersonName"
+                android:paddingBottom="8dp"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:textSize="20sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_nickname"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
-            android:paddingBottom="8dp"
-            android:textAppearance="?attr/textAppearanceBody1"
-            android:textSize="20sp" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        android:id="@+id/til_location"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_width="match_parent"
-        app:counterEnabled="true"
-        app:counterMaxLength="60"
-        app:errorEnabled="true"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_bot"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_email">
-
-        <com.google.android.material.textfield.TextInputEditText
-            style="@style/InputBody"
-            android:autofillHints=""
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_location_on_black_24dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:hint="@string/location"
-            android:id="@+id/location"
-            android:inputType="textAutoCorrect|textAutoComplete|textPostalAddress|textMultiLine"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="20"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/nickname"
+                style="@style/InputBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_account_circle_black_24dp"
+                android:drawablePadding="8dp"
+                android:drawableTint="?attr/colorControlNormal"
+                android:hint="@string/nick"
+                android:importantForAutofill="no"
+                android:inputType="textShortMessage|text"
+                android:paddingBottom="8dp"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:textSize="20sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_email"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
-            android:paddingBottom="8dp"
-            android:textAppearance="?attr/textAppearanceBody1"
-            android:textSize="20sp" />
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:clickable="false"
+            app:counterEnabled="true"
+            app:counterMaxLength="30"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email"
+                style="@style/InputBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_email_black_24dp"
+                android:drawablePadding="8dp"
+                android:drawableTint="?attr/colorControlNormal"
+                android:hint="@string/mail"
+                android:importantForAutofill="no"
+                android:inputType="textEmailAddress"
+                android:paddingBottom="8dp"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:textSize="20sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_location"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="60"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/location"
+                style="@style/InputBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:drawableStart="@drawable/ic_location_on_black_24dp"
+                android:drawablePadding="8dp"
+                android:drawableTint="?attr/colorControlNormal"
+                android:hint="@string/location"
+                android:inputType="textAutoCorrect|textAutoComplete|textPostalAddress|textMultiLine"
+                android:paddingBottom="8dp"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:textSize="20sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
 
 
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:contentDescription="@string/update_profile_photo"
-        android:id="@+id/select_photo"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:src="@drawable/ic_edit_white_24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/profile_photo"
-        app:layout_constraintEnd_toEndOf="@+id/profile_photo"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/profile_photo"
-        app:layout_constraintTop_toTopOf="@+id/profile_photo"
-        app:layout_constraintVertical_bias="1.0" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
+</ScrollView>

@@ -39,8 +39,15 @@ class BoughtItemsListAdapter(private var soldList: ArrayList<ItemModel>) :
             holder.jolly.setBackgroundColor(holder.itemView.context.getColor(R.color.colorSecondaryVariant))
 
             holder.jolly.setOnClickListener {
-                navigateToItemFeedback(holder.itemView, item.ownerId!!, item.title!!, item.documentName!!)
+                navigateToItemFeedback(
+                    holder.itemView,
+                    item.ownerId!!,
+                    item.title!!,
+                    item.documentName!!
+                )
             }
+        } else {
+            holder.jolly.visibility = View.GONE
         }
     }
 

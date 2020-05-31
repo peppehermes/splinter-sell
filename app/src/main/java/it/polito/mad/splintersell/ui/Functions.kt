@@ -3,8 +3,9 @@ package it.polito.mad.splintersell.ui
 import android.content.Context
 import android.graphics.*
 import android.net.Uri
+import android.transition.TransitionManager
 import android.util.Log
-import android.view.View
+import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.exifinterface.media.ExifInterface
 import it.polito.mad.splintersell.MainActivity
@@ -59,20 +60,13 @@ fun manageStatus(holder: ItemModelHolder, status: String) {
 }
 
 fun showSystemUI(activity: MainActivity) {
-    activity.window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
     activity.drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+    val layout: ViewGroup = activity.drawer_layout
+    TransitionManager.beginDelayedTransition(layout)
     activity.supportActionBar?.show()
 }
 
 fun hideSystemUI(activity: MainActivity) {
-    activity.window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            or View.SYSTEM_UI_FLAG_FULLSCREEN)
     activity.drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     activity.supportActionBar?.hide()
 }

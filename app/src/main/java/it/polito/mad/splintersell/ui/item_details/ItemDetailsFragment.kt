@@ -5,12 +5,15 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
@@ -22,14 +25,15 @@ import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.*
 import kotlinx.android.synthetic.main.fragment_item_details.*
 
+
 class ItemDetailsFragment : Fragment() {
     private val firestoreViewModel: FirestoreViewModel by viewModels()
     private lateinit var liveData: LiveData<ItemModel>
     private lateinit var userLiveData: LiveData<UserModel>
     private var user = FirebaseAuth.getInstance().currentUser
     private lateinit var coordinator: CoordinatorLayout
-    private var isRotate: Boolean = false
     private lateinit var imgPath: String
+    private var isRotate: Boolean = false
 
     private val args: ItemDetailsFragmentArgs by navArgs()
 
@@ -47,6 +51,7 @@ class ItemDetailsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+
         firestoreViewModel.fetchSingleItemFromFirestore(args.documentName)
         liveData = firestoreViewModel.item
 
@@ -89,7 +94,10 @@ class ItemDetailsFragment : Fragment() {
         if (args.onSale) {
             firestoreViewModel.isRequested.observe(viewLifecycleOwner, Observer { requested ->
                 isRotate = requested
-
+                val expandIn: Animation = AnimationUtils.loadAnimation(
+                    requireContext(), R.anim.expand_in
+                )
+                fab.startAnimation(expandIn)
                 if (requested) {
                     rotateFab(fab, isRotate)
                     fab.backgroundTintList =
@@ -125,7 +133,10 @@ class ItemDetailsFragment : Fragment() {
 
         detail_image.setOnClickListener {
             val action = ItemDetailsFragmentDirections.fullScreenImage(imgPath)
-            findNavController().navigate(action)
+            val extras = FragmentNavigatorExtras(
+                detail_image to "transition_image"
+            )
+            findNavController().navigate(action, extras)
         }
 
     }
@@ -149,12 +160,14 @@ class ItemDetailsFragment : Fragment() {
             Snackbar.make(
                 coordinator, "Item added to Wishlist", Snackbar.LENGTH_SHORT
             ).show()
+
             firestoreViewModel.isRequested.value = true
         }
     }
 
     private fun rotateFab(v: View, rotate: Boolean): Boolean {
-        v.animate().setDuration(200).setListener(object : AnimatorListenerAdapter() {})
+        v.animate()
+            .setDuration(400).setListener(object : AnimatorListenerAdapter() {})
             .rotation(if (rotate) 135f else 0f)
         return rotate
     }

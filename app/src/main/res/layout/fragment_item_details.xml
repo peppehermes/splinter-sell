@@ -2,165 +2,168 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ScrollView
-        android:fillViewport="true"
         android:id="@+id/detail_view"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:fillViewport="true"
+        android:scrollbars="none">
 
         <LinearLayout
             android:id="@+id/detail_linear_layout"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="8dp">
 
             <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="280dp"
-                android:layout_marginBottom="16dp"
-                android:layout_width="match_parent">
+                android:layout_marginBottom="16dp">
 
                 <ImageView
+                    android:layout_width="match_parent"
                     android:id="@+id/detail_image"
+                    android:layout_height="280dp"
+                    android:layout_marginBottom="8dp"
+                    android:transitionName="@string/transition_image"
                     android:clickable="true"
-                    app:layout_collapseMode="parallax"
                     android:contentDescription="@string/detail_image"
                     android:focusable="true"
-                    android:layout_height="280dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_width="match_parent"
                     android:scaleType="centerCrop"
+                    app:layout_collapseMode="parallax"
                     app:srcCompat="@drawable/image_vectorized_lower" />
 
             </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingHorizontal="8dp">
 
                 <TextView
-                    style="@style/titleLabel"
                     android:id="@+id/title"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    style="@style/titleLabel"
                     android:layout_width="match_parent"
-                    android:text="@string/title"
+                    android:layout_height="wrap_content"
                     android:transitionName="@string/transition_title" />
 
                 <TextView
-                    style="@style/InputLabel"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/owner_label"
                     android:layout_width="match_parent"
-                    android:text="@string/description" />
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_account_circle_black_16dp"
+                    android:drawablePadding="8dp"
+                    android:drawableTint="?attr/colorControlNormal"
+                    android:text="@string/owner"
+                    android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Button" />
 
                 <TextView
-                    style="@style/InputBody"
-                    android:id="@+id/description"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
+                    android:id="@+id/owner"
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/owner"
+                    android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Subtitle2"
+                    android:textColor="?android:attr/textColorSecondary" />
+
+                <TextView
+                    style="@style/InputLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:text="@string/description"
+                    android:textColor="?android:attr/textColorPrimary" />
+
+                <TextView
+                    android:id="@+id/description"
+                    style="@style/InputBody"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="@string/description"
                     android:textAppearance="?attr/textAppearanceBody1"
                     android:textColor="?android:attr/textColorSecondary"
                     android:transitionName="@string/transition_description" />
 
-                <View style="@style/separator" />
+                <View style="@style/divider" />
 
                 <TextView
                     style="@style/InputLabel"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
                     android:text="@string/price" />
 
                 <TextView
-                    style="@style/InputBody"
                     android:id="@+id/price"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
+                    style="@style/InputBody"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="@string/price"
                     android:textColor="?android:attr/textColorSecondary"
                     android:transitionName="@string/transition_price" />
 
-                <View style="@style/separator" />
+                <View style="@style/divider" />
 
                 <TextView
                     style="@style/InputLabel"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
                     android:text="@string/show_category" />
 
                 <TextView
-                    style="@style/InputBody"
                     android:id="@+id/category"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
+                    style="@style/InputBody"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="@string/show_category"
                     android:textAppearance="?attr/textAppearanceBody1"
                     android:textColor="?android:attr/textColorSecondary" />
 
-                <View style="@style/separator" />
+                <View style="@style/divider" />
 
                 <TextView
                     style="@style/InputLabel"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
                     android:text="@string/location" />
 
                 <TextView
-                    style="@style/InputBody"
                     android:id="@+id/location"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
+                    style="@style/InputBody"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="@string/location"
                     android:textAppearance="?attr/textAppearanceBody1"
                     android:textColor="?android:attr/textColorSecondary" />
 
-                <View style="@style/separator" />
+                <View style="@style/divider" />
 
                 <TextView
                     style="@style/InputLabel"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
                     android:text="@string/expire_date" />
 
                 <TextView
-                    style="@style/InputBody"
                     android:id="@+id/expire_date"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
+                    style="@style/InputBody"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="@string/expire_date"
                     android:textAppearance="?attr/textAppearanceBody1"
                     android:textColor="?android:attr/textColorSecondary" />
 
-                <View style="@style/separator" />
-
-                <TextView
-                    style="@style/InputLabel"
-                    android:id="@+id/owner_label"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:text="@string/owner" />
-
-                <TextView
-                    style="@style/InputBody"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:id="@+id/owner"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_width="match_parent"
-                    android:text="@string/owner"
-                    android:textAppearance="?attr/textAppearanceBody1"
-                    android:textColor="?android:attr/textColorSecondary" />
+                <View style="@style/divider" />
 
             </LinearLayout>
 
@@ -170,19 +173,19 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator_layout"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true">
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            style="@style/Widget.MyApp.MyFloatingActionButton"
             android:id="@+id/fab"
-            android:layout_gravity="bottom|end"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fab_margin"
+            style="@style/Widget.MyApp.MyFloatingActionButton"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
             android:visibility="gone"
             app:backgroundTint="@color/colorSecondary"
             app:borderWidth="0dp"

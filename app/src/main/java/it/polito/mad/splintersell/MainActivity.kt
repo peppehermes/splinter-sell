@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity(), DrawerLayout.DrawerListener {
         val imgView = headerView.findViewById(R.id.imageView) as ImageView
 
         // Retrieve User data
-        //firestoreViewModel.fetchMyUserFromFirestore()
+        firestoreViewModel.fetchMyUserFromFirestore()
         val myUser = firestoreViewModel.myUser
 
         myUser.observe(this, Observer {

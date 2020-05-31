@@ -157,6 +157,7 @@ class ItemEditFragment : Fragment() {
                         .load(storage.child("/itemImages/$path")).into(image)
 
                     // Add on click listener to see full size image
+
                     detail_image.isClickable = true
                     detail_image.isFocusable = true
                     detail_image.setOnClickListener {

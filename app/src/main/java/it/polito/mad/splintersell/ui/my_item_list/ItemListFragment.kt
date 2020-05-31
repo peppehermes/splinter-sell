@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -69,7 +71,6 @@ class ItemListFragment : Fragment() {
 
                 manageStatus(holder, model.status!!)
 
-
                 // Set the onClick listener
                 holder.card.setOnClickListener {
                     navigateToItemDetails(holder.itemView, model.documentName!!)
@@ -129,6 +130,11 @@ class ItemListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         externalLayout = view.findViewById(R.id.external_layout)
+
+        val expandIn: Animation = AnimationUtils.loadAnimation(
+            requireContext(), R.anim.expand_in
+        )
+        fab.startAnimation(expandIn)
 
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)

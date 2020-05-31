@@ -27,14 +27,21 @@
         <action
             android:id="@+id/goToInterestedUsers"
             app:destination="@id/userListFragment"
-            app:popUpTo="@id/nav_item_details" />
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
         <argument
             android:name="userID"
             android:defaultValue="currUser"
             app:argType="string" />
         <action
             android:id="@+id/fullScreenImage"
-            app:destination="@id/imageViewFragment" />
+            app:destination="@id/imageViewFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
 
     <fragment
@@ -44,10 +51,18 @@
         tools:layout="@layout/fragment_item_list">
         <action
             android:id="@+id/newItem"
-            app:destination="@id/nav_edit_item" />
+            app:destination="@id/nav_edit_item"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/editListItem"
             app:destination="@id/nav_edit_item"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/nav_item_list" />
     </fragment>
 
@@ -60,9 +75,6 @@
             android:name="documentName"
             app:argType="string" />
         <action
-            android:id="@+id/fullScreenImage"
-            app:destination="@id/imageViewFragment" />
-        <action
             android:id="@+id/returnToItemDetails"
             app:destination="@id/nav_item_details"
             app:enterAnim="@anim/slide_in_left"
@@ -70,6 +82,13 @@
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/fade_out"
             app:popUpTo="@id/nav_item_list" />
+        <action
+            android:id="@+id/fullScreenImage"
+            app:destination="@id/imageViewFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
 
     <fragment
@@ -91,7 +110,11 @@
             app:argType="string" />
         <action
             android:id="@+id/action_nav_show_profile_to_nav_map_showprof"
-            app:destination="@id/nav_map_showprof" >
+            app:destination="@id/nav_map_showprof"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right">
             <argument
                 android:name="userID"
                 android:defaultValue="currUser" />
@@ -128,7 +151,11 @@
     </fragment>
     <action
         android:id="@+id/showProfile"
-        app:destination="@id/nav_show_profile" />
+        app:destination="@id/nav_show_profile"
+        app:enterAnim="@anim/fade_in"
+        app:exitAnim="@anim/fade_out"
+        app:popEnterAnim="@anim/fade_in"
+        app:popExitAnim="@anim/fade_out" />
     <navigation
         android:id="@+id/sign_in"
         app:startDestination="@id/splash_screen_fragment">
@@ -154,15 +181,21 @@
             android:label="fragment_splash_screen"
             tools:layout="@layout/fragment_splash_screen">
             <action
-                android:id="@+id/action_splashScreenFragment_to_nav_sign_in"
+                android:id="@+id/toSignIn"
                 app:destination="@id/nav_sign_in"
-                app:enterAnim="@anim/fragment_fade_enter"
-                app:popExitAnim="@anim/fragment_fade_exit" />
+                app:enterAnim="@anim/fade_in"
+                app:exitAnim="@anim/fade_out"
+                app:popEnterAnim="@anim/fade_in"
+                app:popExitAnim="@anim/fade_out" />
         </fragment>
     </navigation>
     <action
         android:id="@+id/showItemDetails"
-        app:destination="@id/nav_item_details" />
+        app:destination="@id/nav_item_details"
+        app:enterAnim="@anim/fade_in"
+        app:exitAnim="@anim/fade_out"
+        app:popEnterAnim="@anim/fade_in"
+        app:popExitAnim="@anim/fade_out" />
     <fragment
         android:id="@+id/imageViewFragment"
         android:label="Item image"
@@ -178,7 +211,11 @@
         android:name="it.polito.mad.splintersell.ui.bought_items_list.BoughtItemsListFragment" >
         <action
             android:id="@+id/leaveFeedback"
-            app:destination="@id/item_feedback_fragment" />
+            app:destination="@id/item_feedback_fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/item_feedback_fragment"
@@ -203,13 +240,6 @@
             android:name="userID"
             android:defaultValue="currUser"
             app:argType="string" />
-        <action
-            android:id="@+id/fromMaptoProfile"
-            app:destination="@id/nav_show_profile">
-            <argument
-                android:name="userID"
-                android:defaultValue="currUser" />
-        </action>
     </fragment>
 
 

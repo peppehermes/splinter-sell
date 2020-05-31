@@ -14,6 +14,7 @@
     <string name="menu_item_list">My Items</string>
     <string name="sign_out">Sign Out</string>
     <string name="map">Map</string>
+    <string name="okay">OKAY</string>
 
     <string name="menu_on_sale">On sale</string>
     <string name="menu_follow_list">Wish List</string>
@@ -44,7 +45,7 @@
     <string name="view_user">View User</string>
     <string name="show_users">Show Interested Users</string>
     <string name="empty_list">No items here</string>
-    <string name="empty_list_users">No users interested</string>
+    <string name="empty_list_users">No interested users</string>
     <string name="remove">Remove</string>
     <string name="sold">sold</string>
     <string name="available">available</string>
@@ -191,6 +192,7 @@
     <string name="all_you_re_looking_for">ALL YOU\'RE LOOKING FOR</string>
 
     <string name="transition_image">transition_image</string>
+    <string name="transition_image_edit">transition_image_edit</string>
     <string name="transition_title">transition_title</string>
     <string name="transition_description">transition_description</string>
     <string name="transition_price">transition_price</string>
@@ -199,5 +201,6 @@
     <string name="welcome">Welcome!</string>
     <string name="you_re_almost_there">You\'re almost there</string>
     <string name="here_we_are">Here we are</string>
+    <string name="label_rating">Rating</string>
 
 </resources>

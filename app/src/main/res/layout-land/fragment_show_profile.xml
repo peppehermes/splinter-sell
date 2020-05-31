@@ -1,192 +1,228 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    tools:context=".ui.profile_show.ShowProfile">
+    android:layout_height="match_parent"
+    android:scrollbars="none"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_top"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_percent="0.38"
-        app:layout_constraintStart_toStartOf="parent" />
+        tools:context=".ui.profile_show.ShowProfile">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:contentDescription="@string/profile_photo"
-        android:id="@+id/profile_photo"
-        android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="64dp"
-        android:layout_width="0dp"
-        app:civ_border_color="@color/colorPrimary"
-        app:civ_border_width="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_top"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintGuide_percent="0.38"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/name_layout"
-        android:layout_height="0dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="8dp"
-        android:layout_width="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/nick_layout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline_top"
-        app:layout_constraintTop_toTopOf="parent">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_photo"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginStart="64dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/profile_photo"
+            android:maxWidth="200dp"
+            android:maxHeight="200dp"
+            app:civ_border_color="@color/colorPrimary"
+            app:civ_border_width="2dp"
+            app:layout_constraintBottom_toTopOf="@+id/label_rating"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_top"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            style="@style/InputLabel"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_person_black_16dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:id="@+id/label_name"
+            android:id="@+id/label_rating"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="@string/full_name"
-            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Subtitle1" />
-
-        <TextView
-            style="@style/InputBody"
-            android:id="@+id/name"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="@string/full_name"
-            app:autoSizeTextType="uniform"
-            tools:text="Full Name" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/nick_layout"
-        android:layout_height="0dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginStart="56dp"
-        android:layout_width="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/email_layout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline_top"
-        app:layout_constraintTop_toBottomOf="@+id/name_layout">
-
-        <TextView
-            style="@style/InputLabel"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_account_circle_black_16dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:id="@+id/label_nickname"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="@string/nick" />
-
-        <TextView
-            style="@style/InputBody"
-            android:id="@+id/nickname"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="@string/nick"
-            app:autoSizeTextType="uniform"
-            tools:text="Nickname" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/email_layout"
-        android:layout_height="0dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginStart="56dp"
-        android:layout_width="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/location_layout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline_top"
-        app:layout_constraintTop_toBottomOf="@+id/nick_layout">
-
-        <TextView
-            style="@style/InputLabel"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_email_black_16dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:id="@+id/label_email"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="@string/mail" />
-
-        <TextView
-            style="@style/InputBody"
-            android:id="@+id/email"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="@string/mail"
-            app:autoSizeTextType="uniform"
-            tools:text="Email" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/location_layout"
-        android:layout_height="0dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginStart="56dp"
-        android:layout_width="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/rating_layout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline_top"
-        app:layout_constraintTop_toBottomOf="@+id/email_layout">
-
-        <TextView
-            style="@style/InputLabel"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_location_on_black_16dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:id="@+id/label_location"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="@string/location_show_profile" />
-
-        <TextView
-            style="@style/InputBody"
-            android:id="@+id/location"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="@string/location_show_profile"
-            app:autoSizeTextType="uniform"
-            tools:text="Location" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/rating_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline_top"
-        app:layout_constraintTop_toBottomOf="@+id/location_layout">
+            android:text="@string/label_rating"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Overline"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/rating"
+            app:layout_constraintEnd_toEndOf="@+id/profile_photo"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/profile_photo"
+            app:layout_constraintTop_toBottomOf="@+id/profile_photo" />
 
         <RatingBar
             android:id="@+id/rating"
             style="?android:attr/ratingBarStyleIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="32dp"
             android:numStars="5"
-            android:stepSize="2.0" />
+            android:stepSize="2.0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/profile_photo"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/profile_photo"
+            app:layout_constraintTop_toBottomOf="@+id/label_rating" />
 
-</LinearLayout>
+        <LinearLayout
+            android:id="@+id/name_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="64dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="56dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/nick_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline_top"
+            app:layout_constraintTop_toTopOf="parent">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/label_name"
+                style="@style/InputLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_person_black_16dp"
+                android:drawablePadding="8dp"
+                android:drawableTint="?attr/colorControlNormal"
+                android:text="@string/full_name"
+                android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Subtitle1" />
+
+            <TextView
+                android:id="@+id/name"
+                style="@style/InputBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/full_name"
+                app:autoSizeTextType="uniform"
+                tools:text="Full Name" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/nick_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="64dp"
+            android:layout_marginEnd="56dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/email_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline_top"
+            app:layout_constraintTop_toBottomOf="@+id/name_layout">
+
+            <TextView
+                android:id="@+id/label_nickname"
+                style="@style/InputLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_account_circle_black_16dp"
+                android:drawablePadding="8dp"
+                android:drawableTint="?attr/colorControlNormal"
+                android:text="@string/nick" />
+
+            <TextView
+                android:id="@+id/nickname"
+                style="@style/InputBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/nick"
+                app:autoSizeTextType="uniform"
+                tools:text="Nickname" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/email_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="64dp"
+            android:layout_marginEnd="56dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/location_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline_top"
+            app:layout_constraintTop_toBottomOf="@+id/nick_layout">
+
+            <TextView
+                android:id="@+id/label_email"
+                style="@style/InputLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_email_black_16dp"
+                android:drawablePadding="8dp"
+                android:drawableTint="?attr/colorControlNormal"
+                android:text="@string/mail" />
+
+            <TextView
+                android:id="@+id/email"
+                style="@style/InputBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mail"
+                app:autoSizeTextType="uniform"
+                tools:text="Email" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/location_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="64dp"
+            android:layout_marginEnd="56dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/rating_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline_top"
+            app:layout_constraintTop_toBottomOf="@+id/email_layout">
+
+            <TextView
+                android:id="@+id/label_location"
+                style="@style/InputLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_location_on_black_16dp"
+                android:drawablePadding="8dp"
+                android:drawableTint="?attr/colorControlNormal"
+                android:text="@string/location_show_profile" />
+
+            <TextView
+                android:id="@+id/location"
+                style="@style/InputBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/location_show_profile"
+                app:autoSizeTextType="uniform"
+                tools:text="Location" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rating_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline_top"
+            app:layout_constraintTop_toBottomOf="@+id/location_layout">
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

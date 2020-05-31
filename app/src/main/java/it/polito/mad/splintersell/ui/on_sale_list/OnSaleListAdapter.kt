@@ -100,7 +100,6 @@ class OnSaleListAdapter(private var onSaleItemList: ArrayList<ItemModel>) :
         val action = OnSaleListFragmentDirections.showItemDetails(id, true, ownerId)
         Log.e("POS", id)
         findNavController(view).navigate(action)
-
     }
 
     private fun navigateToUserDetails(view: View, id: String) {
