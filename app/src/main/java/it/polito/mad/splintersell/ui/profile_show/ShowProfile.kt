@@ -71,21 +71,28 @@ class ShowProfile : Fragment() {
                 rating.rating = it.rating
 
                 location.setOnClickListener{
-                    val action = ShowProfileDirections.actionNavShowProfileToNavMapShowprof("currUser")
+                    val action = ShowProfileDirections.fromProfileToShowMap(true, "", true, "currUser")
                     findNavController().navigate(action)
                 }
+
 
             } else {
                 nickname.text = it.nickname
                 email.text = it.email
+                location.text = it.location
                 rating.rating = it.rating
 
                 name.text = getString(R.string.hidden_text)
                 name.setTextColor(name.context.getColor(R.color.colorPrimary))
-                location.text = getString(R.string.hidden_text)
-                location.setTextColor(location.context.getColor(R.color.colorPrimary))
+
+                location.setOnClickListener{
+                    val action = ShowProfileDirections.fromProfileToShowMap(true, "", true, args.userID)
+                    findNavController().navigate(action)
+                }
 
             }
+
+
 
 
             Glide.with(requireContext()).using(FirebaseImageLoader())
@@ -108,6 +115,11 @@ class ShowProfile : Fragment() {
         return when (item.itemId) {
             R.id.edit -> {
                 Navigation.findNavController(requireView()).navigate(R.id.edit)
+                true
+            }
+            R.id.editmap -> {
+                val action = ShowProfileDirections.fromProfileToEditMap()
+                findNavController().navigate(action)
                 true
             }
             else -> super.onOptionsItemSelected(item)

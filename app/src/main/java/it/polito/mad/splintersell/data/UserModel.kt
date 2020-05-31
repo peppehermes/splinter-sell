@@ -1,6 +1,5 @@
 package it.polito.mad.splintersell.data
 
-import android.location.Address
 import com.google.firebase.firestore.GeoPoint
 
 class UserModel {
@@ -43,7 +42,7 @@ class UserModel {
 
     constructor(
         fullname: String, nickname: String, email: String, location: String,
-        photoName: String, userId: String, token: String, counterFeed: Int, rating: Float
+        photoName: String, userId: String, token: String, counterFeed: Int, rating: Float, address: GeoPoint
     ) {
         this.fullname = fullname
         this.nickname = nickname
@@ -54,6 +53,7 @@ class UserModel {
         this.token = token
         this.rating = rating
         this.counterfeed = counterFeed
+        this.address = address
     }
 
     fun toMap(): Map<String, Any> {

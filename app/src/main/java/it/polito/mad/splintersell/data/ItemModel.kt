@@ -1,5 +1,7 @@
 package it.polito.mad.splintersell.data
 
+import com.google.firebase.firestore.GeoPoint
+
 class ItemModel {
     var title: String? = null
     var description: String? = null
@@ -7,6 +9,7 @@ class ItemModel {
     var mainCategory: String? = null
     var secondCategory: String? = null
     var location: String? = null
+    var address: GeoPoint? = null
     var expireDate: String? = null
     var documentName: String? = null
     var ownerId: String? = null
@@ -18,8 +21,32 @@ class ItemModel {
     constructor()
 
     constructor(
+        location: String, address: GeoPoint
+    ) {
+        this.location = location
+        this.address = address
+    }
+
+    constructor(
         title: String, description: String, price: String,
-        mainCategory: String, secondCategory: String, location: String,
+        mainCategory: String, secondCategory: String,
+        expireDate: String, documentName: String, ownerId: String, imgPath: String, status: String
+    ) {
+        this.title = title
+        this.description = description
+        this.price = price
+        this.mainCategory = mainCategory
+        this.secondCategory = secondCategory
+        this.expireDate = expireDate
+        this.documentName = documentName
+        this.ownerId = ownerId
+        this.imgPath = imgPath
+        this.status = status
+    }
+
+    constructor(
+        title: String, description: String, price: String,
+        mainCategory: String, secondCategory: String, location: String, address: GeoPoint,
         expireDate: String, documentName: String, ownerId: String, imgPath: String, status: String
     ) {
         this.title = title
@@ -28,6 +55,7 @@ class ItemModel {
         this.mainCategory = mainCategory
         this.secondCategory = secondCategory
         this.location = location
+        this.address = address
         this.expireDate = expireDate
         this.documentName = documentName
         this.ownerId = ownerId

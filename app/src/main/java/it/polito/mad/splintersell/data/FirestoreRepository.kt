@@ -110,6 +110,46 @@ class FirestoreRepository(val onFirestoreTaskComplete: OnFirestoreTaskComplete) 
             .addOnFailureListener { Log.d(TAG, "Error in saving") }
     }
 
+    fun createItem(item: ItemModel){
+
+        var newItemLocation = "Null Location"
+        var newItemAddress = GeoPoint(0.0, 0.0)
+
+        val documentReferenceUser = firestore.collection("users").document(item.ownerId!!)
+
+            documentReferenceUser
+            .get()
+            .addOnSuccessListener {
+                    users ->
+                Log.d("ITEMTAG", "Found User: $users")
+                val myOwnUser = users.toObject(UserModel::class.java)
+                Log.d("ITEMTAG", "User Model: "+myOwnUser.toString())
+                newItemLocation = myOwnUser!!.location!!
+                newItemAddress = myOwnUser.address!!
+                Log.d("ITEMTAG", newItemLocation)
+                Log.d("ITEMTAG", newItemAddress.toString())
+
+                val newItem = ItemModel(item.title!!, item.description!!, item.price!!, item.mainCategory!!, item.secondCategory!!,
+                    newItemLocation, newItemAddress, item.expireDate!!, item.documentName!!, item.ownerId!!, item.imgPath, item.status!!)
+
+                Log.d("ITEMTAG", "My item: $newItem")
+
+                val documentReferenceItem = firestore.collection("items")
+                    .document(newItem.documentName!!)
+
+                documentReferenceItem.set(newItem)
+                    .addOnSuccessListener { Log.d(TAG, "Successfully created") }
+                    .addOnFailureListener { Log.d(TAG, "Error in creating item") }
+            }
+            .addOnFailureListener{
+                Log.d("ITEMTAG", "NO USER FOUND")
+            }
+
+
+
+
+    }
+
     fun saveNotification(not: NotificationModel): Task<Void> {
         val documentReferenceUser =
             firestore.collection("notifications")
@@ -167,6 +207,11 @@ class FirestoreRepository(val onFirestoreTaskComplete: OnFirestoreTaskComplete) 
     fun updateUserLocation(address: GeoPoint, location: String, ownerId: String){
         firestore.collection("users").document(ownerId).update("address", address)
         firestore.collection("users").document(ownerId).update("location", location)
+    }
+
+    fun updateItemLocation(address: GeoPoint, location: String, itemId: String){
+        firestore.collection("items").document(itemId).update("address", address)
+        firestore.collection("items").document(itemId).update("location", location)
     }
 
 

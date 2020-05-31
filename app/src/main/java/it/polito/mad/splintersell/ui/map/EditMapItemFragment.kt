@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -20,29 +21,33 @@ import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
-import it.polito.mad.splintersell.data.UserModel
-import kotlinx.android.synthetic.main.fragment_map.*
+import it.polito.mad.splintersell.data.ItemModel
+import kotlinx.android.synthetic.main.fragment_edit_map_item.*
 import java.io.IOException
 
 
-class MapFragment : Fragment(), OnMapReadyCallback {
+class EditMapItemFragment : Fragment(), OnMapReadyCallback {
 
     lateinit var gmap: GoogleMap
     private var latlang: LatLng? = null
     private var mylatlng: LatLng? = null
     lateinit var address: Address
 
+    private val args: EditMapItemFragmentArgs by navArgs()
+
     val user = Firebase.auth.currentUser
     private val firestoreViewModel: FirestoreViewModel by activityViewModels()
-    lateinit var liveData: LiveData<UserModel>
+    lateinit var liveData: LiveData<ItemModel>
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(true)
 
-        firestoreViewModel.fetchUserFromFirestore(user!!.uid)
-        liveData = firestoreViewModel.user
+        firestoreViewModel.fetchSingleItemFromFirestore(args.itemID)
+        liveData = firestoreViewModel.item
 
     }
 
@@ -51,7 +56,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map, container, false)
+        return inflater.inflate(R.layout.fragment_edit_profile_map, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -117,10 +122,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
                 if (latlang != null) {
                     val geopoint = GeoPoint(address.latitude, address.longitude)
-                    firestoreViewModel.updateUserLocation(
+                    firestoreViewModel.updateItemLocation(
                         geopoint,
                         address.getAddressLine(0).toString(),
-                        user!!.uid
+                        args.itemID
                     )
                     val dialog = AlertDialog.Builder(requireContext())
                     dialog.setMessage("New address saved!").setCancelable(false)
@@ -160,13 +165,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             gmap = it
         }
 
-        liveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer { currentUser ->
+        liveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer { currentItem ->
 
-            if (currentUser.address != null) {
-                val mylatitude = currentUser.address!!.latitude
-                val mylongitude = currentUser.address!!.longitude
+            if (currentItem.address != null) {
+                val mylatitude = currentItem.address!!.latitude
+                val mylongitude = currentItem.address!!.longitude
                 mylatlng = LatLng(mylatitude, mylongitude)
-                gmap.addMarker(MarkerOptions().position(mylatlng!!).title(currentUser.location))
+                gmap.addMarker(MarkerOptions().position(mylatlng!!).title(currentItem.location))
                 gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(mylatlng, 20F))
             }
         })

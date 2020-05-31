@@ -33,6 +33,7 @@ import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
@@ -69,6 +70,9 @@ class EditProfile : Fragment() {
     var rotatedBitmap: Bitmap? = null
     var photoFile: File? = null
     var photoURI: Uri? = null
+
+    private var existingLocation: String? = null
+    private var existingAddress: GeoPoint? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,6 +135,12 @@ class EditProfile : Fragment() {
                 location.setText(currentUser.location)
             else
                 location.setText(savedLocation)
+
+            // Check if a location already exists
+            if(currentUser.location != null){
+                existingLocation = currentUser.location
+                existingAddress = currentUser.address
+            }
 
             email.setText(currentUser.email)
 
@@ -528,12 +538,13 @@ class EditProfile : Fragment() {
             name.text.toString(),
             nickname.text.toString(),
             email.text.toString(),
-            location.text.toString(),
+            existingLocation!!,
             randomString,
             userId,
             token,
             counterFeedback,
-            rating
+            rating,
+            existingAddress!!
         )
         firestoreViewModel.saveUserToFirestore(newUser)
         val user: MutableLiveData<UserModel> = MutableLiveData(newUser)

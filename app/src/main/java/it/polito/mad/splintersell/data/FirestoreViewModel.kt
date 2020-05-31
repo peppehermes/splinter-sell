@@ -74,9 +74,26 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     fun saveItemToFirestore(item: ItemModel) {
-        firestoreRepository.saveItem(item).addOnFailureListener {
-            Log.e(TAG, "Failed to save Item!")
-        }
+
+        val myItemRef = firestoreRepository.getItemDocument(item.documentName!!)
+
+
+            myItemRef.get()
+            .addOnSuccessListener { document ->
+                if(document.exists()){
+                    Log.e(TAG, "Item exists, proceed to update!")
+                    firestoreRepository.saveItem(item).addOnFailureListener {
+                        Log.e(TAG, "Failed to save Item!")
+                    }
+                }
+                else{
+                    Log.e(TAG, "Creating new item!")
+                    firestoreRepository.createItem(item)
+                }
+
+            }
+
+
     }
 
     fun saveNotificationToFirestore(not: NotificationModel) {
@@ -93,6 +110,10 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
 
     fun updateUserLocation(address: GeoPoint, location: String, ownerId: String){
         firestoreRepository.updateUserLocation(address, location, ownerId)
+    }
+
+    fun updateItemLocation(address: GeoPoint, location: String, itemId: String){
+        firestoreRepository.updateItemLocation(address, location, itemId)
     }
 
     fun updateStatus(status: String, item_id: String) {

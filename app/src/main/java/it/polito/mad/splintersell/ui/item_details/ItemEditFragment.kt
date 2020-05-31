@@ -32,6 +32,7 @@ import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
@@ -60,6 +61,9 @@ class ItemEditFragment : Fragment() {
     private var rotatedBitmap: Bitmap? = null
     private var photoFile: File? = null
     private var photoURI: Uri? = null
+
+    private var existingLocation: String? = null
+    private var existingAddress: GeoPoint? = null
 
     private val firestoreViewModel: FirestoreViewModel by viewModels()
 
@@ -136,6 +140,12 @@ class ItemEditFragment : Fragment() {
                 til_location.editText!!.setText(it.location)
             else
                 til_location.editText!!.setText(savedLocation)
+
+            // Check if a location already exists
+            if(it.location != null){
+                existingLocation = it.location
+                existingAddress = it.address
+            }
 
             if (savedDate == null)
                 til_expire_date.editText!!.setText(it.expireDate)
@@ -722,19 +732,45 @@ class ItemEditFragment : Fragment() {
     private fun setNewItem() {
 
         oldPath = path
-        val newItem = ItemModel(
-            til_title.editText!!.text.toString(),
-            til_description.editText!!.text.toString(),
-            til_price.editText!!.text.toString(),
-            dropdown_main_category.text.toString(),
-            dropdown_sub_category.text.toString(),
-            til_location.editText!!.text.toString(),
-            til_expire_date.editText!!.text.toString(),
-            args.documentName,
-            user!!.uid,
-            randomString,
-            requireContext().getString(R.string.available)
-        )
+
+        val newItem : ItemModel
+
+        if(existingLocation == null){
+            newItem = ItemModel(
+                til_title.editText!!.text.toString(),
+                til_description.editText!!.text.toString(),
+                til_price.editText!!.text.toString(),
+                dropdown_main_category.text.toString(),
+                dropdown_sub_category.text.toString(),
+                "Null Location",
+                GeoPoint(0.0, 0.0),
+                til_expire_date.editText!!.text.toString(),
+                args.documentName,
+                user!!.uid,
+                randomString,
+                requireContext().getString(R.string.available)
+            )
+        }
+        else{
+            newItem = ItemModel(
+                til_title.editText!!.text.toString(),
+                til_description.editText!!.text.toString(),
+                til_price.editText!!.text.toString(),
+                dropdown_main_category.text.toString(),
+                dropdown_sub_category.text.toString(),
+                existingLocation!!,
+                existingAddress!!,
+                til_expire_date.editText!!.text.toString(),
+                args.documentName,
+                user!!.uid,
+                randomString,
+                requireContext().getString(R.string.available)
+            )
+
+        }
+
+
+
 
         firestoreViewModel.saveItemToFirestore(newItem)
 

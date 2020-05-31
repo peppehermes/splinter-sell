@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -76,6 +77,12 @@ class ItemDetailsFragment : Fragment() {
         if (args.userID == "currUser") {
             owner_label.visibility = View.GONE
             owner.visibility = View.GONE
+
+            location.setOnClickListener{
+                val action = ItemDetailsFragmentDirections.fromItemToShowMap(false, args.documentName, false, "")
+                findNavController().navigate(action)
+            }
+
         } else {
 
             owner.setTextColor(owner.context.getColor(R.color.colorPrimary))
@@ -84,6 +91,11 @@ class ItemDetailsFragment : Fragment() {
                 val action = ItemDetailsFragmentDirections.showProfile(args.userID)
                 findNavController().navigate(action)
 
+            }
+
+            location.setOnClickListener{
+                val action = ItemDetailsFragmentDirections.fromItemToShowMap(true, args.documentName, false, "")
+                findNavController().navigate(action)
             }
 
             userLiveData.observe(viewLifecycleOwner, Observer {
@@ -176,6 +188,11 @@ class ItemDetailsFragment : Fragment() {
         return when (item.itemId) {
             R.id.edit -> {
                 val action = ItemDetailsFragmentDirections.editItem(args.documentName)
+                findNavController().navigate(action)
+                true
+            }
+            R.id.editmap -> {
+                val action = ItemDetailsFragmentDirections.fromItemtoEditMap(args.documentName)
                 findNavController().navigate(action)
                 true
             }
