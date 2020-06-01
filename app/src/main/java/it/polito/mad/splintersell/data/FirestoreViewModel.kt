@@ -188,7 +188,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
                 for (doc in value!!) {
                     val item = doc.toObject(ItemModel::class.java)
                     val date = item.expireDate!!.split("/")
-                    if (!validateDate(date))
+                    if (!validateDate(date) && item.status == AVAILABLE)
                         updateStatus(BLOCKED, item.documentName!!)
                     allItemList.add(item)
                 }
