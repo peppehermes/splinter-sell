@@ -47,8 +47,7 @@ class SignIn : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            viewModel.refuseAuthentication()
-            findNavController().popBackStack(R.id.nav_on_sale_list, false)
+            Snackbar.make(view, "Please, log in.", Snackbar.LENGTH_SHORT).show()
         }
 
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
@@ -77,7 +76,11 @@ class SignIn : Fragment() {
     }
 
     private fun showErrorMessage() {
-        Snackbar.make(requireView(), "Error during authentication", Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(
+            requireView(),
+            "Error during authentication. Update your Google Play Services.",
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

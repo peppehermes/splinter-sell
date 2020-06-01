@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".ui.map.EditMapProfileFragment">
-
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/map"
@@ -17,8 +17,18 @@
         android:id="@+id/sv_location"
         android:queryHint="Search..."
         android:iconifiedByDefault="false"
-        android:layout_margin="10dp"
-        android:elevation="5dp"
+        style="@style/TextAppearance.MdcTypographyStyles.Body1"
+        android:layout_margin="8dp"
+        android:elevation="4dp"
         android:background="@drawable/search_bground"/>
 
-</FrameLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/location_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_done_white_24dp"
+        android:visibility="gone" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/container"
     android:fitsSystemWindows="true"
-    tools:context=".ui.sign_in.InformationFragment">
+    tools:context=".ui.sign_in.AskForLocationFragment">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -26,10 +26,12 @@
 
     <TextView
         android:id="@+id/welcome"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
         android:layout_marginTop="32dp"
         android:fontFamily="@font/josefin_sans_bold"
+        android:gravity="center"
         android:text="@string/splinter_sell"
         android:textColor="@color/colorPrimary"
         android:textSize="36sp"
@@ -38,18 +40,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <ImageView
         android:id="@+id/profile_photo"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:contentDescription="@string/profile_photo"
         android:maxWidth="200dp"
         android:maxHeight="200dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        app:civ_border_color="@color/colorPrimary"
-        app:civ_border_width="2dp"
-        android:contentDescription="@string/profile_photo"
+        android:src="@drawable/map_final"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,8 +61,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginHorizontal="32dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/select_photo_and_nickname"
+        android:text="@string/where_do_you_come_from"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
         app:layout_constrainedHeight="true"
@@ -75,69 +75,35 @@
 
     <TextView
         android:id="@+id/textView3"
-
         style="@style/TextAppearance.MdcTypographyStyles.Subtitle1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="8dp"
-        android:text="@string/choose_a_unique_nick_just_like_you"
-        app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@+id/til_login_nick"
-        app:layout_constraintEnd_toEndOf="@+id/textView4"
-        app:layout_constraintStart_toStartOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_login_nick"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="4dp"
-        app:cardElevation="0dp"
-        app:layout_constrainedHeight="true"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginBottom="32dp"
+        android:text="@string/please_location"
+        android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/button_send"
         app:layout_constraintEnd_toEndOf="@+id/textView4"
         app:layout_constraintStart_toStartOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/textView3">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/login_nick"
-            style="@style/InputBody"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:background="@android:color/transparent"
-            android:drawableStart="@drawable/ic_account_circle_black_24dp"
-            android:drawablePadding="12dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:hint="@string/nick"
-            android:imeOptions="actionDone"
-            android:inputType="textNoSuggestions"
-            android:minWidth="300dp"
-            android:minHeight="45dp"
-            android:singleLine="true"
-            tools:layout_editor_absoluteX="22dp"
-            tools:layout_editor_absoluteY="454dp" />
-
-
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
         android:id="@+id/button_send"
         style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginHorizontal="32dp"
-        android:text="@string/continue_"
+        android:layout_marginTop="32dp"
+        android:text="@string/okay"
         android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Button"
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_login_nick" />
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:layout_constraintVertical_chainStyle="packed" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

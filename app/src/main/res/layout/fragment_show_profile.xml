@@ -133,6 +133,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="24dp"
+            android:textColor="?android:attr/textColorLink"
             android:text="@string/location_show_profile" />
 
     </LinearLayout>

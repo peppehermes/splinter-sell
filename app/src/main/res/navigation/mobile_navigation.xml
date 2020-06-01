@@ -44,10 +44,18 @@
             app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/fromItemtoEditMap"
-            app:destination="@id/nav_editmap_item" />
+            app:destination="@id/nav_editmap_item"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/fromItemToShowMap"
-            app:destination="@id/nav_showmap" />
+            app:destination="@id/nav_showmap"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -115,28 +123,27 @@
             android:defaultValue="currUser"
             app:argType="string" />
         <action
-            android:id="@+id/fromProfileToEditMap"
-            app:destination="@id/nav_editmap_prof"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right">
-            android:id="@+id/fromShowtoEditMap"
-            app:destination="@id/nav_map_showprof" >
-            <argument
-                android:name="userID"
-                android:defaultValue="currUser" />
-        </action>
-        <action
             android:id="@+id/fromProfileToShowMap"
-            app:destination="@id/nav_showmap" />
+            app:destination="@id/nav_showmap"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_edit_profile"
         android:name="it.polito.mad.splintersell.ui.profile_edit.EditProfile"
         android:label="Edit Profile"
-        tools:layout="@layout/fragment_edit_profile" />
+        tools:layout="@layout/fragment_edit_profile">
+        <action
+            android:id="@+id/fromProfileToEditMap"
+            app:destination="@id/nav_editmap_prof"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_sign_out"
@@ -165,8 +172,9 @@
         app:destination="@id/nav_show_profile"
         app:enterAnim="@anim/fade_in"
         app:exitAnim="@anim/fade_out"
-        app:popEnterAnim="@anim/fade_in"
-        app:popExitAnim="@anim/fade_out" />
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
     <navigation
         android:id="@+id/sign_in"
         app:startDestination="@id/splash_screen_fragment">
@@ -179,13 +187,23 @@
                 android:id="@+id/insertInformation"
                 app:destination="@id/information_fragment"
                 app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left" />
+                app:exitAnim="@anim/slide_out_left"
+                app:popEnterAnim="@anim/slide_in_left"
+                app:popExitAnim="@anim/slide_out_right" />
         </fragment>
         <fragment
             android:id="@+id/information_fragment"
             android:name="it.polito.mad.splintersell.ui.sign_in.InformationFragment"
             android:label="fragment_information"
-            tools:layout="@layout/fragment_information" />
+            tools:layout="@layout/fragment_information">
+            <action
+                android:id="@+id/goAskForLocation"
+                app:destination="@id/ask_for_location"
+                app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left"
+                app:popEnterAnim="@anim/slide_in_left"
+                app:popExitAnim="@anim/slide_out_right" />
+        </fragment>
         <fragment
             android:id="@+id/splash_screen_fragment"
             android:name="it.polito.mad.splintersell.ui.sign_in.SplashScreenFragment"
@@ -199,6 +217,11 @@
                 app:popEnterAnim="@anim/fade_in"
                 app:popExitAnim="@anim/fade_out" />
         </fragment>
+        <fragment
+            android:id="@+id/ask_for_location"
+            android:name="it.polito.mad.splintersell.ui.sign_in.AskForLocationFragment"
+            android:label="fragment_ask_for_location"
+            tools:layout="@layout/fragment_ask_for_location" />
     </navigation>
     <action
         android:id="@+id/showItemDetails"
@@ -247,13 +270,10 @@
         android:name="it.polito.mad.splintersell.ui.map.EditMapProfileFragment"
         android:label="Update your location"
         tools:layout="@layout/fragment_edit_profile_map">
-        <action
-            android:id="@+id/fromMaptoProfile"
-            app:destination="@id/nav_show_profile">
-            <argument
-                android:name="userID"
-                android:defaultValue="currUser" />
-        </action>
+        <argument
+            android:name="login"
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/nav_editmap_item"
@@ -283,6 +303,13 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
+    <action
+        android:id="@+id/globalUpdateYourLocation"
+        app:destination="@id/nav_editmap_prof"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right" />
 
 
 </navigation>

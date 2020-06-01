@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/editmap"
-        android:icon="@drawable/ic_edit_location_white_24dp"
-        android:title="@string/edit"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/edit"
         android:icon="@drawable/ic_edit_white_24dp"
         android:title="@string/edit"

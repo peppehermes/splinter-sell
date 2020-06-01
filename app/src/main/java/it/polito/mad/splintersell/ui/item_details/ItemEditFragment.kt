@@ -93,7 +93,6 @@ class ItemEditFragment : Fragment() {
         var savedTitle: String? = null
         var savedDescription: String? = null
         var savedPrice: String? = null
-        var savedLocation: String? = null
         var savedDate: String? = null
         var savedImg: String? = null
 
@@ -101,7 +100,6 @@ class ItemEditFragment : Fragment() {
             savedTitle = savedInstanceState.get(getString(R.string.title)).toString()
             savedDescription = savedInstanceState.get(getString(R.string.description)).toString()
             savedPrice = savedInstanceState.get(getString(R.string.price)).toString()
-            savedLocation = savedInstanceState.get(getString(R.string.location)).toString()
             savedDate = savedInstanceState.get(getString(R.string.expire_date)).toString()
             oldPath = savedInstanceState.get("oldPath").toString()
             Log.d("onsave",oldPath)
@@ -135,11 +133,6 @@ class ItemEditFragment : Fragment() {
                 til_price.editText!!.setText(it.price)
             else
                 til_price.editText!!.setText(savedPrice)
-
-            if (savedLocation == null)
-                til_location.editText!!.setText(it.location)
-            else
-                til_location.editText!!.setText(savedLocation)
 
             // Check if a location already exists
             if(it.location != null){
@@ -266,7 +259,6 @@ class ItemEditFragment : Fragment() {
 
         til_title.editText!!.filters = arrayOf(InputFilter.LengthFilter(30))
         til_description.editText!!.filters = arrayOf(InputFilter.LengthFilter(100))
-        til_location.editText!!.filters = arrayOf(InputFilter.LengthFilter(60))
 
     }
 
@@ -393,6 +385,7 @@ class ItemEditFragment : Fragment() {
 
                 photoURI?.run {
                     manageBitmap()
+
                 }
             }
         }
@@ -632,10 +625,6 @@ class ItemEditFragment : Fragment() {
             til_price.editText!!.error = getString(R.string.please_fill)
             result = true
         }
-        if (til_location.editText!!.text.isEmpty()) {
-            til_location.editText!!.error = getString(R.string.please_fill)
-            result = true
-        }
         if (til_expire_date.editText!!.text.isEmpty()) {
             til_expire_date.editText!!.error = getString(R.string.please_fill)
             result = true
@@ -679,7 +668,6 @@ class ItemEditFragment : Fragment() {
             til_description.editText!!.text.toString()
         )
         outState.putString(getString(R.string.price), til_price.editText!!.text.toString())
-        outState.putString(getString(R.string.location), til_location.editText!!.text.toString())
         outState.putString(
             getString(R.string.expire_date),
             til_expire_date.editText!!.text.toString()

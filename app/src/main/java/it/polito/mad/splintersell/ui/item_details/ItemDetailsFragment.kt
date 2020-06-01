@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -79,13 +78,12 @@ class ItemDetailsFragment : Fragment() {
             owner.visibility = View.GONE
 
             location.setOnClickListener{
-                val action = ItemDetailsFragmentDirections.fromItemToShowMap(false, args.documentName, false, "")
+                val action = ItemDetailsFragmentDirections
+                    .fromItemToShowMap(false, args.documentName, false, "")
                 findNavController().navigate(action)
             }
 
         } else {
-
-            owner.setTextColor(owner.context.getColor(R.color.colorPrimary))
 
             owner.setOnClickListener {
                 val action = ItemDetailsFragmentDirections.showProfile(args.userID)
@@ -94,7 +92,8 @@ class ItemDetailsFragment : Fragment() {
             }
 
             location.setOnClickListener{
-                val action = ItemDetailsFragmentDirections.fromItemToShowMap(true, args.documentName, false, "")
+                val action = ItemDetailsFragmentDirections
+                    .fromItemToShowMap(true, args.documentName, false, "")
                 findNavController().navigate(action)
             }
 

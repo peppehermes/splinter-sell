@@ -67,7 +67,7 @@
                 android:focusable="true"
                 android:text="@string/owner"
                 android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Subtitle2"
-                android:textColor="?android:attr/textColorSecondary" />
+                android:textColor="?android:attr/textColorLink" />
 
             <TextView
                 style="@style/InputLabel"
@@ -134,15 +134,15 @@
                 android:layout_marginHorizontal="8dp"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:text="@string/location" />
+                android:text="@string/expire_date" />
 
             <TextView
                 style="@style/InputBody"
-                android:id="@+id/location"
+                android:id="@+id/expire_date"
                 android:layout_marginHorizontal="8dp"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:text="@string/location" />
+                android:text="@string/expire_date" />
 
             <View
                 style="@style/divider"
@@ -153,15 +153,16 @@
                 android:layout_marginHorizontal="8dp"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:text="@string/expire_date" />
+                android:text="@string/location" />
 
             <TextView
                 style="@style/InputBody"
-                android:id="@+id/expire_date"
+                android:id="@+id/location"
                 android:layout_marginHorizontal="8dp"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:text="@string/expire_date" />
+                android:text="@string/location"
+                android:textColor="?android:attr/textColorLink" />
 
             <View
                 style="@style/divider"

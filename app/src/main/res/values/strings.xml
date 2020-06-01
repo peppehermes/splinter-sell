@@ -15,6 +15,7 @@
     <string name="sign_out">Sign Out</string>
     <string name="map">Map</string>
     <string name="okay">OKAY</string>
+    <string name="continue_">Continue</string>
 
     <string name="menu_on_sale">On sale</string>
     <string name="menu_follow_list">Wish List</string>
@@ -202,5 +203,7 @@
     <string name="you_re_almost_there">You\'re almost there</string>
     <string name="here_we_are">Here we are</string>
     <string name="label_rating">Rating</string>
+    <string name="where_do_you_come_from">Where do you come from?</string>
+    <string name="please_location">Please, provide us your location to offer you a fantastic experience!</string>
 
 </resources>

@@ -161,37 +161,8 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:id="@+id/til_location"
-            android:layout_below="@+id/spinner_2"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:paddingTop="10dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="60"
-            app:errorEnabled="true">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:autofillHints=""
-                style="@style/InputBody"
-                android:hint="@string/location"
-                android:drawablePadding="8dp"
-                android:drawableStart="@drawable/ic_location_on_black_24dp"
-                android:id="@+id/location"
-                android:inputType="textAutoCorrect|textAutoComplete|textPostalAddress|textMultiLine"
-                android:layout_below="@+id/categoryEdit"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:textAppearance="?attr/textAppearanceBody1"
-                android:drawableTint="?attr/colorControlNormal"
-                android:paddingBottom="8dp"
-                android:textSize="20sp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:id="@+id/til_expire_date"
-            android:layout_below="@+id/til_location"
+            android:layout_below="@+id/spinner_2"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:paddingTop="10dp"

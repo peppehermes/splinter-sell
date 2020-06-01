@@ -205,6 +205,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/location_show_profile"
                 app:autoSizeTextType="uniform"
+                android:textColor="?android:attr/textColorLink"
                 tools:text="Location" />
 
 

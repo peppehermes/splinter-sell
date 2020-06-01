@@ -82,8 +82,8 @@ class ShowProfile : Fragment() {
                 location.text = it.location
                 rating.rating = it.rating
 
-                name.text = getString(R.string.hidden_text)
-                name.setTextColor(name.context.getColor(R.color.colorPrimary))
+                name.visibility = View.GONE
+                label_name.visibility = View.GONE
 
                 location.setOnClickListener{
                     val action = ShowProfileDirections.fromProfileToShowMap(true, "", true, args.userID)
@@ -115,11 +115,6 @@ class ShowProfile : Fragment() {
         return when (item.itemId) {
             R.id.edit -> {
                 Navigation.findNavController(requireView()).navigate(R.id.edit)
-                true
-            }
-            R.id.editmap -> {
-                val action = ShowProfileDirections.fromProfileToEditMap()
-                findNavController().navigate(action)
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -54,9 +54,11 @@ const val GALLERY_REQUEST_CODE = 3
 val charPool = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
 class EditProfile : Fragment() {
+    private val TAG = "EDIT_PROFILE"
 
-    val user = Firebase.auth.currentUser
+    private val user = Firebase.auth.currentUser
     private val firestoreViewModel: FirestoreViewModel by activityViewModels()
+    private val userModel: EditProfileViewModel by activityViewModels()
     lateinit var liveData: LiveData<UserModel>
 
     lateinit var currentPhotoPath: String
@@ -77,7 +79,8 @@ class EditProfile : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        firestoreViewModel.fetchUserFromFirestore(user!!.uid)
+        if (firestoreViewModel.user.value == null)
+            firestoreViewModel.fetchUserFromFirestore(user!!.uid)
         liveData = firestoreViewModel.user
 
         val callback = object : OnBackPressedCallback(true) {
@@ -91,7 +94,6 @@ class EditProfile : Fragment() {
 
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -102,23 +104,50 @@ class EditProfile : Fragment() {
 
         setHasOptionsMenu(true)
 
+        hideKeyboardFrom(requireContext(), requireView())
+
         this.setInputLimits()
 
         this.imageButtonMenu()
 
         var savedName: String? = null
         var savedNickname: String? = null
+        var savedEmail: String? = null
         var savedLocation: String? = null
-        var savedImg: String? = null
 
-        savedInstanceState?.run {
-            savedName = savedInstanceState.get(getString(R.string.full_name)).toString()
-            savedNickname = savedInstanceState.get(getString(R.string.nick)).toString()
-            savedLocation = savedInstanceState.get(getString(R.string.location)).toString()
-            // If an image has been taken , retrieve Uri
-            if (savedInstanceState.get("imgUri").toString() != "null")
-                savedImg = savedInstanceState.get("imgUri").toString()
-        }
+//        savedInstanceState?.run {
+//            // If an image has been taken , retrieve Uri
+//            if (savedInstanceState.get("imgUri").toString() != "null")
+//                savedImg = savedInstanceState.get("imgUri").toString()
+//        }
+
+        val savedImg: String? = userModel.photo?.value
+
+        userModel.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer { userData ->
+            userData.fullname?.apply {
+                Log.e(TAG, this)
+                savedName = this
+            }
+
+            userData.nickname?.apply {
+                Log.e(TAG, this)
+                savedNickname = this
+            }
+
+            userData.photoName.apply {
+                Log.e(TAG, this)
+            }
+
+            userData.email?.apply {
+                Log.e(TAG, this)
+                savedEmail = this
+            }
+
+            userData.location?.apply {
+                Log.e(TAG, this)
+                savedLocation = this
+            }
+        })
 
         liveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer { currentUser ->
             if (savedName == null)
@@ -126,10 +155,17 @@ class EditProfile : Fragment() {
             else
                 name.setText(savedName)
 
-            if (savedNickname == null)
+            if (savedNickname == null) {
                 nickname.setText(currentUser.nickname)
-            else
+                userModel.oldNick.value = currentUser.nickname
+            } else {
                 nickname.setText(savedNickname)
+            }
+
+            if (savedEmail == null)
+                email.setText(currentUser.email)
+            else
+                email.setText(savedEmail)
 
             if (savedLocation == null)
                 location.setText(currentUser.location)
@@ -137,13 +173,22 @@ class EditProfile : Fragment() {
                 location.setText(savedLocation)
 
             // Check if a location already exists
-            if(currentUser.location != null){
+            if (currentUser.location != null) {
                 existingLocation = currentUser.location
                 existingAddress = currentUser.address
             }
 
-            email.setText(currentUser.email)
+            if (userModel.user.value?.location != null &&
+                userModel.user.value?.address != null
+            ) {
+                existingLocation = userModel.user.value?.location
+                existingAddress = userModel.user.value?.address
+            }
 
+            // Save current image path
+            userModel.user.value?.photoName = currentUser.photoName
+
+            //email.setText(currentUser.email)
             if (savedImg == null) {
                 path = currentUser.photoName
                 if (path == "") profile_photo.setImageDrawable(
@@ -155,14 +200,23 @@ class EditProfile : Fragment() {
                     Glide.with(requireContext()).using(FirebaseImageLoader())
                         .load(storage.child("/profileImages/$path")).into(profile_photo)
                 }
-            } else
+            } else {
                 this.restoreImage(savedImg)
+                Log.e(TAG, savedImg)
+            }
 
             // Store token, counterFeedback and rating for next updates
             token = currentUser.token
             counterFeedback = currentUser.counterfeed
             rating = currentUser.rating
         })
+
+        location.setOnClickListener {
+            this.saveOnViewModel()
+
+            val action = EditProfileDirections.fromProfileToEditMap()
+            findNavController().navigate(action)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -181,50 +235,119 @@ class EditProfile : Fragment() {
             R.id.save -> {
 
                 //Form validation
-                hideKeyboardFrom(requireContext(), requireView())
+                if (nickname.text!!.toString() != userModel.oldNick.value) {
+                    // Check if the nickname is unique
+                    firestoreViewModel.firestoreRepository.firestore.collection("users")
+                        .whereEqualTo("nickname", nickname.text!!.toString())
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            if (!documents.isEmpty) {
+                                til_nickname.error =
+                                    requireContext().getString(R.string.nick_not_available)
+                            } else {
+                                hideKeyboardFrom(requireContext(), requireView())
 
-                val checkError = formValidation()
+                                val checkError = formValidation()
 
-                if (!checkError) {
+                                if (!checkError) {
 
-                    Log.d("EditItemTAG", "No error in Form Validation")
+                                    Log.d("EditItemTAG", "No error in Form Validation")
 
 
-                    //Save image on Cloud Storage
+                                    //Save image on Cloud Storage
 
-                    if (rotatedBitmap != null) {
+                                    if (rotatedBitmap != null) {
 
-                        randomString =
-                            (1..20).map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
-                                .map(charPool::get).joinToString("")
+                                        randomString =
+                                            (1..20).map { _ ->
+                                                kotlin.random.Random.nextInt(
+                                                    0,
+                                                    charPool.size
+                                                )
+                                            }
+                                                .map(charPool::get).joinToString("")
 
-                        randomString = "$randomString.jpg"
+                                        randomString = "$randomString.jpg"
 
-                        setNewUser()
+                                        setNewUser()
 
-                        uploadImageOnStorage()
+                                        uploadImageOnStorage()
+
+
+                                    } else {
+                                        randomString = path
+
+                                        setNewUser()
+                                        val dialog = AlertDialog.Builder(requireContext())
+                                        dialog.setMessage("Done!").setCancelable(false)
+                                            .setPositiveButton("Great!") { dialogBox, _ ->
+                                                dialogBox.dismiss()
+                                                navigateMyProfile()
+                                            }
+                                        dialog.show()
+                                    }
+
+
+                                } else {
+                                    Log.d("EditProfileTAG", "Error in Form Validation")
+                                    Snackbar.make(
+                                        requireView(),
+                                        R.string.please_fill_all,
+                                        Snackbar.LENGTH_SHORT
+                                    )
+                                        .show()
+                                }
+                            }
+                        }
+                } else {
+                    hideKeyboardFrom(requireContext(), requireView())
+
+                    val checkError = formValidation()
+
+                    if (!checkError) {
+
+                        Log.d("EditItemTAG", "No error in Form Validation")
+
+
+                        //Save image on Cloud Storage
+
+                        if (rotatedBitmap != null) {
+
+                            randomString =
+                                (1..20).map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
+                                    .map(charPool::get).joinToString("")
+
+                            randomString = "$randomString.jpg"
+
+                            setNewUser()
+
+                            uploadImageOnStorage()
+
+
+                        } else {
+                            randomString = path
+
+                            setNewUser()
+                            val dialog = AlertDialog.Builder(requireContext())
+                            dialog.setMessage("Done!").setCancelable(false)
+                                .setPositiveButton("Great!") { dialogBox, _ ->
+                                    dialogBox.dismiss()
+                                    navigateMyProfile()
+                                }
+                            dialog.show()
+                        }
 
 
                     } else {
-                        randomString = path
-
-                        setNewUser()
-                        val dialog = AlertDialog.Builder(requireContext())
-                        dialog.setMessage("Done!").setCancelable(false)
-                            .setPositiveButton("Great!") { dialogBox, _ ->
-                                dialogBox.dismiss()
-                                navigateMyProfile()
-                            }
-                        dialog.show()
+                        Log.d("EditProfileTAG", "Error in Form Validation")
+                        Snackbar.make(
+                            requireView(),
+                            R.string.please_fill_all,
+                            Snackbar.LENGTH_SHORT
+                        )
+                            .show()
                     }
-
-
-                } else {
-                    Log.d("EditProfileTAG", "Error in Form Validation")
-                    Snackbar.make(requireView(), R.string.please_fill_all, Snackbar.LENGTH_SHORT)
-                        .show()
                 }
-
 
                 true
             }
@@ -233,7 +356,6 @@ class EditProfile : Fragment() {
     }
 
     private fun restoreImage(savedImg: String?) {
-
         photoURI = savedImg?.let { Uri.parse(it) }
         photoURI?.run {
             manageBitmap()
@@ -241,7 +363,6 @@ class EditProfile : Fragment() {
     }
 
     private fun formValidation(): Boolean {
-
         var result = false
 
         if (name.text!!.isEmpty()) {
@@ -482,14 +603,23 @@ class EditProfile : Fragment() {
         super.onSaveInstanceState(outState)
 
         if (rotatedBitmap != null)
-
             photoURI?.run {
-                outState.putString("imgUri", this.toString())
+                userModel.photo?.value = photoURI.toString()
             }
 
-        outState.putString(getString(R.string.full_name), name.text.toString())
-        outState.putString(getString(R.string.nick), nickname.text.toString())
-        outState.putString(getString(R.string.location), location.text.toString())
+        this.saveOnViewModel()
+    }
+
+    private fun saveOnViewModel() {
+        userModel.user.value?.fullname = name.text.toString()
+        userModel.user.value?.nickname = nickname.text.toString()
+        userModel.user.value?.email = email.text.toString()
+        userModel.user.value?.location = location.text.toString()
+
+        if (rotatedBitmap != null)
+            photoURI?.run {
+                userModel.photo?.value = this.toString()
+            }
     }
 
     private fun uploadImageOnStorage() {
@@ -532,7 +662,12 @@ class EditProfile : Fragment() {
     }
 
     private fun setNewUser() {
-        oldPath = path
+        oldPath = userModel.user.value?.photoName.toString()
+        if (userModel.user.value?.location != null)
+            existingLocation = userModel.user.value?.location
+        if (userModel.user.value?.address != null)
+            existingAddress = userModel.user.value?.address
+
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
         val newUser = UserModel(
             name.text.toString(),
@@ -546,6 +681,9 @@ class EditProfile : Fragment() {
             rating,
             existingAddress!!
         )
+        userModel.oldNick.value = nickname.text.toString()
+        userModel.photo = null
+        this.saveOnViewModel()
         firestoreViewModel.saveUserToFirestore(newUser)
         val user: MutableLiveData<UserModel> = MutableLiveData(newUser)
         firestoreViewModel.createdUserLiveData = user

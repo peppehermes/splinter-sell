@@ -13,16 +13,16 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
-import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.UserModel
 import it.polito.mad.splintersell.data.storage
-import it.polito.mad.splintersell.ui.showSystemUI
+import it.polito.mad.splintersell.ui.profile_edit.EditProfileViewModel
 import kotlinx.android.synthetic.main.fragment_information.*
 
 class InformationFragment : Fragment() {
     private val firestoreViewModel: FirestoreViewModel by activityViewModels()
+    private val userModel: EditProfileViewModel by activityViewModels()
     private val TAG = "INFORMATION_FRAGMENT"
     private var user: UserModel? = null
 
@@ -55,6 +55,7 @@ class InformationFragment : Fragment() {
                 // Load the photo of the user
                 Glide.with(requireContext()).using(FirebaseImageLoader())
                     .load(storage.child("/profileImages/${user!!.photoName}")).into(profile_photo)
+                userModel.user.value?.photoName = user!!.photoName
             } else {
                 val fadeIn = AnimationUtils.loadAnimation(context, R.anim.fade_in)
                 profile_photo.setImageResource(R.drawable.img_avatar)
@@ -97,18 +98,18 @@ class InformationFragment : Fragment() {
                             firestoreViewModel.createdUserLiveData!!.value!!.photoName =
                                 user!!.photoName
 
-                            // Pop back to home fragment
-                            showSystemUI(activity as MainActivity)
-                            findNavController().popBackStack(R.id.nav_on_sale_list, false)
+                            // Go to location fragment
+                            val action = InformationFragmentDirections.goAskForLocation()
+                            findNavController().navigate(action)
                         }
                     }
             } else {
                 firestoreViewModel.createdUserLiveData!!.value!!.nickname = nick
                 firestoreViewModel.createdUserLiveData!!.value!!.photoName = user!!.photoName
 
-                // Pop back to home fragment
-                showSystemUI(activity as MainActivity)
-                findNavController().popBackStack(R.id.nav_on_sale_list, false)
+                // Go to location fragment
+                val action = InformationFragmentDirections.goAskForLocation()
+                findNavController().navigate(action)
             }
         }
     }

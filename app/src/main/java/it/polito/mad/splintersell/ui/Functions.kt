@@ -1,11 +1,15 @@
 package it.polito.mad.splintersell.ui
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.*
 import android.net.Uri
 import android.transition.TransitionManager
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Transformation
+import android.view.inputmethod.InputMethodManager
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.exifinterface.media.ExifInterface
 import it.polito.mad.splintersell.MainActivity
@@ -15,6 +19,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.io.IOException
 import java.io.InputStream
 import kotlin.math.roundToInt
+
+fun hideKeyboardFrom(context: Context, view: View) {
+    val imm: InputMethodManager =
+        context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(view.windowToken, 0)
+}
 
 fun manageStatus(holder: ItemModelHolder, status: String) {
     val AVAILABLE = holder.itemView.context.getString(R.string.available)
@@ -69,6 +79,19 @@ fun showSystemUI(activity: MainActivity) {
 fun hideSystemUI(activity: MainActivity) {
     activity.drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     activity.supportActionBar?.hide()
+}
+
+class CropSquareTransformation : Transformation() {
+    fun transform(source: Bitmap): Bitmap {
+        val size = source.width.coerceAtMost(source.height)
+        val x = (source.width - size) / 2
+        val y = (source.height - size) / 2
+        val result = Bitmap.createBitmap(source, x, y, size, size)
+        if (result != source) {
+            source.recycle()
+        }
+        return result
+    }
 }
 
 @Throws(IOException::class)

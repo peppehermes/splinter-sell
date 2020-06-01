@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -18,15 +19,19 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.ktx.Firebase
+import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.UserModel
+import it.polito.mad.splintersell.ui.hideKeyboardFrom
+import it.polito.mad.splintersell.ui.profile_edit.EditProfileViewModel
+import it.polito.mad.splintersell.ui.showSystemUI
 import kotlinx.android.synthetic.main.fragment_edit_profile_map.*
 import java.io.IOException
 
 
 class EditMapProfileFragment : Fragment(), OnMapReadyCallback {
-
+    private val args: EditMapProfileFragmentArgs by navArgs()
     lateinit var gmap: GoogleMap
     private var latlang: LatLng? = null
     private var mylatlng: LatLng? = null
@@ -34,6 +39,7 @@ class EditMapProfileFragment : Fragment(), OnMapReadyCallback {
 
     val user = Firebase.auth.currentUser
     private val firestoreViewModel: FirestoreViewModel by activityViewModels()
+    private val userModel: EditProfileViewModel by activityViewModels()
     lateinit var liveData: LiveData<UserModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +58,55 @@ class EditMapProfileFragment : Fragment(), OnMapReadyCallback {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_profile_map, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if (args.login) {
+            location_fab.visibility = View.VISIBLE
+            location_fab.setOnClickListener {
+
+                if (latlang != null) {
+                    val geopoint = GeoPoint(address.latitude, address.longitude)
+                    userModel.user.value?.location = address.getAddressLine(0).toString()
+                    userModel.user.value?.address = geopoint
+                    val dialog = AlertDialog.Builder(requireContext())
+                    dialog.setMessage("All done, enjoy Splinter Sell!").setCancelable(false)
+                        .setPositiveButton("OK") { dialogBox, _ ->
+                            dialogBox.dismiss()
+                            firestoreViewModel.updateUserLocation(
+                                geopoint,
+                                address.getAddressLine(0).toString(),
+                                user!!.uid
+                            )
+                            // Pop back to Home fragment
+                            showSystemUI(activity as MainActivity)
+                            findNavController().popBackStack(R.id.nav_on_sale_list, false)
+                        }
+                    dialog.show()
+                } else {
+                    if (mylatlng != null) {
+                        val dialog = AlertDialog.Builder(requireContext())
+                        dialog.setMessage("All done, enjoy Splinter Sell!").setCancelable(false)
+                            .setPositiveButton("OK") { dialogBox, _ ->
+                                dialogBox.dismiss()
+                                // Pop back to Home fragment
+                                showSystemUI(activity as MainActivity)
+                                findNavController().popBackStack(R.id.nav_on_sale_list, false)
+                            }
+                        dialog.show()
+                    } else {
+                        val dialog = AlertDialog.Builder(requireContext())
+                        dialog.setMessage("Please, search for an address.").setCancelable(false)
+                            .setPositiveButton("OK") { dialogBox, _ ->
+                                dialogBox.dismiss()
+                            }
+                        dialog.show()
+                    }
+                }
+            }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -117,11 +172,8 @@ class EditMapProfileFragment : Fragment(), OnMapReadyCallback {
 
                 if (latlang != null) {
                     val geopoint = GeoPoint(address.latitude, address.longitude)
-                    firestoreViewModel.updateUserLocation(
-                        geopoint,
-                        address.getAddressLine(0).toString(),
-                        user!!.uid
-                    )
+                    userModel.user.value?.location = address.getAddressLine(0).toString()
+                    userModel.user.value?.address = geopoint
                     val dialog = AlertDialog.Builder(requireContext())
                     dialog.setMessage("New address saved!").setCancelable(false)
                         .setPositiveButton("OK") { dialogBox, _ ->
@@ -130,7 +182,6 @@ class EditMapProfileFragment : Fragment(), OnMapReadyCallback {
                         }
                     dialog.show()
                 } else {
-
                     if (mylatlng != null) {
                         val dialog = AlertDialog.Builder(requireContext())
                         dialog.setMessage("This address is already saved.").setCancelable(false)
@@ -150,6 +201,11 @@ class EditMapProfileFragment : Fragment(), OnMapReadyCallback {
 
                 true
             }
+            android.R.id.home -> {
+                hideKeyboardFrom(requireContext(), requireView())
+                findNavController().popBackStack()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -161,13 +217,20 @@ class EditMapProfileFragment : Fragment(), OnMapReadyCallback {
         }
 
         liveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer { currentUser ->
-
-            if (currentUser.address != null) {
-                val mylatitude = currentUser.address!!.latitude
-                val mylongitude = currentUser.address!!.longitude
+            if (userModel.user.value?.address != null) {
+                val mylatitude = userModel.user.value?.address!!.latitude
+                val mylongitude = userModel.user.value?.address!!.longitude
                 mylatlng = LatLng(mylatitude, mylongitude)
                 gmap.addMarker(MarkerOptions().position(mylatlng!!).title(currentUser.location))
                 gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(mylatlng, 20F))
+            } else {
+                if (currentUser.address != null) {
+                    val mylatitude = currentUser.address!!.latitude
+                    val mylongitude = currentUser.address!!.longitude
+                    mylatlng = LatLng(mylatitude, mylongitude)
+                    gmap.addMarker(MarkerOptions().position(mylatlng!!).title(currentUser.location))
+                    gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(mylatlng, 20F))
+                }
             }
         })
     }

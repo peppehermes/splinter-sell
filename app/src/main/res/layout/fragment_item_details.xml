@@ -71,7 +71,7 @@
                     android:focusable="true"
                     android:text="@string/owner"
                     android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Subtitle2"
-                    android:textColor="?android:attr/textColorSecondary" />
+                    android:textColor="?android:attr/textColorLink" />
 
                 <TextView
                     style="@style/InputLabel"
@@ -134,24 +134,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="8dp"
-                    android:text="@string/location" />
-
-                <TextView
-                    android:id="@+id/location"
-                    style="@style/InputBody"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/location"
-                    android:textAppearance="?attr/textAppearanceBody1"
-                    android:textColor="?android:attr/textColorSecondary" />
-
-                <View style="@style/divider" />
-
-                <TextView
-                    style="@style/InputLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="8dp"
                     android:text="@string/expire_date" />
 
                 <TextView
@@ -162,6 +144,25 @@
                     android:text="@string/expire_date"
                     android:textAppearance="?attr/textAppearanceBody1"
                     android:textColor="?android:attr/textColorSecondary" />
+
+                <View style="@style/divider" />
+
+                <TextView
+                    style="@style/InputLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:text="@string/location" />
+
+                <TextView
+                    android:id="@+id/location"
+                    style="@style/InputBody"
+                    android:layout_marginEnd="40dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/location"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textColor="?android:attr/textColorLink" />
 
                 <View style="@style/divider" />
 
