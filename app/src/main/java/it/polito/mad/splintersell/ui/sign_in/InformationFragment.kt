@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
@@ -13,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
+import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.UserModel
@@ -32,7 +34,7 @@ class InformationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         firestoreViewModel.fetchMyUserFromFirestore()
-
+        (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_information, container, false)
     }
@@ -103,6 +105,7 @@ class InformationFragment : Fragment() {
                                 user!!.photoName
 
                             // Go to location fragment
+                            (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
                             val action = InformationFragmentDirections.goAskForLocation()
                             findNavController().navigate(action)
                         }
@@ -112,6 +115,7 @@ class InformationFragment : Fragment() {
                 firestoreViewModel.createdUserLiveData!!.value!!.photoName = user!!.photoName
 
                 // Go to location fragment
+                (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
                 val action = InformationFragmentDirections.goAskForLocation()
                 findNavController().navigate(action)
             }

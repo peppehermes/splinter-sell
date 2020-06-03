@@ -7,6 +7,7 @@ import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
@@ -20,6 +21,7 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.FirebaseAuth
+import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FeedbackModel
 import it.polito.mad.splintersell.data.FirestoreViewModel
@@ -44,6 +46,7 @@ class ItemFeedbackFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+        (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         firestoreViewModel.fetchUserFromFirestore(args.ownerid)
         userLiveData = firestoreViewModel.user
 
@@ -87,6 +90,7 @@ class ItemFeedbackFragment : Fragment() {
                     firestoreViewModel.updateRating(args.ownerid, rating.rating)
                     firestoreViewModel.updateStatusFeed(args.itemid)
                     dialog.dismiss()
+                    (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
                     findNavController().popBackStack()
                 }.setNegativeButton("No") { dialog, _ ->
