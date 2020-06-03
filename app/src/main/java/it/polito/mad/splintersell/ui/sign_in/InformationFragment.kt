@@ -17,6 +17,7 @@ import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.UserModel
 import it.polito.mad.splintersell.data.storage
+import it.polito.mad.splintersell.ui.hideKeyboardFrom
 import it.polito.mad.splintersell.ui.profile_edit.EditProfileViewModel
 import kotlinx.android.synthetic.main.fragment_information.*
 
@@ -69,6 +70,9 @@ class InformationFragment : Fragment() {
         })
 
         button_send.setOnClickListener {
+            // Close the keyboard
+            hideKeyboardFrom(requireContext(), requireView())
+
             val nick = til_login_nick.editText!!.text.toString()
 
             // Check if the nickname was set
