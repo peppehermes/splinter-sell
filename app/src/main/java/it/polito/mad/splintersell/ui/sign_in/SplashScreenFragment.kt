@@ -1,5 +1,7 @@
 package it.polito.mad.splintersell.ui.sign_in
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,10 +35,12 @@ class SplashScreenFragment : Fragment() {
     lateinit var logo: ImageView
     lateinit var bottomText: TextView
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (activity as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         //Hide the status bar.
         hideSystemUI(activity as MainActivity)
 

@@ -73,11 +73,13 @@ class MainActivity : AppCompatActivity(), DrawerLayout.DrawerListener {
         val myUser = firestoreViewModel.myUser
 
         myUser.observe(this, Observer {
-            textViewNick.text = myUser.value!!.nickname
-            textViewMail.text = myUser.value!!.email
+            if (it != null) {
+                textViewNick.text = myUser.value!!.nickname
+                textViewMail.text = myUser.value!!.email
 
-            Glide.with(this).using(FirebaseImageLoader())
-                .load(storage.child("/profileImages/${myUser.value!!.photoName}")).into(imgView)
+                Glide.with(this).using(FirebaseImageLoader())
+                    .load(storage.child("/profileImages/${myUser.value!!.photoName}")).into(imgView)
+            }
         })
     }
 

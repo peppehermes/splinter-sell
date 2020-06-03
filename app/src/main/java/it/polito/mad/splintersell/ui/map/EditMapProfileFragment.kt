@@ -1,5 +1,7 @@
 package it.polito.mad.splintersell.ui.map
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -42,10 +44,12 @@ class EditMapProfileFragment : Fragment(), OnMapReadyCallback {
     private val userModel: EditProfileViewModel by activityViewModels()
     lateinit var liveData: LiveData<UserModel>
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(true)
+        (activity as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         firestoreViewModel.fetchUserFromFirestore(user!!.uid)
         liveData = firestoreViewModel.user
