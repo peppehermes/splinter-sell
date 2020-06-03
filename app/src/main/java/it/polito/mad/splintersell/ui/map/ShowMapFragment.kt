@@ -104,7 +104,7 @@ class ShowMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnPolylineClic
                 val itemLongitude = currentItem.address!!.longitude
                 itemLatlang = LatLng(itemLatitude, itemLongitude)
                 gmap.addMarker(MarkerOptions().position(itemLatlang!!).title(currentItem.location))
-                gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(itemLatlang, 20F))
+                gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(itemLatlang, 15F))
 
                 if (args.notMyItem) {
 
@@ -114,8 +114,6 @@ class ShowMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnPolylineClic
                         val userLongitude = currentUser.address!!.longitude
                         userLatlng = LatLng(userLatitude, userLongitude)
                         gmap.addMarker(MarkerOptions().position(userLatlng!!).title(currentUser.location))
-                        gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatlng, 15F))
-
 
                         val myPolylineOptions = PolylineOptions()
 

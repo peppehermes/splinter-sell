@@ -33,6 +33,7 @@ class BoughtItemsListFragment : Fragment() {
     ): View? {
         signInViewModel.authenticate()
         firestoreViewModel.fetchSoldItemListFromFirestore()
+        firestoreViewModel.fetchMyUserFromFirestore()
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_bought_items_list, container, false)

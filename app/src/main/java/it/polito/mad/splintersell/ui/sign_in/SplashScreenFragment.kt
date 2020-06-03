@@ -35,12 +35,10 @@ class SplashScreenFragment : Fragment() {
     lateinit var logo: ImageView
     lateinit var bottomText: TextView
 
-    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (activity as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         //Hide the status bar.
         hideSystemUI(activity as MainActivity)
 

@@ -3,6 +3,7 @@ package it.polito.mad.splintersell.ui.profile_show
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
@@ -30,6 +31,7 @@ class ShowProfile : Fragment() {
     private val firestoreViewModel: FirestoreViewModel by activityViewModels()
     val user = Firebase.auth.currentUser
     lateinit var liveData: LiveData<UserModel>
+    private val TAG = "SHOW_PROFILE"
 
     private val args: ShowProfileArgs by navArgs()
 
@@ -69,6 +71,7 @@ class ShowProfile : Fragment() {
                 email.text = it.email
                 location.text = it.location
                 rating.rating = it.rating
+                Log.e(TAG, "${rating.rating} ${it.rating}")
 
                 location.setOnClickListener{
                     val action = ShowProfileDirections.fromProfileToShowMap(true, "", true, "currUser")
@@ -81,6 +84,7 @@ class ShowProfile : Fragment() {
                 email.text = it.email
                 location.text = it.location
                 rating.rating = it.rating
+                Log.e(TAG, "${rating.rating} ${it.rating}")
 
                 name.visibility = View.GONE
                 label_name.visibility = View.GONE

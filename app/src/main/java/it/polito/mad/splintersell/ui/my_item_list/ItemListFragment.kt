@@ -45,6 +45,7 @@ class ItemListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         signInViewModel.authenticate()
         firestoreViewModel.fetchMyItemListFromFirestore()
+        firestoreViewModel.fetchMyUserFromFirestore()
         myItemList = firestoreViewModel.myItemList
 
         // Take my items

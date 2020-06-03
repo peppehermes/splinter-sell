@@ -27,6 +27,7 @@ import it.polito.mad.splintersell.MainActivity
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.UserModel
+import it.polito.mad.splintersell.ui.hideSystemUI
 import kotlinx.android.synthetic.main.fragment_sign_in.*
 
 const val RC_SIGN_IN = 2013
@@ -51,6 +52,9 @@ class SignIn : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //Hide the status bar.
+        hideSystemUI(activity as MainActivity)
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             Snackbar.make(view, "Please, log in.", Snackbar.LENGTH_SHORT).show()
@@ -130,5 +134,6 @@ class SignIn : Fragment() {
             findNavController().navigate(SignInDirections.insertInformation())
         })
     }
+
 }
 
