@@ -51,7 +51,7 @@ class OnSaleListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        (activity as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+        (activity as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER
         // Inflate the layout for this fragment
         val layout = inflater.inflate(R.layout.fragment_on_sale_list, container, false)
         filterLayout = layout.findViewById(R.id.filter_layout)

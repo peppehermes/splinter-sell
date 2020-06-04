@@ -25,6 +25,7 @@ import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
@@ -57,7 +58,7 @@ class EditProfile : Fragment() {
     private val TAG = "EDIT_PROFILE"
 
     private val user = Firebase.auth.currentUser
-    private val firestoreViewModel: FirestoreViewModel by activityViewModels()
+    private val firestoreViewModel: FirestoreViewModel by viewModels()
     private val userModel: EditProfileViewModel by activityViewModels()
     lateinit var liveData: LiveData<UserModel>
 
@@ -85,6 +86,12 @@ class EditProfile : Fragment() {
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                // Empty the photo field in ViewModel
+                userModel.photo = MutableLiveData()
+
+                // Empty the location and address field in ViewModel
+                userModel.user = MutableLiveData()
+
                 // Handle the back button event
                 navigateMyProfile()
             }
@@ -122,15 +129,15 @@ class EditProfile : Fragment() {
 //        }
 
         val savedImg: String? = userModel.photo?.value
+        if (userModel.photo?.value != null)
+            Log.e(TAG, userModel.photo?.value!!)
 
         userModel.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer { userData ->
             userData.fullname?.apply {
-                Log.e(TAG, this)
                 savedName = this
             }
 
             userData.nickname?.apply {
-                Log.e(TAG, this)
                 savedNickname = this
             }
 
@@ -139,12 +146,10 @@ class EditProfile : Fragment() {
             }
 
             userData.email?.apply {
-                Log.e(TAG, this)
                 savedEmail = this
             }
 
             userData.location?.apply {
-                Log.e(TAG, this)
                 savedLocation = this
             }
         })
@@ -213,7 +218,6 @@ class EditProfile : Fragment() {
 
         location.setOnClickListener {
             this.saveOnViewModel()
-
             val action = EditProfileDirections.fromProfileToEditMap()
             findNavController().navigate(action)
         }
@@ -349,6 +353,14 @@ class EditProfile : Fragment() {
                     }
                 }
 
+                true
+            }
+            android.R.id.home -> {
+                // Empty the photo field in ViewModel
+                userModel.photo = MutableLiveData()
+                // Empty the location and address field in ViewModel
+                userModel.user = MutableLiveData()
+                findNavController().popBackStack()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -601,12 +613,6 @@ class EditProfile : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
-        if (rotatedBitmap != null)
-            photoURI?.run {
-                userModel.photo?.value = photoURI.toString()
-            }
-
         this.saveOnViewModel()
     }
 
@@ -618,7 +624,10 @@ class EditProfile : Fragment() {
 
         if (rotatedBitmap != null)
             photoURI?.run {
-                userModel.photo?.value = this.toString()
+                Log.e(TAG, "SAVING")
+                userModel.photo?.value = photoURI.toString()
+                Log.e(TAG, "VIEWMODEL: ${userModel.photo?.value}")
+                Log.e(TAG, "PHOTOURI: ${photoURI.toString()}")
             }
     }
 
@@ -682,8 +691,9 @@ class EditProfile : Fragment() {
             existingAddress!!
         )
         userModel.oldNick.value = nickname.text.toString()
-        userModel.photo = null
         this.saveOnViewModel()
+        // Reset the old path, we don't need it anymore
+        userModel.photo = MutableLiveData()
         firestoreViewModel.saveUserToFirestore(newUser)
         val user: MutableLiveData<UserModel> = MutableLiveData(newUser)
         firestoreViewModel.createdUserLiveData = user

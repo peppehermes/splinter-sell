@@ -175,7 +175,7 @@ class EditMapProfileFragment : Fragment(), OnMapReadyCallback {
                     userModel.user.value?.location = address.getAddressLine(0).toString()
                     userModel.user.value?.address = geopoint
                     val dialog = AlertDialog.Builder(requireContext())
-                    dialog.setMessage("New address saved!").setCancelable(false)
+                    dialog.setMessage("New address selected!").setCancelable(false)
                         .setPositiveButton("OK") { dialogBox, _ ->
                             dialogBox.dismiss()
                             findNavController().popBackStack()
