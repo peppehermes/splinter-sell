@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.text.InputFilter
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
@@ -90,7 +89,7 @@ class EditProfile : Fragment() {
                 userModel.photo = MutableLiveData()
 
                 // Empty the location and address field in ViewModel
-                userModel.user = MutableLiveData()
+                userModel.user.value = UserModel()
 
                 // Handle the back button event
                 navigateMyProfile()
@@ -129,8 +128,6 @@ class EditProfile : Fragment() {
 //        }
 
         val savedImg: String? = userModel.photo?.value
-        if (userModel.photo?.value != null)
-            Log.e(TAG, userModel.photo?.value!!)
 
         userModel.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer { userData ->
             userData.fullname?.apply {
@@ -139,10 +136,6 @@ class EditProfile : Fragment() {
 
             userData.nickname?.apply {
                 savedNickname = this
-            }
-
-            userData.photoName.apply {
-                Log.e(TAG, this)
             }
 
             userData.email?.apply {
@@ -207,7 +200,6 @@ class EditProfile : Fragment() {
                 }
             } else {
                 this.restoreImage(savedImg)
-                Log.e(TAG, savedImg)
             }
 
             // Store token, counterFeedback and rating for next updates
@@ -254,10 +246,6 @@ class EditProfile : Fragment() {
                                 val checkError = formValidation()
 
                                 if (!checkError) {
-
-                                    Log.d("EditItemTAG", "No error in Form Validation")
-
-
                                     //Save image on Cloud Storage
 
                                     if (rotatedBitmap != null) {
@@ -293,7 +281,6 @@ class EditProfile : Fragment() {
 
 
                                 } else {
-                                    Log.d("EditProfileTAG", "Error in Form Validation")
                                     Snackbar.make(
                                         requireView(),
                                         R.string.please_fill_all,
@@ -309,10 +296,6 @@ class EditProfile : Fragment() {
                     val checkError = formValidation()
 
                     if (!checkError) {
-
-                        Log.d("EditItemTAG", "No error in Form Validation")
-
-
                         //Save image on Cloud Storage
 
                         if (rotatedBitmap != null) {
@@ -343,7 +326,6 @@ class EditProfile : Fragment() {
 
 
                     } else {
-                        Log.d("EditProfileTAG", "Error in Form Validation")
                         Snackbar.make(
                             requireView(),
                             R.string.please_fill_all,
@@ -359,7 +341,7 @@ class EditProfile : Fragment() {
                 // Empty the photo field in ViewModel
                 userModel.photo = MutableLiveData()
                 // Empty the location and address field in ViewModel
-                userModel.user = MutableLiveData()
+                userModel.user.value = UserModel()
                 findNavController().popBackStack()
                 true
             }
@@ -448,27 +430,21 @@ class EditProfile : Fragment() {
         when (requestCode) {
 
             REQUEST_TAKE_PHOTO -> {
-                Log.e("LOG", "$data")
-                Log.e("photo", "path: ${photoFile?.absolutePath}")
-
                 val bmOptions = BitmapFactory.Options()
                 BitmapFactory.decodeFile(
                     photoFile?.absolutePath, bmOptions
                 )?.run {
                     photoURI?.run {
-                        Log.e("photo", "uri: $photoURI")
                         manageBitmap()
                     }
                 }
             }
 
             GALLERY_REQUEST_CODE -> {
-                Log.e("LOG", "$data")
                 //data.data return the content URI for the selected Image
                 photoURI = data?.data
 
                 photoURI?.run {
-                    Log.e("gallery", "$photoURI")
                     manageBitmap()
                 }
             }
@@ -484,7 +460,6 @@ class EditProfile : Fragment() {
                     createImageFile()
                 } catch (ex: IOException) {
                     // Error occurred while creating the File
-                    Log.e("photo_error", "ERROR IN CREATING UNIQUE NAME")
                     null
                 }
                 // Continue only if the File was successfully created
@@ -515,13 +490,11 @@ class EditProfile : Fragment() {
         ).apply {
             // Save a file: path for use with ACTION_VIEW intents
             currentPhotoPath = absolutePath
-            Log.d("MY_TEST", currentPhotoPath)
         }
     }
 
     private fun manageBitmap() {
         val bitmap = handleSamplingAndRotationBitmap(requireContext(), photoURI)
-        Log.d("photoURI", photoURI.toString())
         profile_photo.setImageBitmap(bitmap)
         rotatedBitmap = bitmap
     }
@@ -591,10 +564,8 @@ class EditProfile : Fragment() {
         val input: InputStream = context.contentResolver.openInputStream(selectedImage)!!
         val ei: ExifInterface
         ei = ExifInterface(input)
-        Log.e("photo_orientation", ei.getAttribute(ExifInterface.TAG_ORIENTATION).toString())
         val orientation =
             ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-        Log.e("photo_orientation", "$orientation")
         return when (orientation) {
             ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(img, 90)
             ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(img, 180)
@@ -624,10 +595,7 @@ class EditProfile : Fragment() {
 
         if (rotatedBitmap != null)
             photoURI?.run {
-                Log.e(TAG, "SAVING")
                 userModel.photo?.value = photoURI.toString()
-                Log.e(TAG, "VIEWMODEL: ${userModel.photo?.value}")
-                Log.e(TAG, "PHOTOURI: ${photoURI.toString()}")
             }
     }
 
@@ -640,7 +608,6 @@ class EditProfile : Fragment() {
         dialog1.show()
 
         val profileImageRefs = storage.child("profileImages/$randomString")
-        Log.d("ItemEditTAG", "Name of the file to be stored: $profileImageRefs")
 
         val baos = ByteArrayOutputStream()
         rotatedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, baos)
@@ -651,11 +618,7 @@ class EditProfile : Fragment() {
             dialog2.setPositiveButton("Great!") { dialog, _ ->
                 if (oldPath != "img_avatar.jpg") {
                     val refToDelete = storage.child("profileImages/$oldPath")
-                    refToDelete.delete().addOnSuccessListener {
-                        Log.d("deleteOfFile", "Delete complete on item $oldPath")
-                    }.addOnFailureListener {
-                        Log.d("deleteOfFile", "Delete failed $oldPath")
-                    }
+                    refToDelete.delete()
                 }
                 dialog.dismiss()
                 navigateMyProfile()
@@ -663,11 +626,7 @@ class EditProfile : Fragment() {
             dialog2.show()
         }
 
-        uploadTask.addOnFailureListener {
-            Log.d("ItemEditTAG", "Error in saving image to the Cloud Storage")
-        }.addOnSuccessListener {
-            Log.d("ItemEditTAG", "Success in saving image to the Cloud Storage")
-        }
+        uploadTask
     }
 
     private fun setNewUser() {
