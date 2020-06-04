@@ -47,6 +47,7 @@
     <string name="show_users">Show Interested Users</string>
     <string name="empty_list">No items here</string>
     <string name="empty_list_users">No interested users</string>
+    <string name="empty_list_feedbacks">No feedbacks received</string>
     <string name="remove">Remove</string>
     <string name="sold">sold</string>
     <string name="available">available</string>

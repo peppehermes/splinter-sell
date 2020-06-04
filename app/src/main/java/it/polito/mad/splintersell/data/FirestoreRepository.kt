@@ -18,6 +18,7 @@ class FirestoreRepository(val onFirestoreTaskComplete: OnFirestoreTaskComplete) 
     var firestore = FirebaseFirestore.getInstance()
     val itemRef = firestore.collection("items")
     val notRef = firestore.collection("notifications")
+    val feedRef = firestore.collection("feedbacks")
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val usersRef: CollectionReference = firestore.collection("users")

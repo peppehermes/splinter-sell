@@ -38,6 +38,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     private var _allItemList: MutableLiveData<List<ItemModel>> = MutableLiveData()
     private var _interestedUserList: MutableLiveData<List<UserModel>> = MutableLiveData()
     private var _soldItemsList: MutableLiveData<List<ItemModel>> = MutableLiveData()
+    private var _myFeedbackList: MutableLiveData<List<FeedbackModel>> = MutableLiveData()
 
     init {
         this.fetchAllItemListFromFirestore()
@@ -333,6 +334,28 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         }
     }
 
+    fun getFeedbackData(userId: String) {
+        _myFeedbackList = MutableLiveData()
+
+        val task = firestoreRepository.feedRef
+            .whereEqualTo("id_owner", userId)
+            .addSnapshotListener(EventListener { value, e ->
+
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    _myFeedbackList.value = null
+                    return@EventListener
+                }
+                val feeds = ArrayList<FeedbackModel>()
+                for (document in value!!) {
+                    val feedback = document.toObject(FeedbackModel::class.java)
+                    Log.d(TAG, feedback.toString())
+                    feeds.add(feedback)
+                }
+                _myFeedbackList.value = feeds
+            })
+    }
+
     fun getItemData(
         minPrice: Int = 0,
         maxPrice: Int = Int.MAX_VALUE,
@@ -572,5 +595,13 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         }
         set(value) {
             _soldItemsList = value
+        }
+
+    internal var myFeedbackList: MutableLiveData<List<FeedbackModel>>
+        get() {
+            return _myFeedbackList
+        }
+        set(value) {
+            _myFeedbackList = value
         }
 }

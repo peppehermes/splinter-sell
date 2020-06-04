@@ -5,7 +5,9 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.View.OnTouchListener
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
@@ -78,6 +80,13 @@ class ShowProfile : Fragment() {
                     findNavController().navigate(action)
                 }
 
+                rating.setOnTouchListener { it, event ->
+                    if (event.action == MotionEvent.ACTION_DOWN){
+                        val action = ShowProfileDirections.fromProfileToFeedbackList(args.userID)
+                        findNavController().navigate(action)
+                    }
+                    true
+                }
 
             } else {
                 nickname.text = it.nickname
@@ -94,8 +103,14 @@ class ShowProfile : Fragment() {
                     findNavController().navigate(action)
                 }
 
+                rating.setOnTouchListener { it, event ->
+                    if (event.action == MotionEvent.ACTION_DOWN){
+                    val action = ShowProfileDirections.fromProfileToFeedbackList(args.userID)
+                    findNavController().navigate(action)
+                    }
+                    true
+                }
             }
-
 
 
 

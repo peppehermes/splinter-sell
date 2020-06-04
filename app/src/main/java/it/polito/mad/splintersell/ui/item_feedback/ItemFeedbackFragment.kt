@@ -84,7 +84,9 @@ class ItemFeedbackFragment : Fragment() {
                         user!!.uid,
                         args.ownerid,
                         rating.rating,
-                        comment.text.toString()
+                        comment.text.toString(),
+                        args.itemtitle,
+                        user!!.displayName!!
                     )
                     firestoreViewModel.saveFeedbackToFirestore(newFeed)
                     firestoreViewModel.updateRating(args.ownerid, rating.rating)
