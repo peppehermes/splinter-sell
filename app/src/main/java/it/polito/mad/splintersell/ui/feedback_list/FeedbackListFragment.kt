@@ -10,12 +10,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FeedbackModel
 import it.polito.mad.splintersell.data.FirestoreViewModel
@@ -31,7 +32,7 @@ class FeedbackListFragment : Fragment() {
     private var list = arrayListOf<FeedbackModel>()
     private lateinit var externalLayout: ViewGroup
     private val args: FeedbackListFragmentArgs by navArgs()
-
+    private val user = Firebase.auth.currentUser
 
     private val TAG = "FEEDBACK_LIST_FRAGMENT"
 
@@ -44,7 +45,10 @@ class FeedbackListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        firestoreViewModel.getFeedbackData(args.userID!!)
+        if (args.userID == "currUser")
+            firestoreViewModel.getFeedbackData(user!!.uid)
+        else
+            firestoreViewModel.getFeedbackData(args.userID!!)
         return inflater.inflate(R.layout.fragment_feedback_list, container, false)
     }
 

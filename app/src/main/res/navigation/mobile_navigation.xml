@@ -131,7 +131,11 @@
             app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/fromProfileToFeedbackList"
-            app:destination="@id/nav_feed_list" />
+            app:destination="@id/nav_feed_list"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -316,10 +320,14 @@
     <fragment
         android:id="@+id/nav_feed_list"
         android:name="it.polito.mad.splintersell.ui.feedback_list.FeedbackListFragment"
-        android:label="Feedbacks List">
+        android:label="Feedbacks">
         <action
             android:id="@+id/showUserProfile"
-            app:destination="@id/nav_show_profile" />
+            app:destination="@id/nav_show_profile"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
 
         <argument
             android:name="userID"

@@ -5,55 +5,38 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:clickable="true"
-    android:focusable="true">
+    app:cardElevation="4dp"
+    android:clickable="false"
+    android:focusable="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
-            android:id="@+id/label_nickname"
             style="@style/InputLabel"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
             android:drawableStart="@drawable/ic_account_circle_black_16dp"
             android:drawablePadding="8dp"
             android:drawableTint="?attr/colorControlNormal"
-            android:text="@string/user" />
-
-        <TextView
             android:id="@+id/card_nick"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="@string/nick"
-            android:textColor="@color/colorPrimaryDark"
-            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Headline6"
-            android:transitionName="@string/transition_title" />
-
-        <TextView
-            android:id="@+id/label_itemname"
-            style="@style/InputLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:drawableStart="@drawable/ic_shopping_basket_black_16dp"
-            android:drawablePadding="8dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:text="@string/item" />
+            android:textColor="?android:attr/textColorLink" />
 
         <TextView
             android:ellipsize="end"
             android:id="@+id/card_item"
+            android:drawableStart="@drawable/ic_shopping_basket_black_16dp"
+            android:drawablePadding="8dp"
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Body1"
+            android:drawableTint="?attr/colorControlNormal"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="@string/item"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Subtitle1"
-            android:transitionName="@string/transition_description"
-            android:textColor="?android:attr/textColorSecondary" />
+            android:singleLine="true" />
 
         <TextView
             android:id="@+id/card_comment"
@@ -62,18 +45,17 @@
             android:layout_marginTop="16dp"
             android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Body1"
             android:text="@string/comment"
-            android:textColor="@color/backgroundDark"
-            android:textStyle="bold"
-            android:transitionName="@string/transition_price" />
+            android:textColor="?android:attr/textColorSecondary" />
 
         <RatingBar
             android:id="@+id/card_rating"
-            style="?android:attr/ratingBarStyleIndicator"
+            style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:numStars="5"
-            android:stepSize="1.0" />
+            android:stepSize="1.0"
+            android:layout_gravity="end" />
 
         </LinearLayout>
 
