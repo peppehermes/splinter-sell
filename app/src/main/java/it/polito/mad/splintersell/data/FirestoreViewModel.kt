@@ -1,6 +1,5 @@
 package it.polito.mad.splintersell.data
 
-import android.location.Address
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -337,7 +336,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     fun getFeedbackData(userId: String) {
         _myFeedbackList = MutableLiveData()
 
-        val task = firestoreRepository.feedRef
+        firestoreRepository.feedRef
             .whereEqualTo("id_owner", userId)
             .addSnapshotListener(EventListener { value, e ->
 
@@ -357,8 +356,8 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
     }
 
     fun getItemData(
-        minPrice: Int = 0,
-        maxPrice: Int = Int.MAX_VALUE,
+        minPrice: Float = 0F,
+        maxPrice: Float = Float.MAX_VALUE,
         mainCategory: String? = null,
         secondCategory: String? = null
     ) {
@@ -398,7 +397,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
                 for (docSnap in querySnaps) for (document in docSnap) {
                     val item = document.toObject(ItemModel::class.java)
 
-                    if (item.price!!.toInt() in minPrice..maxPrice)
+                    if (item.price!!.toFloat() in minPrice..maxPrice)
                         list.add(item)
                 }
 

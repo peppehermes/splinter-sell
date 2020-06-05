@@ -203,11 +203,11 @@ class OnSaleListFragment : Fragment() {
         val minimumPrice: String = price_min.text.toString()
         val maximumPrice: String = price_max.text.toString()
 
-        val minPrice = if (minimumPrice == "") 0
-        else minimumPrice.toInt()
+        val minPrice = if (minimumPrice == "") 0F
+        else minimumPrice.toFloat()
 
-        val maxPrice = if (maximumPrice == "") Int.MAX_VALUE
-        else maximumPrice.toInt()
+        val maxPrice = if (maximumPrice == "") Float.MAX_VALUE
+        else maximumPrice.toFloat()
 
         if (mainCategory.isEmpty()) {
             // Filter only by price tag
