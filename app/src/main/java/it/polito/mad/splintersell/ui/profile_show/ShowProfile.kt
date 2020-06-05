@@ -82,7 +82,7 @@ class ShowProfile : Fragment() {
 
                 rating.setOnTouchListener { it, event ->
                     if (event.action == MotionEvent.ACTION_DOWN){
-                        val action = ShowProfileDirections.fromProfileToFeedbackList(args.userID)
+                        val action = ShowProfileDirections.fromProfileToFeedbackList()
                         findNavController().navigate(action)
                     }
                     true

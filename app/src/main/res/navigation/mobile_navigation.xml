@@ -332,7 +332,7 @@
         <argument
             android:name="userID"
             app:argType="string"
-            app:nullable="true" />
+            android:defaultValue="currUser" />
     </fragment>
 
 

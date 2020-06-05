@@ -38,9 +38,10 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
 
             "onsale" -> destination = R.id.nav_on_sale_list
 
-            "myitems" ->{
-                destination = R.id.nav_item_list
-            }
+            "myitems" -> destination = R.id.nav_item_list
+
+            "feedback" -> destination = R.id.nav_feed_list
+
         }
 
         val channelId = "web_app_channel"
