@@ -96,6 +96,10 @@ class ItemEditFragment : Fragment() {
         var savedDate: String? = null
         var savedImg: String? = null
 
+        dropdown_main_category.setOnClickListener {
+            dropdown_sub_category.text.clear()
+        }
+
         savedInstanceState?.run {
             savedTitle = savedInstanceState.get(getString(R.string.title)).toString()
             savedDescription = savedInstanceState.get(getString(R.string.description)).toString()

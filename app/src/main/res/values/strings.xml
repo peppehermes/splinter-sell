@@ -39,7 +39,7 @@
     <string name="comment">Comment</string>
     <string name="user">User</string>
     <string name="item">Item</string>
-    <string name="rating">Please, express a rate from 1 to 5</string>
+    <string name="rating">Please, express a rating</string>
     <string name="nick_not_available">"This nickname is not available"</string>
 
     <string name="edit">Edit</string>
@@ -206,5 +206,6 @@
     <string name="label_rating">Rating</string>
     <string name="where_do_you_come_from">Where do you come from?</string>
     <string name="please_location">Please, provide us your location to offer you a fantastic experience!</string>
+    <string name="edit_map">Edit Map</string>
 
 </resources>

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:fillViewport="true"
+    android:scrollbars="none"
     android:id="@+id/coordinator_layout"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
@@ -13,7 +14,6 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:padding="8dp">
-
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/detail_image"
@@ -33,7 +33,7 @@
                     android:id="@+id/image"
                     android:layout_height="200dp"
                     android:layout_width="match_parent"
-                    android:paddingBottom="10dp"
+                    android:paddingBottom="8dp"
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/image_vectorized_lower" />
 
@@ -51,7 +51,7 @@
                         android:layout="@+id/image"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:padding="10dp"
+                        android:padding="8dp"
                         android:text="@string/select"
                         style="@style/TextAppearance.MdcTypographyStyles.Button"
                         android:textColor="@color/colorOnPrimary" />
@@ -67,37 +67,39 @@
         <View
             android:background="@drawable/round_corners"
             android:layout_below="@+id/detail_image"
-            android:layout_height="3dp"
-            android:layout_margin="10dp"
-            android:layout_width="match_parent" />
+            android:layout_height="2dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:id="@+id/separator" />
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:id="@+id/til_title"
             android:layout_marginHorizontal="8dp"
-            android:layout_below="@+id/detail_image"
+            android:layout_below="@+id/separator"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
             app:counterEnabled="true"
             app:counterMaxLength="30"
+            app:endIconMode="clear_text"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                style="@style/InputBody"
-                android:drawableTint="?attr/colorControlNormal"
-                android:paddingBottom="8dp"
-                android:textSize="20sp"
-                android:autofillHints=""
-                android:drawablePadding="8dp"
-                android:drawableStart="@drawable/ic_title_black_24dp"
-                android:hint="@string/title"
                 android:id="@+id/title"
-                android:inputType="textAutoCorrect|textAutoComplete"
-                android:layout_below="@+id/detail_image"
-                android:layout_height="wrap_content"
+                style="@style/InputBody"
                 android:layout_width="match_parent"
-                android:textAppearance="?attr/textAppearanceHeadline5" />
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:drawableStart="@drawable/ic_title_black_24dp"
+                android:drawablePadding="8dp"
+                android:drawableTint="?attr/colorControlNormal"
+                android:hint="@string/title"
+                android:inputType="textAutoCorrect|textCapSentences|textAutoComplete"
+                android:paddingBottom="8dp"
+                android:textAppearance="?attr/textAppearanceHeadline5"
+                android:textSize="20sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,25 +110,26 @@
             android:layout_marginHorizontal="8dp"
             android:layout_below="@+id/til_title"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
             app:counterEnabled="true"
             app:counterMaxLength="100"
+            app:endIconMode="clear_text"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:autofillHints=""
+                android:id="@+id/description"
                 style="@style/InputBody"
-                android:drawablePadding="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
                 android:drawableStart="@drawable/ic_edit_white_24dp"
+                android:drawablePadding="8dp"
                 android:drawableTint="?attr/colorControlNormal"
                 android:hint="@string/description"
-                android:id="@+id/description"
-                android:inputType="textAutoCorrect|textAutoComplete|textMultiLine"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:textAppearance="?attr/textAppearanceBody1"
+                android:inputType="textAutoCorrect|textMultiLine|textCapSentences|textAutoComplete"
                 android:paddingBottom="8dp"
+                android:textAppearance="?attr/textAppearanceBody1"
                 android:textSize="20sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -137,24 +140,25 @@
             android:id="@+id/til_price"
             android:layout_below="@+id/til_description"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:layout_marginHorizontal="8dp"
             android:layout_width="match_parent"
+            app:endIconMode="clear_text"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:autofillHints=""
-                style="@style/InputBody"
-                android:drawablePadding="8dp"
-                android:drawableStart="@drawable/ic_attach_money_black_24dp"
-                android:hint="@string/price"
                 android:id="@+id/price"
-                android:inputType="numberDecimal"
-                android:layout_height="wrap_content"
+                style="@style/InputBody"
                 android:layout_width="match_parent"
-                android:textAppearance="?attr/textAppearanceBody1"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:drawableStart="@drawable/ic_attach_money_black_24dp"
+                android:drawablePadding="8dp"
                 android:drawableTint="?attr/colorControlNormal"
+                android:hint="@string/price"
+                android:inputType="numberDecimal"
                 android:paddingBottom="8dp"
+                android:textAppearance="?attr/textAppearanceBody1"
                 android:textSize="20sp" />
 
 
@@ -164,8 +168,8 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             android:id="@+id/spinner_1"
             android:layout_below="@id/til_price"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
             android:layout_marginHorizontal="8dp"
             android:layout_width="match_parent"
             app:errorEnabled="true">
@@ -183,6 +187,8 @@
                 android:drawableTint="?attr/colorControlNormal"
                 android:paddingBottom="8dp"
                 android:textSize="20sp"
+                android:singleLine="true"
+                android:ellipsize="end"
                 tools:ignore="Deprecated" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -191,8 +197,8 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             android:id="@+id/spinner_2"
             android:layout_below="@id/spinner_1"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
             android:layout_marginHorizontal="8dp"
             android:layout_width="match_parent"
             app:errorEnabled="true">
@@ -205,11 +211,13 @@
                 android:hint="@string/subcategory"
                 android:id="@+id/dropdown_sub_category"
                 android:inputType="none"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:drawableTint="?attr/colorControlNormal"
                 android:paddingBottom="8dp"
                 android:textSize="20sp"
+                android:singleLine="true"
+                android:ellipsize="end"
                 tools:ignore="Deprecated" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -218,7 +226,7 @@
             android:id="@+id/til_expire_date"
             android:layout_below="@+id/spinner_2"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:layout_marginHorizontal="8dp"
             android:layout_width="match_parent"
             app:errorEnabled="true">

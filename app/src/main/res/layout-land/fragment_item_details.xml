@@ -186,7 +186,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
             android:layout_width="wrap_content"
-            android:visibility="gone"
             app:backgroundTint="@color/colorSecondary"
             app:borderWidth="0dp"
             app:srcCompat="@drawable/ic_add" />

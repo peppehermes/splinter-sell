@@ -102,29 +102,7 @@ class ItemDetailsFragment : Fragment() {
             })
         }
 
-        if (args.onSale) {
-            firestoreViewModel.isRequested.observe(viewLifecycleOwner, Observer { requested ->
-                isRotate = requested
-                val expandIn: Animation = AnimationUtils.loadAnimation(
-                    requireContext(), R.anim.expand_in
-                )
-                fab.startAnimation(expandIn)
-                if (requested) {
-                    rotateFab(fab, isRotate)
-                    fab.backgroundTintList =
-                        fab.context.getColorStateList(R.color.colorPrimaryLight)
-                } else {
-                    fab.backgroundTintList = fab.context.getColorStateList(R.color.colorSecondary)
-                }
-
-                fab.setOnClickListener { floatingButton ->
-                    toggleItem(isRotate, floatingButton, requested)
-                }
-
-                fab.show()
-
-            })
-        }
+        setFab()
 
         liveData.observe(viewLifecycleOwner, Observer {
             // Update UI
@@ -150,6 +128,40 @@ class ItemDetailsFragment : Fragment() {
             findNavController().navigate(action, extras)
         }
 
+    }
+
+    private fun setFab() {
+        if (args.onSale) {
+            firestoreViewModel.isRequested.observe(viewLifecycleOwner, Observer { requested ->
+                isRotate = requested
+                val expandIn: Animation = AnimationUtils.loadAnimation(
+                    requireContext(), R.anim.expand_in
+                )
+                fab.startAnimation(expandIn)
+                if (requested) {
+                    rotateFab(fab, isRotate)
+                    fab.backgroundTintList =
+                        fab.context.getColorStateList(R.color.colorPrimaryLight)
+                } else {
+                    fab.backgroundTintList = fab.context.getColorStateList(R.color.colorSecondary)
+                }
+
+                fab.setOnClickListener { floatingButton ->
+                    toggleItem(isRotate, floatingButton, requested)
+                }
+            })
+        } else {
+            val expandIn: Animation = AnimationUtils.loadAnimation(
+                requireContext(), R.anim.expand_in
+            )
+            fab.startAnimation(expandIn)
+            // This is our item
+            fab.setImageDrawable(requireContext().getDrawable(R.drawable.ic_favorite_black_24dp))
+            fab.setOnClickListener {
+                val action = ItemDetailsFragmentDirections.goToInterestedUsers(args.documentName)
+                findNavController().navigate(action)
+            }
+        }
     }
 
     private fun toggleItem(isRotated: Boolean, fab: View, isRequested: Boolean) {
@@ -192,11 +204,6 @@ class ItemDetailsFragment : Fragment() {
             }
             R.id.editmap -> {
                 val action = ItemDetailsFragmentDirections.fromItemtoEditMap(args.documentName)
-                findNavController().navigate(action)
-                true
-            }
-            R.id.show -> {
-                val action = ItemDetailsFragmentDirections.goToInterestedUsers(args.documentName)
                 findNavController().navigate(action)
                 true
             }

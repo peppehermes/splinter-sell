@@ -2,16 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/show"
-        android:icon="@drawable/ic_favorite_white_24dp"
-        android:title="@string/show_users"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/editmap"
         android:icon="@drawable/ic_edit_location_white_24dp"
-        android:title="Edit Map"
-        app:showAsAction="always" />
+        android:title="@string/edit_map"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/edit"

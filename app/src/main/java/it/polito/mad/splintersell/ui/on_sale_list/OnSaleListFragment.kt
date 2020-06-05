@@ -12,6 +12,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.SearchView
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.iid.FirebaseInstanceId
 import it.polito.mad.splintersell.MainActivity
@@ -39,6 +41,7 @@ class OnSaleListFragment : Fragment() {
     private var list = arrayListOf<ItemModel>()
     private lateinit var filterLayout: View
     private lateinit var externalLayout: ViewGroup
+    lateinit var callback: OnBackPressedCallback
 
     private val TAG = "ON_SALE_LIST_FRAGMENT"
 
@@ -102,6 +105,17 @@ class OnSaleListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                updateUI()
+                fab.hide()
+            }
+        }
+
+        dropdown_main_category.setOnClickListener {
+            dropdown_sub_category.text.clear()
+        }
+
         externalLayout = view.findViewById(R.id.external_layout)
 
         // Check if the user is authenticated
@@ -138,9 +152,9 @@ class OnSaleListFragment : Fragment() {
             filterAction(button)
         }
 
-        val resetButton = view.findViewById<Button>(R.id.reset_button)
-        resetButton.setOnClickListener { button ->
-            resetAction(button)
+        val fabButton = view.findViewById<FloatingActionButton>(R.id.fab)
+        fabButton.setOnClickListener { button ->
+            reloadList(button)
         }
 
     }
@@ -168,6 +182,9 @@ class OnSaleListFragment : Fragment() {
     }
 
     private fun updateUI() {
+        if (requireActivity().onBackPressedDispatcher.hasEnabledCallbacks())
+            callback.remove()
+
         firestoreViewModel.availableItemList.observe(viewLifecycleOwner, Observer {
 
             // Update UI
@@ -184,11 +201,13 @@ class OnSaleListFragment : Fragment() {
         })
     }
 
-    private fun resetAction(view: View) {
-        updateUI()
-
+    private fun reloadList(view: View) {
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)
+
+        updateUI()
+
+        fab.hide()
 
         // Close the filter drawer
         TransitionManager.beginDelayedTransition(externalLayout)
@@ -212,7 +231,20 @@ class OnSaleListFragment : Fragment() {
         if (mainCategory.isEmpty()) {
             // Filter only by price tag
             firestoreViewModel.getItemData(minPrice, maxPrice)
-            Snackbar.make(view, "List updated", Snackbar.LENGTH_SHORT).show()
+            // Close the filter drawer
+            TransitionManager.beginDelayedTransition(externalLayout)
+            filterLayout.visibility = View.GONE
+
+            if (minPrice != 0F && maxPrice != Float.MAX_VALUE) {
+                // Show the fab to get back
+                TransitionManager.beginDelayedTransition(externalLayout)
+                fab.show()
+
+                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
+                price_min.text?.clear()
+                price_max.text?.clear()
+            }
         } else {
             if (secondCategory.isEmpty()) {
                 // Send toast asking to choose the second category
@@ -224,7 +256,20 @@ class OnSaleListFragment : Fragment() {
                 firestoreViewModel.getItemData(
                     minPrice, maxPrice, mainCategory, secondCategory
                 )
-                Snackbar.make(view, "List updated", Snackbar.LENGTH_SHORT).show()
+                // Show the fab to get back
+                TransitionManager.beginDelayedTransition(externalLayout)
+                fab.show()
+
+                requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
+                // Close the filter drawer
+                TransitionManager.beginDelayedTransition(externalLayout)
+                filterLayout.visibility = View.GONE
+
+                price_min.text?.clear()
+                price_max.text?.clear()
+                dropdown_main_category.text.clear()
+                dropdown_sub_category.text.clear()
             }
         }
 
@@ -235,10 +280,6 @@ class OnSaleListFragment : Fragment() {
         toggleNoItemsHere(filteredList)
         // Close the soft Keyboard, if open
         hideKeyboardFrom(requireContext(), view)
-
-        // Close the filter drawer
-        TransitionManager.beginDelayedTransition(externalLayout)
-        filterLayout.visibility = View.GONE
 
     }
 

@@ -82,17 +82,17 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/name"
                     style="@style/InputBody"
-                    android:drawablePadding="12dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:drawableStart="@drawable/ic_person_black_24dp"
+                    android:drawablePadding="12dp"
                     android:drawableTint="?attr/colorControlNormal"
                     android:hint="@string/full_name"
-                    android:id="@+id/name"
-                    android:paddingBottom="12dp"
                     android:importantForAutofill="no"
-                    android:inputType="textPersonName"
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent"
+                    android:inputType="textPersonName|textCapSentences"
+                    android:paddingBottom="12dp"
                     android:textAppearance="?attr/textAppearanceBody1"
                     android:textSize="20sp" />
 

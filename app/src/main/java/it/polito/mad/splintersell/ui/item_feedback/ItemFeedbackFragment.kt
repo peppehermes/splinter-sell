@@ -48,6 +48,7 @@ class ItemFeedbackFragment : Fragment() {
     ): View? {
         (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         firestoreViewModel.fetchUserFromFirestore(args.ownerid)
+        firestoreViewModel.fetchMyUserFromFirestore()
         userLiveData = firestoreViewModel.user
 
         return inflater.inflate(R.layout.fragment_rating, container, false)
@@ -86,7 +87,7 @@ class ItemFeedbackFragment : Fragment() {
                         rating.rating,
                         comment.text.toString(),
                         args.itemtitle,
-                        user!!.displayName!!
+                        firestoreViewModel.myUser.value?.nickname!!
                     )
                     firestoreViewModel.saveFeedbackToFirestore(newFeed)
                     firestoreViewModel.updateRating(args.ownerid, rating.rating)

@@ -1,185 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.item_feedback.ItemFeedbackFragment">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_bot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_begin="0dp"
-        app:layout_constraintGuide_percent="0.9"
-        app:layout_constraintStart_toStartOf="parent" />
+    <ScrollView
+        android:scrollbars="none"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_begin="0dp"
-        app:layout_constraintGuide_percent="0.33"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/label_nickname"
-        style="@style/InputLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:drawableStart="@drawable/ic_account_circle_black_16dp"
-        android:drawablePadding="8dp"
-        android:drawableTint="?attr/colorControlNormal"
-        android:text="@string/user"
-        app:layout_constraintBottom_toTopOf="@+id/nickname"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/nickname"
-        style="@style/InputBody"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/user"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toTopOf="@+id/itemname"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guideline_top"
-        tools:text="Nickname" />
-
-    <TextView
-        android:id="@+id/label_itemname"
-        style="@style/InputLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:drawableStart="@drawable/ic_shopping_basket_black_16dp"
-        android:drawablePadding="8dp"
-        android:drawableTint="?attr/colorControlNormal"
-        android:text="@string/item"
-        app:layout_constraintBottom_toTopOf="@+id/itemname"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/itemname"
-        style="@style/InputBody"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/item"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toTopOf="@+id/til_comment"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nickname"
-        tools:text="Title" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_comment"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="10dp"
-        app:counterEnabled="true"
-        app:counterMaxLength="80"
-        app:errorEnabled="true"
-        app:layout_constraintBottom_toTopOf="@id/rating"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemname">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/comment"
-            style="@style/InputBody"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:autofillHints=""
-            android:drawableStart="@drawable/ic_edit_white_24dp"
-            android:drawablePadding="8dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:hint="@string/comment"
-            android:inputType="textAutoCorrect|textAutoComplete|textMultiLine"
-            android:paddingBottom="8dp"
-            android:textAppearance="?attr/textAppearanceBody1"
-            android:textSize="20sp" />
+            android:layout_height="wrap_content">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_photo"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/profile_photo"
+                app:civ_border_color="@color/colorPrimary"
+                app:civ_border_width="2dp" />
 
-    <TextView
-        android:id="@+id/label_rating"
-        style="@style/InputLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:drawablePadding="8dp"
-        android:drawableTint="?attr/colorControlNormal"
-        android:text="@string/rating"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/rating"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+            <TextView
+                android:id="@+id/label_nickname"
+                style="@style/InputLabel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
+                android:drawableStart="@drawable/ic_account_circle_black_16dp"
+                android:drawablePadding="8dp"
+                android:drawableTint="?attr/colorControlNormal"
+                android:text="@string/user" />
 
-    <RatingBar
-        android:id="@+id/rating"
-        style="?android:attr/ratingBarStyleIndicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="32dp"
-        android:isIndicator="false"
-        android:numStars="5"
-        android:stepSize="1.0"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_bot"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_comment" />
+            <TextView
+                android:id="@+id/nickname"
+                style="@style/InputBody"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/user" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_photo"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        android:contentDescription="@string/profile_photo"
-        app:civ_border_color="@color/colorPrimary"
-        app:civ_border_width="2dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_top"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/label_itemname"
+                style="@style/InputLabel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
+                android:drawableStart="@drawable/ic_shopping_basket_black_16dp"
+                android:drawablePadding="8dp"
+                android:drawableTint="?attr/colorControlNormal"
+                android:text="@string/item" />
+
+            <TextView
+                android:id="@+id/itemname"
+                style="@style/InputBody"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/item" />
+
+            <TextView
+                android:id="@+id/label_rating"
+                style="@style/InputLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginHorizontal="16dp"
+                android:drawablePadding="8dp"
+                android:drawableTint="?attr/colorControlNormal"
+                android:text="@string/rating"
+                android:textAlignment="center" />
+
+            <RatingBar
+                android:id="@+id/rating"
+                style="?android:attr/ratingBarStyleIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="32dp"
+                android:isIndicator="false"
+                android:numStars="5"
+                android:stepSize="1.0"
+                android:layout_gravity="center" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_comment"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="96dp"
+                app:counterEnabled="true"
+                app:endIconMode="clear_text"
+                app:helperTextEnabled="true"
+                app:helperText="Optional"
+                app:counterMaxLength="80">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/comment"
+                    style="@style/InputBody"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints=""
+                    android:drawableStart="@drawable/ic_edit_white_24dp"
+                    android:drawablePadding="8dp"
+                    android:drawableTint="?attr/colorControlNormal"
+                    android:hint="@string/comment"
+                    android:inputType="textAutoCorrect|textMultiLine|textCapSentences|textAutoComplete"
+                    android:paddingBottom="8dp"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textSize="20sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         style="@style/Widget.MyApp.MyFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/fab_margin"
-        android:layout_marginEnd="16dp"
         app:backgroundTint="@color/colorSecondary"
-        app:borderWidth="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_send_black_24dp" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
+        app:srcCompat="@drawable/ic_near_me_black_24dp" />
+</RelativeLayout>
 
 

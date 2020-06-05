@@ -235,6 +235,7 @@ class FirestoreViewModel : ViewModel(), FirestoreRepository.OnFirestoreTaskCompl
         firestoreRepository.itemRef
             .whereEqualTo("status", SOLD)
             .whereEqualTo("soldTo", userId)
+            .orderBy("isleft")
             .addSnapshotListener(EventListener { value, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
