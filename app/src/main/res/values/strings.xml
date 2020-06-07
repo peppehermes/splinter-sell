@@ -70,6 +70,7 @@
     <string name="filter">Filter</string>
     <string name="hidden_text">Hidden</string>
     <string name="please_fill">Please, fill this field!</string>
+    <string name="please_fill_email">Please, specify a valid email!</string>
     <string name="please_fill_all">Please, fill all the fields!</string>
     <string name="please_select">Please, select an option</string>
     <string name="wrong_date">Please, select a date not yet elapsed</string>

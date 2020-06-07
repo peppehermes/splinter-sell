@@ -7,6 +7,7 @@
     tools:context=".ui.item_feedback.ItemFeedbackFragment">
 
     <ScrollView
+        android:fitsSystemWindows="true"
         android:scrollbars="none"
         android:layout_height="match_parent"
         android:layout_width="match_parent">

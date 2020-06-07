@@ -38,10 +38,9 @@
         android:layout_margin="@dimen/fab_margin"
         android:layout_marginEnd="16dp"
         app:backgroundTint="@color/colorSecondary"
-        app:borderWidth="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_send_black_24dp" />
+        app:srcCompat="@drawable/ic_near_me_black_24dp" />
 
     <ScrollView
         android:id="@+id/scroll_edit_profile"

@@ -91,7 +91,7 @@
                     android:drawableTint="?attr/colorControlNormal"
                     android:hint="@string/full_name"
                     android:importantForAutofill="no"
-                    android:inputType="textPersonName|textCapSentences"
+                    android:inputType="textPersonName|textCapWords"
                     android:paddingBottom="12dp"
                     android:textAppearance="?attr/textAppearanceBody1"
                     android:textSize="20sp" />

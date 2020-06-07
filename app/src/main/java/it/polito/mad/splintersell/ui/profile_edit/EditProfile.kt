@@ -35,6 +35,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.ktx.Firebase
+import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
 import it.polito.mad.splintersell.R
 import it.polito.mad.splintersell.data.FirestoreViewModel
 import it.polito.mad.splintersell.data.UserModel
@@ -367,8 +368,9 @@ class EditProfile : Fragment() {
             nickname.error = getString(R.string.please_fill)
             result = true
         }
-        if (email.text!!.isEmpty()) {
-            email.error = getString(R.string.please_fill)
+
+        if (!email.text.toString().validEmail()) {
+            email.error = getString(R.string.please_fill_email)
             result = true
         }
         if (location.text!!.isEmpty()) {

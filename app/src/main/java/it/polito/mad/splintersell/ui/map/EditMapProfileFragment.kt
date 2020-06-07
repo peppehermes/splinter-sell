@@ -98,7 +98,8 @@ class EditMapProfileFragment : Fragment(), OnMapReadyCallback {
                         dialog.show()
                     } else {
                         val dialog = AlertDialog.Builder(requireContext())
-                        dialog.setMessage("Please, search for an address.").setCancelable(false)
+                        dialog.setMessage("Please, use the search button on the keyboard.")
+                            .setCancelable(false)
                             .setPositiveButton("OK") { dialogBox, _ ->
                                 dialogBox.dismiss()
                             }
