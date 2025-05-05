@@ -1,0 +1,47 @@
+// Template for google-services.json
+// 1. Create a new Firebase project at https://console.firebase.google.com
+// 2. Add an Android app with package name "it.polito.mad.splintersell"
+// 3. Download the real google-services.json file
+// 4. Replace this template with the downloaded file
+// WARNING: Never commit the real google-services.json file to version control
+{
+  "project_info": {
+    "project_number": "YOUR_PROJECT_NUMBER",
+    "firebase_url": "https://YOUR_PROJECT_ID.firebaseio.com",
+    "project_id": "YOUR_PROJECT_ID",
+    "storage_bucket": "YOUR_PROJECT_ID.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "YOUR_MOBILE_SDK_APP_ID",
+        "android_client_info": {
+          "package_name": "it.polito.mad.splintersell"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "YOUR_OAUTH_CLIENT_ID",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "YOUR_API_KEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "YOUR_OAUTH_CLIENT_ID",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
+

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Template for Google Maps API key configuration
+     1. Go to https://console.cloud.google.com/
+     2. Create a new project or select an existing one
+     3. Enable the Maps SDK for Android
+     4. Create credentials (API key)
+     5. Copy the API key and replace the placeholder below
+     6. Rename this file to google_maps_api.xml
+     WARNING: Never commit the real API key to version control
+-->
+<resources>
+    <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">YOUR_GOOGLE_MAPS_API_KEY</string>
+</resources>
+

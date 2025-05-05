@@ -49,10 +49,5 @@ class ItemModelHolder(v: View) : RecyclerView.ViewHolder(v) {
             .load(sref)
             .into(image)
 
-
-        /*Glide.with(holder.itemView.context)
-            //.using(FirebaseImageLoader())
-            .load("https://firebasestorage.googleapis.com/v0/b/***REMOVED***.appspot.com/o/itemImages%2FG7B0a6aFsOtLcHYmXF26.jpg?alt=media&token=cef98d74-942d-46bc-bce6-60e6ce0ef23a")
-            .into(holder.image)*/
     }
 }
